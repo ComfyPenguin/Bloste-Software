@@ -1,0 +1,2 @@
+# Bloste-Software
+Proyecto intermodular
