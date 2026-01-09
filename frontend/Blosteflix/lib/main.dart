@@ -15,16 +15,12 @@ import 'package:frontend/presentation/screens/launch_screen.dart';
 // Can be dynamically overridden by system colors
 const seed = Color(0xFF6750A4); // Purple seed color
 
-/**
- * Main entry point of the application
- * Creates the root widget
- */
+/// Main entry point of the application
+/// Creates the root widget
 void main() => runApp(BlosteflixApp());
 
-/**
- * Root widget - Sets up theme and navigation
- * Uses DynamicColorBuilder for Material You support
- */
+/// Root widget - Sets up theme and navigation
+/// Uses DynamicColorBuilder for Material You support
 class BlosteflixApp extends StatelessWidget {
   const BlosteflixApp({super.key});
 

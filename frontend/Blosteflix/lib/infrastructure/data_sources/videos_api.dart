@@ -9,10 +9,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-/**
- * VideosApi class - Interface to backend REST API
- * Makes HTTP requests and returns decoded JSON data
- */
+/// VideosApi class - Interface to backend REST API
+/// Makes HTTP requests and returns decoded JSON data
 class VideosApi {
   // ============================================
   // PROPERTIES
@@ -21,21 +19,17 @@ class VideosApi {
   // Example: \"http://10.0.2.2:3000/api/videolist\"
   String baseURL;
 
-  /**
-   * Constructor - receives base URL
-   * @param baseURL - Base API endpoint URL
-   */
+  /// Constructor - receives base URL
+  /// @param baseURL - Base API endpoint URL
   VideosApi(this.baseURL);
 
   // ============================================
   // API METHODS
   // ============================================
 
-  /**
-   * Fetch all videos from the backend
-   * @return List of video JSON objects
-   * @throws Returns empty list on error
-   */
+  /// Fetch all videos from the backend
+  /// @return List of video JSON objects
+  /// @throws Returns empty list on error
   Future<List<dynamic>> getVideos() async {
     String url = baseURL;
 
@@ -56,14 +50,12 @@ class VideosApi {
     }
   }
 
-  /**
-   * Fetch videos by specific topic/category
-   * Example: getVideosByTopic(\"Hardware\") 
-   *   → GET /api/videolist/topic/Hardware
-   * 
-   * @param topic - Video category to filter by
-   * @return List of videos with that topic
-   */
+  /// Fetch videos by specific topic/category
+  /// Example: getVideosByTopic(\"Hardware\") 
+  ///   → GET /api/videolist/topic/Hardware
+  /// 
+  /// @param topic - Video category to filter by
+  /// @return List of videos with that topic
   Future<List<dynamic>> getVideosByTopic(String topic) async {
     String url = "$baseURL/topic/$topic";
 
@@ -80,14 +72,12 @@ class VideosApi {
     }
   }
 
-  /**
-   * Fetch a specific video by its ID
-   * Example: getVideoById(\"video1\")
-   *   → GET /api/videolist/id/video1
-   * 
-   * @param id - Video ID to fetch
-   * @return Single video object with full details
-   */
+  /// Fetch a specific video by its ID
+  /// Example: getVideoById(\"video1\")
+  ///   → GET /api/videolist/id/video1
+  /// 
+  /// @param id - Video ID to fetch
+  /// @return Single video object with full details
   Future<Map<String, dynamic>> getVideoById(String id) async {
     String url = "$baseURL/id/$id";
 

@@ -4,11 +4,9 @@
 // Represents a video object in the domain layer
 // Contains video metadata and properties
 
-/**
- * Video entity class
- * Models a single video with its properties
- * Used throughout the app to pass video data
- */
+/// Video entity class
+/// Models a single video with its properties
+/// Used throughout the app to pass video data
 class Video {
   // ============================================
   // PROPERTIES
@@ -20,14 +18,12 @@ class Video {
   String? thumbnail; // Thumbnail image filename
   // Note: URL for streaming is handled separately (built dynamically)
 
-  /**
-   * Constructor with named parameters
-   * @param id - Required: unique video identifier
-   * @param topic - Optional: video category
-   * @param description - Optional: video description
-   * @param duration - Optional: video length
-   * @param thumbnail - Optional: thumbnail image
-   */
+  /// Constructor with named parameters
+  /// @param id - Required: unique video identifier
+  /// @param topic - Optional: video category
+  /// @param description - Optional: video description
+  /// @param duration - Optional: video length
+  /// @param thumbnail - Optional: thumbnail image
   Video({
     required this.id,
     this.topic,
@@ -36,10 +32,8 @@ class Video {
     this.thumbnail,
   });
 
-  /**
-   * String representation for debugging
-   * Displays all video properties with colored output
-   */
+  /// String representation for debugging
+  /// Displays all video properties with colored output
   @override
   String toString() {
     return '''\x1B[34mId:\t\t\x1B[36m$id\n\x1B[0m

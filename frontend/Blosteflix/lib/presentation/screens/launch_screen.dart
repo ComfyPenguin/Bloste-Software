@@ -11,13 +11,11 @@ import 'package:frontend/presentation/widgets/video_card.dart';
 import 'package:frontend/presentation/widgets/videoWidget.dart';
 import 'package:frontend/repo_singleton.dart';
 
-/**
- * LaunchScreen - Main stateful widget for video streaming
- * Displays:
- * - AppBar with app title
- * - Video player widget (when video selected)
- * - Scrollable list of available videos
- */
+/// LaunchScreen - Main stateful widget for video streaming
+/// Displays:
+/// - AppBar with app title
+/// - Video player widget (when video selected)
+/// - Scrollable list of available videos
 class LaunchScreen extends StatefulWidget {
   const LaunchScreen({super.key});
 
@@ -25,13 +23,11 @@ class LaunchScreen extends StatefulWidget {
   State<LaunchScreen> createState() => _LaunchScreenState();
 }
 
-/**
- * _LaunchScreenState - State management for launch screen
- * Handles:
- * - Loading videos from API via repository singleton
- * - Tracking currently selected video
- * - Managing UI refresh when video selection changes
- */
+/// _LaunchScreenState - State management for launch screen
+/// Handles:
+/// - Loading videos from API via repository singleton
+/// - Tracking currently selected video
+/// - Managing UI refresh when video selection changes
 class _LaunchScreenState extends State<LaunchScreen> {
   // ============================================
   // STATE VARIABLES
