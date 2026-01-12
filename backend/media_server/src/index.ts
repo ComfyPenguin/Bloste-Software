@@ -1,8 +1,7 @@
 import express from "express";
 import fileUpload from "express-fileupload";
-import path from "path";
 import env from "./config/env.config";
-import uploadRoutes from "./routes/uploadRoutes";
+import uploadRoutes from "./routes/videoRoutes";
 import { videoProcessingService } from "./services/videoProcessingService";
 
 const app = express();
@@ -10,7 +9,7 @@ const app = express();
 // CORS Middleware
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Methods", "GET, POST");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Max-Age", "3600");
 
@@ -31,7 +30,7 @@ app.use(
   })
 );
 
-// Inicialitzar serveis
+// Inicializar servicios
 async function initializeServices() {
   try {
     await videoProcessingService.init();
@@ -43,14 +42,11 @@ async function initializeServices() {
 
 initializeServices();
 
-// Servir archivos estáticos (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, "..")));
-
 // Rutas
 app.use("/api", uploadRoutes);
 
 // Iniciar servidor
 app.listen(env.PORT, () => {
-  console.log(`Media server escuchando en el puerto ${env.PORT}`);
-  console.log(`Entorno: ${env.NODE_ENV}`);
+  console.log(`Media server listening on port ${env.PORT}`);
+  console.log(`Environment: ${env.NODE_ENV}`);
 });

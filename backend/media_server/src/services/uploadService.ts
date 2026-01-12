@@ -5,9 +5,11 @@ import env from "../config/env.config";
 import { generateVideoId } from "../utils/idGenerator";
 import type { UploadResponse } from "../types";
 
+// Servicio encargado de gestionar la subida de archivos al servidor.
 export class UploadService {
   private uploadDir = env.UPLOAD_DIR;
 
+  // Inicializar directorios necesarios
   async init(): Promise<void> {
     await fs.ensureDir(this.uploadDir);
   }

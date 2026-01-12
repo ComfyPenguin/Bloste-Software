@@ -3,6 +3,7 @@ import * as path from "path";
 import storageConfig from "../config/storage.config";
 import type { VideoMetadata } from "../types/metadata";
 
+// Servicio para gestionar metadatos de vídeo
 export class MetadataService {
   private metadataDir: string;
 
@@ -10,6 +11,7 @@ export class MetadataService {
     this.metadataDir = path.join(storageConfig.processingDir, "metadata");
   }
 
+  // Inicializar directorios necesarios
   async init(): Promise<void> {
     await fs.ensureDir(this.metadataDir);
   }

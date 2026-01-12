@@ -1,8 +1,6 @@
 // Metadatos de un vídeo
 export interface VideoMetadata {
   id: string;
-  filename: string;
-  originalFilename: string;
   filesize: number;
   duration: number;
   width: number;
@@ -12,8 +10,8 @@ export interface VideoMetadata {
   uploadedAt: Date;
   processingStartedAt?: Date;
   processingCompletedAt?: Date;
-  status: "uploaded" | "processing" | "completed" | "failed";
   hlsPath?: string;
+  status: "uploaded" | "processing" | "completed" | "failed";
   error?: string;
 }
 

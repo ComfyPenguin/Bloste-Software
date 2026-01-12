@@ -7,6 +7,7 @@ import { hlsProcessingService } from "./hlsProcessingService";
 import { metadataService } from "./metadataService";
 import type { VideoMetadata, UploadResponse } from "../types";
 
+// Servicio para gestionar la subida y procesamiento de vídeos
 export class VideoProcessingService {
   private uploadDir = env.UPLOAD_DIR;
 
@@ -33,8 +34,6 @@ export class VideoProcessingService {
     // Crear metadatos iniciales
     const metadata: VideoMetadata = {
       id: videoId,
-      filename: filename,
-      originalFilename: file.name,
       filesize: stats.size,
       duration: videoInfo.duration || 0,
       width: videoInfo.width || 0,
@@ -81,9 +80,9 @@ export class VideoProcessingService {
         processingCompletedAt: new Date(),
       });
 
-      console.log(`Video ${videoId} procesado exitosamente`);
+      console.log(`Video ${videoId} processed successfully`);
     } catch (error) {
-      console.error(`Error procesando video ${videoId}:`, error);
+      console.error(`Error processing video ${videoId}:`, error);
 
       // Guardar error en metadatos
       await metadataService.updateMetadata(videoId, {

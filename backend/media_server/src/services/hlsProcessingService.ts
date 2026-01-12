@@ -7,17 +7,19 @@ import storageConfig from "../config/storage.config";
 
 const execFileAsync = promisify(execFile);
 
+// Servicio para procesar vídeos a formato HLS
 export class HLSProcessingService {
   // Procesar vídeo a HLS
   async processVideo(videoId: string, inputPath: string): Promise<string> {
+    // Inicializar directorios necesarios
     const hlsDir = path.join(storageConfig.publicHlsDir, videoId);
     await fs.ensureDir(hlsDir);
 
     const playlistPath = path.join(hlsDir, "master.m3u8");
     const variants = ffmpegConfig.defaultResolutions;
 
+    // Procesar el video en cada una de las resoluciones definidas
     try {
-      // Procesar el video en cada una de las resoluciones definidas
       for (const variant of variants) {
         const variantDir = path.join(hlsDir, `${variant.width}x${variant.height}`);
         await fs.ensureDir(variantDir);

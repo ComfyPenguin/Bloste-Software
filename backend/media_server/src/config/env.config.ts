@@ -14,7 +14,6 @@ interface EnvConfig {
   PUBLIC_HLS_DIR: string;
   FFMPEG_PATH: string;
   FFPROBE_PATH: string;
-  HLS_BASE_URL: string;
 }
 
 const env: EnvConfig = {
@@ -25,7 +24,6 @@ const env: EnvConfig = {
   PUBLIC_HLS_DIR: process.env.PUBLIC_HLS_DIR || "./storage/public",
   FFMPEG_PATH: ffmpegInstaller.path,
   FFPROBE_PATH: ffprobeInstaller.path,
-  HLS_BASE_URL: process.env.HLS_BASE_URL || "http://localhost:4000/hls",
 };
 
 export default env;

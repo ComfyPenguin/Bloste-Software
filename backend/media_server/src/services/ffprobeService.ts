@@ -1,10 +1,11 @@
 import { execFile } from "child_process";
 import { promisify } from "util";
 import ffmpegConfig from "../config/ffmpeg.config";
-import type { VideoMetadata } from "../types/metadata";
+import type { VideoMetadata, FFprobeStream } from "../types";
 
 const execFileAsync = promisify(execFile);
 
+// Servicio para obtener información de vídeo
 export class FFprobeService {
   async getVideoInfo(filePath: string): Promise<Partial<VideoMetadata>> {
     try {
@@ -19,14 +20,15 @@ export class FFprobeService {
       ]);
 
       const info = JSON.parse(stdout);
+      // Busca el primer video
       const videoStream =
-        info.streams.find((s: any) => s.codec_type === "video") || info.streams[0];
+        (info.streams as FFprobeStream[]).find((s: FFprobeStream) => s.codec_type === "video") ||
+        info.streams[0];
 
       return {
-        duration: Math.floor(Number(info.format.duration)),
+        duration: Math.floor(Number(info.format.duration)), // en segundos
         width: videoStream.width,
         height: videoStream.height,
-        fps: Math.round(eval(videoStream.r_frame_rate)),
         codec: videoStream.codec_name,
       };
     } catch (error) {
