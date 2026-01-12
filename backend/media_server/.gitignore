@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+
+storage/public/*
+storage/processing/metadata/*
+storage/uploads/*
