@@ -1,6 +1,5 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import type { UploadedFile } from "express-fileupload";
 import env from "../config/env.config";
 import { generateVideoId } from "../utils/idGenerator";
 import type { UploadResponse } from "../types";
@@ -15,14 +14,14 @@ export class UploadService {
   }
 
   // Guardar el archivo subido y devuelve los metadatos
-  async saveFile(file: UploadedFile): Promise<UploadResponse> {
+  async saveFile(file: Express.Multer.File): Promise<UploadResponse> {
     const videoId = generateVideoId();
-    const fileExtension = path.extname(file.name);
+    const fileExtension = path.extname(file.originalname);
     const filename = `${videoId}${fileExtension}`;
     const filepath = path.join(this.uploadDir, filename);
 
-    // Guardar el archivo
-    await file.mv(filepath);
+    // Mover el archivo desde la ubicación temporal
+    await fs.move(file.path, filepath);
 
     // Obtener estadísticas del archivo
     const stats = await fs.stat(filepath);

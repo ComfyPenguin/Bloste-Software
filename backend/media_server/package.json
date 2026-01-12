@@ -17,7 +17,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/express-fileupload": "^1.5.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.0.3",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
@@ -33,9 +32,10 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",
+    "@types/multer": "^2.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "express-fileupload": "^1.5.2",
-    "fs-extra": "^11.3.3"
+    "fs-extra": "^11.3.3",
+    "multer": "^2.0.2"
   }
 }

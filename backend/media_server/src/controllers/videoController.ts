@@ -5,14 +5,12 @@ import { metadataService } from "../services/metadataService";
 // Subir un vídeo
 export async function uploadVideo(req: Request, res: Response): Promise<void> {
   try {
-    if (!req.files || !req.files.video) {
+    if (!req.file) {
       res.status(400).json({ error: "No file uploaded" });
       return;
     }
 
-    const file = Array.isArray(req.files.video) ? req.files.video[0] : req.files.video;
-
-    const result = await videoProcessingService.uploadAndProcessVideo(file);
+    const result = await videoProcessingService.uploadAndProcessVideo(req.file);
 
     res.status(201).json({
       success: true,

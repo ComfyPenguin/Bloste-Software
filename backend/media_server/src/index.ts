@@ -1,5 +1,4 @@
 import express from "express";
-import fileUpload from "express-fileupload";
 import env from "./config/env.config";
 import uploadRoutes from "./routes/videoRoutes";
 import { videoProcessingService } from "./services/videoProcessingService";
@@ -22,13 +21,6 @@ app.use((req, res, next) => {
 
 // Middlewares
 app.use(express.json());
-app.use(
-  fileUpload({
-    limits: { fileSize: 5 * 1024 * 1024 * 1024 }, // 5 GB
-    useTempFiles: true,
-    tempFileDir: "/tmp",
-  })
-);
 
 // Inicializar servicios
 async function initializeServices() {

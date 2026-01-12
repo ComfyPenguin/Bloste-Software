@@ -1,5 +1,5 @@
 import * as fs from "fs-extra";
-import type { UploadedFile } from "express-fileupload";
+import * as path from "path";
 import env from "../config/env.config";
 import { generateVideoId } from "../utils/idGenerator";
 import { ffprobeService } from "./ffprobeService";
@@ -18,14 +18,14 @@ export class VideoProcessingService {
   }
 
   // Subir y procesar vídeo
-  async uploadAndProcessVideo(file: UploadedFile): Promise<UploadResponse> {
+  async uploadAndProcessVideo(file: Express.Multer.File): Promise<UploadResponse> {
     const videoId = generateVideoId();
-    const fileExtension = require("path").extname(file.name);
+    const fileExtension = path.extname(file.originalname);
     const filename = `${videoId}${fileExtension}`;
-    const filepath = require("path").join(this.uploadDir, filename);
+    const filepath = path.join(this.uploadDir, filename);
 
-    // Guardar el archivo
-    await file.mv(filepath);
+    // Mover el archivo desde la ubicación temporal
+    await fs.move(file.path, filepath);
     const stats = await fs.stat(filepath);
 
     // Obtener información del vídeo
