@@ -72,7 +72,7 @@ export class HLSProcessingService {
       const resolution = `${variant.width}x${variant.height}`;
 
       masterContent += `#EXT-X-STREAM-INF:BANDWIDTH=${bandwidth},RESOLUTION=${resolution}\n`;
-      masterContent += `${variant.width}x${variant.height}/playlist.m3u8\n\n`;
+      masterContent += `${variant.height}/playlist.m3u8\n\n`;
     }
 
     await fs.writeFile(playlistPath, masterContent);
