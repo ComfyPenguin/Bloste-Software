@@ -5,6 +5,8 @@ import { generateVideoId } from "../utils/idGenerator";
 import { ffprobeService } from "./ffprobeService";
 import { hlsProcessingService } from "./hlsProcessingService";
 import { metadataService } from "./metadataService";
+import { thumbnailService } from "./thumbnailService";
+import { cleanupService } from "./cleanupService";
 import type { VideoMetadata, UploadResponse } from "../types";
 
 // Servicio para gestionar la subida y procesamiento de vídeos
@@ -36,8 +38,6 @@ export class VideoProcessingService {
       id: videoId,
       filesize: stats.size,
       duration: videoInfo.duration || 0,
-      width: videoInfo.width || 0,
-      height: videoInfo.height || 0,
       codec: videoInfo.codec || "unknown",
       fps: videoInfo.fps || 0,
       uploadedAt: new Date(),
@@ -47,37 +47,45 @@ export class VideoProcessingService {
     // Guardar metadatos iniciales
     await metadataService.saveMetadata(metadata);
 
-    // Iniciar procesamiento
-    this.processVideoAsync(videoId, filepath).catch((error) => {
-      console.error("Error processing video:", error);
-    });
+    // Iniciar procesamiento asíncrono
+    this.processVideo(videoId, filepath);
 
     return {
       id: videoId,
-      filename: filename,
+      originalFilename: file.originalname,
       size: stats.size,
-      path: filepath,
       uploadedAt: new Date(),
     };
   }
 
-  // Procesar vídeo de forma asincrónica
-  private async processVideoAsync(videoId: string, inputPath: string): Promise<void> {
+  // Procesar vídeo
+  private async processVideo(videoId: string, inputPath: string): Promise<void> {
     try {
       // Actualizar estado a procesando
       await metadataService.updateMetadata(videoId, {
+        uploadedAt: new Date(),
         status: "processing",
-        processingStartedAt: new Date(),
       });
 
       // Procesar a HLS
-      const hlsPath = await hlsProcessingService.processVideo(videoId, inputPath);
+      await hlsProcessingService.processVideo(videoId, inputPath);
+
+      // Generar thumbnail
+      await thumbnailService.generateThumbnail(videoId, inputPath);
+
+      // Borrar el video original después del procesamiento
+      await cleanupService.deleteOriginalVideo(inputPath);
+
+      // Rutas a los endpints
+      const thumbnailPath = "thumbnails/" + `${videoId}.png`;
+      const hlsPath = "hls/" + videoId;
 
       // Actualizar metadatos con resultado
       await metadataService.updateMetadata(videoId, {
-        status: "completed",
+        completedAt: new Date(),
         hlsPath: hlsPath,
-        processingCompletedAt: new Date(),
+        thumbnailPath: thumbnailPath,
+        status: "completed",
       });
 
       console.log(`Video ${videoId} processed successfully`);

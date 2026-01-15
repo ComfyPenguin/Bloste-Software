@@ -3,5 +3,5 @@ dist
 .env
 
 storage/public/*
-storage/processing/metadata/*
+storage/metadata/*
 storage/uploads/*

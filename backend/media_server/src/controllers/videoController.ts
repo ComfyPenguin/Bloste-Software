@@ -16,7 +16,7 @@ export async function uploadVideo(req: Request, res: Response): Promise<void> {
       success: true,
       data: {
         id: result.id,
-        filename: result.filename,
+        originalFilename: result.originalFilename,
         size: result.size,
         uploadedAt: result.uploadedAt,
         message: "Video uploaded. Processing in progress...",

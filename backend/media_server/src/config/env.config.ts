@@ -10,7 +10,7 @@ interface EnvConfig {
   PORT: number;
   NODE_ENV: "development" | "production";
   UPLOAD_DIR: string;
-  PROCESSING_DIR: string;
+  METADATA_DIR: string;
   PUBLIC_HLS_DIR: string;
   FFMPEG_PATH: string;
   FFPROBE_PATH: string;
@@ -20,7 +20,7 @@ const env: EnvConfig = {
   PORT: Number(process.env.PORT) || 4000,
   NODE_ENV: (process.env.NODE_ENV as "development" | "production") || "development",
   UPLOAD_DIR: process.env.UPLOAD_DIR || "./storage/uploads",
-  PROCESSING_DIR: process.env.PROCESSING_DIR || "./storage/processing",
+  METADATA_DIR: process.env.METADATA_DIR || "./storage/metadata",
   PUBLIC_HLS_DIR: process.env.PUBLIC_HLS_DIR || "./storage/public",
   FFMPEG_PATH: ffmpegInstaller.path,
   FFPROBE_PATH: ffprobeInstaller.path,

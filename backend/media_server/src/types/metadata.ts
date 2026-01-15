@@ -3,14 +3,12 @@ export interface VideoMetadata {
   id: string;
   filesize: number;
   duration: number;
-  width: number;
-  height: number;
   codec: string;
   fps: number;
-  uploadedAt: Date;
-  processingStartedAt?: Date;
-  processingCompletedAt?: Date;
   hlsPath?: string;
+  thumbnailPath?: string;
+  uploadedAt?: Date;
+  completedAt?: Date;
   status: "uploaded" | "processing" | "completed" | "failed";
   error?: string;
 }
@@ -18,8 +16,7 @@ export interface VideoMetadata {
 // Respuesta al subir un vídeo
 export interface UploadResponse {
   id: string;
-  filename: string;
+  originalFilename: string;
   size: number;
-  path: string;
   uploadedAt: Date;
 }

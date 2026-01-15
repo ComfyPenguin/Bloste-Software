@@ -27,8 +27,6 @@ export class FFprobeService {
 
       return {
         duration: Math.floor(Number(info.format.duration)), // en segundos
-        width: videoStream.width,
-        height: videoStream.height,
         codec: videoStream.codec_name,
       };
     } catch (error) {

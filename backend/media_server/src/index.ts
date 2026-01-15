@@ -1,7 +1,9 @@
 import express from "express";
+import path from "path";
 import env from "./config/env.config";
-import uploadRoutes from "./routes/videoRoutes";
+import videoRoutes from "./routes/videoRoutes";
 import { videoProcessingService } from "./services/videoProcessingService";
+import storageConfig from "./config/storage.config";
 
 const app = express();
 
@@ -35,7 +37,10 @@ async function initializeServices() {
 initializeServices();
 
 // Rutas
-app.use("/api", uploadRoutes);
+app.use("/api", videoRoutes);
+
+// Servir thumbnails
+app.use("/thumbnails", express.static(path.join(storageConfig.publicHlsDir, "thumbnails")));
 
 // Iniciar servidor
 app.listen(env.PORT, () => {

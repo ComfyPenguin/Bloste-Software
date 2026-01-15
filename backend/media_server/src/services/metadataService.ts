@@ -8,7 +8,7 @@ export class MetadataService {
   private metadataDir: string;
 
   constructor() {
-    this.metadataDir = path.join(storageConfig.processingDir, "metadata");
+    this.metadataDir = storageConfig.metadataDir;
   }
 
   // Inicializar directorios necesarios

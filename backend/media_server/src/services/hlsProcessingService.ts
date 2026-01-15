@@ -21,7 +21,7 @@ export class HLSProcessingService {
     // Procesar el video en cada una de las resoluciones definidas
     try {
       for (const variant of variants) {
-        const variantDir = path.join(hlsDir, `${variant.width}x${variant.height}`);
+        const variantDir = path.join(hlsDir, `${variant.height}`);
         await fs.ensureDir(variantDir);
 
         const variantPlaylist = path.join(variantDir, "playlist.m3u8");

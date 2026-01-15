@@ -9,13 +9,13 @@
 ## Sprint 4 - Servidor de Medios (Express + ffmpeg-static)
 
 - [x] Implementar procesamiento HLS.
-- [ ] Generación de miniaturas.
+- [x] Generación de miniaturas.
 - [x] Almacenamiento de metadatos.
-- [ ] Envío de notificación o endpoint de consulta de estado.
+- [ ] Envío de notificación o endpoint de consulta de estado (Web socket).
 
 ## Personales
 
-- [ ] Añadir middleware de errores.
+- [x] Eliminar videos despues del procesamiento o guardarlos en memoria temporal.
+- [ ] Middleware de errores.
 - [ ] Validar tipos de archivo en subida.
 - [ ] Documentar API con Swagger.
-
