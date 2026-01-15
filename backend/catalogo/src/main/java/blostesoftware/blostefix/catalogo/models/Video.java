@@ -29,19 +29,18 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-@Table( name = "Videos")
+@Table( name = "videos")
 public class Video implements Serializable{
     @Serial
     private static final long serialVersionUID=1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String titulo;
     private String autor;
     private String descripcion;
     private int duracion;
-    private String urlVideo;
-    private String urlImagen;
+    private String idVideo;
     private LocalDate fechaSubida;
     private LocalDate fechaActualizacion;
     private boolean visible;
@@ -60,8 +59,8 @@ public class Video implements Serializable{
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "video_categoria",
-        joinColumns = @JoinColumn(name = "categoria_id"),
-        inverseJoinColumns = @JoinColumn(name = "video_id")
+        joinColumns = @JoinColumn(name = "video_id"),
+        inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
     private List<Categoria> categorias = new ArrayList<>();
 }

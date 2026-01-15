@@ -7,11 +7,11 @@ INSERT INTO categoria (id, nombre, descripcion) VALUES
 ON DUPLICATE KEY UPDATE nombre=nombre;
 
 -- Insert Videos
-INSERT INTO videos (id, titulo, autor, descripcion, duracion, url_video, url_imagen, fecha_subida, visible) VALUES 
-(1, 'Introducción a Java', 'Juan García', 'Tutorial completo sobre los fundamentos de Java', 3600, 'https://example.com/java-intro', 'https://example.com/images/java.jpg', CURDATE() - INTERVAL 60 DAY, true),
-(2, 'Entrenamiento de Fútbol', 'Carlos López', 'Ejercicios de entrenamiento para futbolistas profesionales', 1800, 'https://example.com/futbol-training', 'https://example.com/images/futbol.jpg', CURDATE() - INTERVAL 30 DAY, true),
+INSERT INTO videos (id, titulo, autor, descripcion, duracion, idVideo, fecha_subida, visible) VALUES 
+(1, 'Introducción a Java', 'Juan García', 'Tutorial completo sobre los fundamentos de Java', 3600, 'https://example.com/java-intro', CURDATE() - INTERVAL 60 DAY, true),
+(2, 'Entrenamiento de Fútbol', 'Carlos López', 'Ejercicios de entrenamiento para futbolistas profesionales', 1800, 'https://example.com/futbol-training', CURDATE() - INTERVAL 30 DAY, true),
 (3, 'Guitarra Básica', 'María Rodríguez', 'Aprende lo básico de la guitarra desde cero', 2400, 'https://example.com/guitarra-basica', 'https://example.com/images/guitarra.jpg', CURDATE() - INTERVAL 21 DAY, true),
-(4, 'Spring Boot Avanzado', 'Pedro Martínez', 'Conceptos avanzados de Spring Boot para aplicaciones empresariales', 5400, 'https://example.com/spring-avanzado', 'https://example.com/images/spring.jpg', CURDATE() - INTERVAL 7 DAY, true)
+(4, 'Spring Boot Avanzado', 'Pedro Martínez', 'Conceptos avanzados de Spring Boot para aplicaciones empresariales', 5400, 'https://example.com/spring-avanzado', CURDATE() - INTERVAL 7 DAY, true)
 ON DUPLICATE KEY UPDATE titulo=titulo;
 
 -- Link Videos to Categories

@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +22,12 @@ import lombok.ToString;
 @Getter
 @Setter
 
+@Table( name = "categoria")
 public class Categoria implements Serializable {
     @Serial
     private static final Long serialVersionUID=1L;
     @Id
-    private int id;
+    private Long id;
     private String nombre;
     private String descripcion;
     @ManyToMany( mappedBy = "categorias" , fetch = FetchType.LAZY)
