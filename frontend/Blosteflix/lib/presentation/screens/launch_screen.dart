@@ -1,21 +1,12 @@
 // ============================================
 // LAUNCH SCREEN - MAIN APPLICATION UI
 // ============================================
-// Primary screen showing video list and player
-// Uses FutureBuilder pattern for async video loading
-// Manages video selection and playback state
-
 import 'package:flutter/material.dart';
 import 'package:frontend/domain/entities/video.dart';
 import 'package:frontend/presentation/widgets/video_card.dart';
 import 'package:frontend/presentation/widgets/videoWidget.dart';
 import 'package:frontend/repo_singleton.dart';
 
-/// LaunchScreen - Main stateful widget for video streaming
-/// Displays:
-/// - AppBar with app title
-/// - Video player widget (when video selected)
-/// - Scrollable list of available videos
 class LaunchScreen extends StatefulWidget {
   const LaunchScreen({super.key});
 
@@ -23,25 +14,41 @@ class LaunchScreen extends StatefulWidget {
   State<LaunchScreen> createState() => _LaunchScreenState();
 }
 
-/// _LaunchScreenState - State management for launch screen
-/// Handles:
-/// - Loading videos from API via repository singleton
-/// - Tracking currently selected video
-/// - Managing UI refresh when video selection changes
+enum MenuItem {
+    item1,
+    item2
+  }
+
+class ItemPage extends StatelessWidget {
+  const ItemPage ({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title:  Text('Item 1'),
+      ),
+    );
+  }
+}
 class _LaunchScreenState extends State<LaunchScreen> {
   // ============================================
   // STATE VARIABLES
   // ============================================
 
-  // Load video list once via repository singleton pattern
-  // RepoSingleton() returns a single shared repository instance
-  // .repo.getVideos() fetches all videos asynchronously from backend
-  final Future<List<Video>?> _listaVideosFuture = RepoSingleton().repo
-      .getVideos();
-
-  // Currently selected video for playback
-  // null = no video selected, don't show player
+  final Future<List<Video>?> _listaVideosFuture = RepoSingleton().repo.getVideos();
   Video? currentVideo;
+
+  // --- VARIABLES PARA EL BUSCADOR ---
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  // Es buena práctica limpiar los controladores
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   // ============================================
   // BUILD METHOD
@@ -50,28 +57,19 @@ class _LaunchScreenState extends State<LaunchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Simple app header
-      appBar: AppBar(title: const Text('Blosteflix')),
+      // INTERRUPTOR DE APPBAR:
+      appBar: _isSearching ? _getSearchAppBar() : _getNormalAppBar(),
 
       // Body uses FutureBuilder to manage async video loading states
       body: FutureBuilder<List<Video>?>(
-        // Pass future that will load videos
         future: _listaVideosFuture,
-
-        // Build UI based on connection state (loading/error/success)
         builder: (context, asyncSnapshot) {
-          // ============================================
           // LOADING STATE
-          // ============================================
-          // Show spinner while videos are being fetched
           if (asyncSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // ============================================
           // ERROR STATE
-          // ============================================
-          // If API request fails, display error message
           if (asyncSnapshot.hasError) {
             return Center(
               child: Padding(
@@ -84,19 +82,14 @@ class _LaunchScreenState extends State<LaunchScreen> {
             );
           }
 
-          // ============================================
           // SUCCESS STATE
-          // ============================================
-          // FutureBuilder successfully received video data
-          // Use empty list if data is null
           final lista = asyncSnapshot.data ?? const <Video>[];
 
-          // If no videos found, show empty state
           if (lista.isEmpty) {
             return const Center(child: Text("No se han encontrado vídeos"));
           }
 
-          // Videos loaded successfully - display them
+          // Videos loaded successfully
           return LayoutBuilder(
             builder: (context, constraints) {
               final isLandscape =
@@ -107,13 +100,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      // ============================================
                       // VIDEO PLAYER SECTION
-                      // ============================================
-
-                      // Only show player and title if video is selected
                       if (currentVideo != null) ...[
-                        // Player container que se adapta al ancho disponible
                         Container(
                           width: double.infinity,
                           constraints: BoxConstraints(
@@ -121,13 +109,9 @@ class _LaunchScreenState extends State<LaunchScreen> {
                                 ? constraints.maxHeight * 0.7
                                 : constraints.maxHeight * 0.4,
                           ),
-                          // Pass selected video ID to player widget
-                          // VideoWidget will build HLS stream URL and handle playback
                           child: VideoWidget(videoId: currentVideo!.id),
                         ),
                         const SizedBox(height: 16),
-
-                        // Display selected video title below player
                         Text(
                           currentVideo!.id,
                           style: const TextStyle(
@@ -138,33 +122,19 @@ class _LaunchScreenState extends State<LaunchScreen> {
                         const SizedBox(height: 16),
                       ],
 
-                      // ============================================
                       // VIDEO LIST SECTION
-                      // ============================================
-
-                      // Lista de videos sin Expanded
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: lista.length,
-                        // Build each video card
                         itemBuilder: (context, i) {
                           final v = lista[i];
                           return VideoCard(
-                            // Video ID (title)
                             id: v.id,
-                            // Video topic/category
                             topic: v.topic ?? 'Sin categoría',
-                            // Video description
                             description: v.description ?? 'Sin descripción',
-                            // Video duration in seconds
                             duration: v.duration ?? 0.0,
-                            // Video thumbnail image URL
                             thumbnail: 'https://picsum.photos/200/300',
-                            // When user taps video card:
-                            // 1. Update currentVideo state
-                            // 2. Trigger rebuild
-                            // 3. Player appears and plays this video
                             onTap: () {
                               setState(() {
                                 currentVideo = v;
@@ -180,6 +150,90 @@ class _LaunchScreenState extends State<LaunchScreen> {
             },
           );
         },
+      ),
+    );
+  }
+
+  // ============================================
+  // APPBAR HELPERS
+  // ============================================
+  
+  /// 1. APPBAR NORMAL (Logo, Título y botón Lupa)
+  AppBar _getNormalAppBar() {
+    return AppBar(
+      leading: const Icon(Icons.menu), // O tu logo aquí
+      title: const Text('Blosteflix'),
+      actions: [
+        PopupMenuButton <MenuItem>(
+          onSelected: (value) => {
+            if (value == MenuItem.item1){
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ItemPage()))
+            } else if (value == MenuItem.item1) {
+
+            }
+          },
+          //Si se añade item: se añade enum y onselected(if)
+          itemBuilder: (context) => const [
+          PopupMenuItem(
+            value: MenuItem.item1,
+            child: Text('Categoría 1'),),
+          
+        PopupMenuItem(
+            value: MenuItem.item2,
+            child: Text('Categoría 2'),),
+        ]),
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            // Al pulsar la lupa, cambiamos el estado a TRUE
+            setState(() {
+              _isSearching = true;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  /// 2. APPBAR DE BÚSQUEDA (Botón atrás, TextField)
+  AppBar _getSearchAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      // Botón "X" o flecha atrás para cancelar búsqueda
+      leading: IconButton(
+        icon: const Icon(Icons.clear), // O Icons.arrow_back
+        onPressed: () {
+          // Al cancelar, borramos texto y volvemos al estado normal
+          setState(() {
+            _searchController.clear();
+            _isSearching = false;
+          });
+        },
+      ),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 10, right: 10),
+        child: TextField(
+          controller: _searchController,
+          onEditingComplete: () {
+            // Lógica cuando el usuario pulsa "Enter" en el teclado
+            print("Buscando: ${_searchController.text}");
+            // Aquí llamarías a tu lógica de filtrado
+          },
+          style: const TextStyle(color: Colors.white), // Texto blanco
+          cursorColor: Colors.white,
+          autofocus: true, // Teclado aparece automático
+          decoration: const InputDecoration(
+            hintText: "Buscar video...",
+            hintStyle: TextStyle(color: Colors.white60),
+            focusColor: Colors.white,
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+          ),
+        ),
       ),
     );
   }
