@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_catalogo
+    restart: no
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: catalogo
+      MYSQL_USER: bloste
+      MYSQL_PASSWORD: 123
+    volumes:
+      - mysql_catalogo:/var/lib/mysql
+
+volumes:
+  mysql_catalogo:
