@@ -1,6 +1,6 @@
 package blostesoftware.blostefix.catalogo.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
 import blostesoftware.blostefix.catalogo.dto.VideoPublicDTO;
@@ -12,7 +12,7 @@ public interface VideoService {
 
     VideoPublicDTO updateVideo(Long id, VideoPostDTO videoDTO);
 
-    List<VideoPublicDTO> getAllVideos();
+    Page<VideoPublicDTO> getAllVideosPageable(int page, int size);
 
     boolean deleteVideo(Long id);
 }

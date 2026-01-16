@@ -1,10 +1,12 @@
 package blostesoftware.blostefix.catalogo.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
@@ -19,13 +21,10 @@ public class VideoServiceIMPL implements VideoService {
     private VideoRepository videoRepository;
 
     @Override
-    public List<VideoPublicDTO> getAllVideos() {
-        List<Video> videos = videoRepository.findAll();
-        List<VideoPublicDTO> elsVideosDTO = new ArrayList<>();
-        for (Video video : videos) {
-            elsVideosDTO.add(VideoPublicDTO.converToDTO(video));
-        }
-        return elsVideosDTO;
+    public Page<VideoPublicDTO> getAllVideosPageable(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Video> videosPage = videoRepository.findAll(pageable);
+        return new PageImpl<>(videosPage.getContent().stream().map(VideoPublicDTO::converToDTO).toList(), pageable, videosPage.getTotalElements());
     }
 
     @Override

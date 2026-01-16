@@ -1,9 +1,12 @@
 package blostesoftware.blostefix.catalogo.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import blostesoftware.blostefix.catalogo.dto.CategoriaPrivateDTO;
@@ -17,23 +20,25 @@ public class CategoriaServiceIMPL implements CategoriaService {
     @Autowired
     CategoriaRepository categoriaRepository;
 
-    /* @Override
-    public void saveCategoria() {
-        
-    } */
-
-    @Override
-    public java.util.List<blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO> getAllCategorias() {
+    /* @Override // EN DESUSO, USAR PAGEABLE
+    public java.util.List<CategoriaPublicDTO> getAllCategorias() {
         List<Categoria> categorias = categoriaRepository.findAll();
         List<CategoriaPublicDTO> categoriasDTO = new java.util.ArrayList<>();
         for (Categoria categoria : categorias) {
             categoriasDTO.add(CategoriaPublicDTO.convertToDTO(categoria));
         }
         return categoriasDTO;
+    } */
+
+    @Override
+    public Page<CategoriaPublicDTO> getAllCategoriasPageable(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Categoria> categoriasPage = categoriaRepository.findAll(pageable);
+        return new PageImpl<>(categoriasPage.getContent().stream().map(CategoriaPublicDTO::convertToDTO).toList(), pageable, categoriasPage.getTotalElements());
     }
 
     @Override
-    public blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO getCategoriaById(Long id) {
+    public CategoriaPublicDTO getCategoriaById(Long id) {
 
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         if (categoriaOpt.isPresent()) {

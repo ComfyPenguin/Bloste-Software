@@ -9,10 +9,12 @@ import lombok.Data;
 @Data
 public class CategoriaPublicDTO implements Serializable{
     static final long serialVersionUID=1L;
+    //private long id;
     private String nombre;
 
     public static CategoriaPublicDTO convertToDTO(Categoria categoria){
         CategoriaPublicDTO categoriaDTO = new CategoriaPublicDTO();
+        //categoriaDTO.setId(categoria.getId());
         categoriaDTO.setNombre(categoria.getNombre());
         return categoriaDTO;
     }
