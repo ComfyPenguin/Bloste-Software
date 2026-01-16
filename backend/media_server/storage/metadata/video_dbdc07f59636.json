@@ -1,0 +1,12 @@
+{
+  "id": "video_dbdc07f59636",
+  "filesize": 5186952,
+  "duration": 17,
+  "codec": "h264",
+  "fps": 0,
+  "uploadedAt": "2026-01-16T07:42:51.844Z",
+  "status": "completed",
+  "completedAt": "2026-01-16T07:43:10.611Z",
+  "hlsPath": "hls/video_dbdc07f59636",
+  "thumbnailPath": "thumbnails/video_dbdc07f59636.png"
+}
