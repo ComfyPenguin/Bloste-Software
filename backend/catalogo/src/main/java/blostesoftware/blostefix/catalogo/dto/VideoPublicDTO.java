@@ -28,8 +28,8 @@ public class VideoPublicDTO implements Serializable {
         videoDTO.setAutor(v.getAutor());
         videoDTO.setDescripcion(v.getDescripcion());
         videoDTO.setDuracion(v.getDuracion());
-        videoDTO.setUrlVideo("api/hls/"+v.getIdVideo());
-        videoDTO.setUrlImagen("api/thumbnail/"+v.getIdVideo());
+        videoDTO.setUrlVideo("/api/hls/"+v.getIdVideo());
+        videoDTO.setUrlImagen("/api/thumbnail/"+v.getIdVideo());
         videoDTO.setFechaSubida(v.getFechaSubida());
         videoDTO.setFechaActualizacion(v.getFechaActualizacion());
         videoDTO.setCategorias(

@@ -9,6 +9,7 @@ class VideoMapper {
       description: json["description"],
       duration: json["duration"],
       thumbnail: json["thumbnail"],
+      author: json["author"],
     );
   }
 }

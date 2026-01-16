@@ -1,22 +1,11 @@
-// ============================================
-// VIDEO ENTITY - DOMAIN MODEL
-// ============================================
-// Represents a video object in the domain layer
-// Contains video metadata and properties
 
-/// Video entity class
-/// Models a single video with its properties
-/// Used throughout the app to pass video data
 class Video {
-  // ============================================
-  // PROPERTIES
-  // ============================================
-  String id; // Unique video identifier (e.g., "video1")
-  String? topic; // Video category/topic (e.g., "Hardware")
-  String? description; // Description of video content
-  double? duration; // Duration in seconds
-  String? thumbnail; // Thumbnail image filename
-  // Note: URL for streaming is handled separately (built dynamically)
+  String id; 
+  String? topic;
+  String? description; 
+  double? duration; 
+  String? thumbnail;
+  String? author; 
 
   /// Constructor with named parameters
   /// @param id - Required: unique video identifier
@@ -30,6 +19,7 @@ class Video {
     this.description,
     this.duration,
     this.thumbnail,
+    this.author,
   });
 
   /// String representation for debugging

@@ -4,8 +4,9 @@ class VideoCard extends StatelessWidget {
   final String id;
   final String topic;
   final String description;
-  final double duration; // Asumiremos que esto son minutos para el ejemplo
+  final double duration;
   final String thumbnail;
+  final String author;
   final VoidCallback? onTap;
 
   const VideoCard({
@@ -15,6 +16,7 @@ class VideoCard extends StatelessWidget {
     required this.description,
     required this.duration,
     required this.thumbnail,
+    required this.author,
     this.onTap,
   });
 
@@ -101,9 +103,9 @@ class VideoCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         
-                        // Metadatos (Topic • Views • Time)
+                        // Metadatos (Author * Topic • Views • Time)
                         Text(
-                          "$topic • $_viewsPlaceholder • $_timePlaceholder",
+                          "$author * $topic • $_viewsPlaceholder • $_timePlaceholder",
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[700], // Gris oscuro estilo YouTube
