@@ -73,14 +73,13 @@ class _VideoWidgetState extends State<VideoWidget> {
       // NOTE: 10.0.2.2 is special address in Android emulator
       // Maps to host machine's localhost (127.0.0.1)
       // .m3u8 extension is CRITICAL for ExoPlayer to recognize HLS
-      final hlsUrl =
-          'http://10.0.2.2:3000/api/videolist/videos/${widget.videoId}/index.m3u8';
+      final hlsUrl = 'http://localhost:4000/api/hls/${widget.videoId}';
       print('🎬 Initializing video with URL: $hlsUrl');
 
       // ============================================
       // STEP 2: VALIDATE PLAYLIST BEFORE INITIALIZING
       // ============================================
-      // Pre-check: Verify playlist exists before creating player
+      // Pre-check: Verify playlist exists before creating playerR
       // Helps catch network/server errors early
       try {
         final response = await http.get(Uri.parse(hlsUrl));

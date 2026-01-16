@@ -1,11 +1,11 @@
-
 class Video {
-  String id; 
+  String id;
   String? topic;
-  String? description; 
-  double? duration; 
+  String? description;
+  double? duration;
+  String? urlVideo;
   String? thumbnail;
-  String? author; 
+  String? author;
 
   /// Constructor with named parameters
   /// @param id - Required: unique video identifier
@@ -18,6 +18,7 @@ class Video {
     this.topic,
     this.description,
     this.duration,
+    this.urlVideo,
     this.thumbnail,
     this.author,
   });

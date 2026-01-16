@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class VideoPublicDTO implements Serializable {
     static final long serialVersionUID=1L;
+    private String idVideo;
     private String titulo;
     private String autor;
     private String descripcion;
@@ -24,12 +25,13 @@ public class VideoPublicDTO implements Serializable {
 
     public static VideoPublicDTO converToDTO(Video v){
         VideoPublicDTO videoDTO = new VideoPublicDTO();
+        videoDTO.setIdVideo(v.getIdVideo());
         videoDTO.setTitulo(v.getTitulo());
         videoDTO.setAutor(v.getAutor());
         videoDTO.setDescripcion(v.getDescripcion());
         videoDTO.setDuracion(v.getDuracion());
-        videoDTO.setUrlVideo("/api/hls/"+v.getIdVideo());
-        videoDTO.setUrlImagen("/api/thumbnail/"+v.getIdVideo());
+        videoDTO.setUrlVideo("api/hls/"+v.getIdVideo());
+        videoDTO.setUrlImagen("thumbnails/"+v.getIdVideo()+".png");
         videoDTO.setFechaSubida(v.getFechaSubida());
         videoDTO.setFechaActualizacion(v.getFechaActualizacion());
         videoDTO.setCategorias(
@@ -42,6 +44,7 @@ public class VideoPublicDTO implements Serializable {
 
     public static Video convertToEntity(VideoPublicDTO videoDTO){
         Video video = new Video();
+        video.setIdVideo(videoDTO.getIdVideo());
         video.setTitulo(videoDTO.getTitulo());
         video.setAutor(videoDTO.getAutor());
         video.setDescripcion(videoDTO.getDescripcion());

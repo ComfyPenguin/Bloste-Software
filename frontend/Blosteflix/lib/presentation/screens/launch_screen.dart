@@ -14,29 +14,24 @@ class LaunchScreen extends StatefulWidget {
   State<LaunchScreen> createState() => _LaunchScreenState();
 }
 
-enum MenuItem {
-    item1,
-    item2
-  }
+enum MenuItem { item1, item2 }
 
 class ItemPage extends StatelessWidget {
-  const ItemPage ({Key? key}) : super(key: key);
+  const ItemPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:  Text('Item 1'),
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: Text('Item 1')));
   }
 }
+
 class _LaunchScreenState extends State<LaunchScreen> {
   // ============================================
   // STATE VARIABLES
   // ============================================
 
-  final Future<List<Video>?> _listaVideosFuture = RepoSingleton().repo.getVideos();
+  final Future<List<Video>?> _listaVideosFuture = RepoSingleton().repo
+      .getVideos();
   Video? currentVideo;
 
   // --- VARIABLES PARA EL BUSCADOR ---
@@ -134,7 +129,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
                             topic: v.topic ?? 'Sin categoría',
                             description: v.description ?? 'Sin descripción',
                             duration: v.duration ?? 0.0,
-                            thumbnail: 'https://picsum.photos/200/300',
+                            thumbnail: 'http://localhost:4000/${v.thumbnail}',
+                            author: v.author ?? 'Desconocido',
                             onTap: () {
                               setState(() {
                                 currentVideo = v;
@@ -157,31 +153,31 @@ class _LaunchScreenState extends State<LaunchScreen> {
   // ============================================
   // APPBAR HELPERS
   // ============================================
-  
+
   /// 1. APPBAR NORMAL (Logo, Título y botón Lupa)
   AppBar _getNormalAppBar() {
     return AppBar(
       leading: const Icon(Icons.menu), // O tu logo aquí
       title: const Text('Blosteflix'),
       actions: [
-        PopupMenuButton <MenuItem>(
+        PopupMenuButton<MenuItem>(
           onSelected: (value) => {
-            if (value == MenuItem.item1){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ItemPage()))
-            } else if (value == MenuItem.item1) {
-
-            }
+            if (value == MenuItem.item1)
+              {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const ItemPage()),
+                ),
+              }
+            else if (value == MenuItem.item1)
+              {},
           },
           //Si se añade item: se añade enum y onselected(if)
           itemBuilder: (context) => const [
-          PopupMenuItem(
-            value: MenuItem.item1,
-            child: Text('Categoría 1'),),
-          
-        PopupMenuItem(
-            value: MenuItem.item2,
-            child: Text('Categoría 2'),),
-        ]),
+            PopupMenuItem(value: MenuItem.item1, child: Text('Categoría 1')),
+
+            PopupMenuItem(value: MenuItem.item2, child: Text('Categoría 2')),
+          ],
+        ),
         IconButton(
           icon: const Icon(Icons.search),
           onPressed: () {
