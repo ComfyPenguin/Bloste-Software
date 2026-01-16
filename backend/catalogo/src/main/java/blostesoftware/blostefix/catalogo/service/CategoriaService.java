@@ -4,9 +4,10 @@ import java.util.List;
 
 import blostesoftware.blostefix.catalogo.dto.CategoriaPrivateDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO;
+import blostesoftware.blostefix.catalogo.models.Categoria;
 
 public interface CategoriaService {
-    void saveCategoria(CategoriaPrivateDTO categoriaDTO);
+    void saveCategoria(Categoria categoria);
 
     List<CategoriaPublicDTO> getAllCategorias();
 

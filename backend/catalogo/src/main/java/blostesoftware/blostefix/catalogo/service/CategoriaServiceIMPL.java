@@ -43,21 +43,32 @@ public class CategoriaServiceIMPL implements CategoriaService {
     }
 
     @Override
-    public void saveCategoria(CategoriaPrivateDTO categoriaDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'saveCategoria'");
+    public void saveCategoria(Categoria categoria) {
+        categoriaRepository.save(categoria);
     }
 
     @Override
     public CategoriaPrivateDTO updateCategoria(CategoriaPrivateDTO categoriaDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCategoria'");
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(categoriaDTO.getId());
+        if (categoriaOpt.isPresent()) {
+            Categoria categoria = categoriaOpt.get();
+            categoria.setNombre(categoriaDTO.getNombre());
+            categoria.setDescripcion(categoriaDTO.getDescripcion());
+            categoriaRepository.save(categoria);
+            return CategoriaPrivateDTO.convertToDTO(categoria);
+        }
+        return null;
     }
 
     @Override
     public CategoriaPrivateDTO deleteCategoria(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCategoria'");
+        Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
+        if (categoriaOpt.isPresent()) {
+            Categoria categoria = categoriaOpt.get();
+            categoriaRepository.deleteById(id);
+            return CategoriaPrivateDTO.convertToDTO(categoria);
+        }
+        return null;
     }
     
 }

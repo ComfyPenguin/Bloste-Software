@@ -2,17 +2,17 @@ package blostesoftware.blostefix.catalogo.service;
 
 import java.util.List;
 
-
+import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
 import blostesoftware.blostefix.catalogo.dto.VideoPublicDTO;
 
 public interface VideoService {
-    void saveVideo(VideoPublicDTO videoDTO);
+    void saveVideo(VideoPostDTO videoDTO);
 
     VideoPublicDTO getVideoById(Long id);
 
-    //VideoPrivateDTO updateVideo();
+    VideoPublicDTO updateVideo(Long id, VideoPostDTO videoDTO);
 
     List<VideoPublicDTO> getAllVideos();
 
-    void deleteVideo(Long id);
+    boolean deleteVideo(Long id);
 }

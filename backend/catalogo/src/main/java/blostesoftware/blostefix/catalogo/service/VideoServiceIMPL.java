@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
 import blostesoftware.blostefix.catalogo.dto.VideoPublicDTO;
 import blostesoftware.blostefix.catalogo.models.*;
 import blostesoftware.blostefix.catalogo.repositories.VideoRepository;
@@ -28,8 +29,8 @@ public class VideoServiceIMPL implements VideoService {
     }
 
     @Override
-    public void saveVideo(VideoPublicDTO videoDTO) {
-        videoRepository.save(VideoPublicDTO.convertToEntity(videoDTO));
+    public void saveVideo(VideoPostDTO videoDTO) {
+        videoRepository.save(VideoPostDTO.convertToEntity(videoDTO));
     }
 
     @Override
@@ -42,15 +43,30 @@ public class VideoServiceIMPL implements VideoService {
         return null;
     }
 
-    /* @Override
-    public VideoPublicDTO updateVideo(VideoPublicDTO videoDTO) {
-        // TODO Auto-generated method stub
+    @Override
+    public VideoPublicDTO updateVideo(Long id, VideoPostDTO videoDTO) {
+        Optional<Video> videoOpt = videoRepository.findById(id);
+        if (videoOpt.isPresent()) {
+            Video video = videoOpt.get();
+            video.setTitulo(videoDTO.getTitulo());
+            video.setAutor(videoDTO.getAutor());
+            video.setDescripcion(videoDTO.getDescripcion());
+            video.setDuracion(videoDTO.getDuracion());
+            video.setIdVideo(videoDTO.getIdVideo());
+            video.setVisible(videoDTO.isVisible());
+            videoRepository.save(video);
+            return VideoPublicDTO.converToDTO(video);
+        }
         return null;
-    } */
+    }
 
     @Override
-    public void deleteVideo(Long id) {
-        videoRepository.deleteById(id);
+    public boolean deleteVideo(Long id) {
+        if (videoRepository.existsById(id)) {
+            videoRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
 
