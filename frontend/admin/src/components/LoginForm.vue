@@ -1,4 +1,28 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+
+// Cargar datos desde el backend
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+
+// Array de datos de las categorías
+const categorias = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/api/categorias`);
+    categorias.value = response.data.map(video => ({
+      categoria: video.categoria,
+    }));
+
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
+  }
+});
+
+
+
+</script>
 
 <template>
   <div class="login-box">
@@ -6,6 +30,22 @@
       <div class="user-box">
         <input type="text" name="" required="true" />
         <label>Username</label>
+      </div>
+      <div class="user-box">
+        <input type="password" name="" required="true" />
+        <label>Password</label>
+      </div>
+      <div class="user-box">
+        <input type="password" name="" required="true" />
+        <label>Password</label>
+      </div>
+      <div class="user-box">
+        <input type="password" name="" required="true" />
+        <label>Password</label>
+      </div>
+      <div class="user-box">
+        <input type="password" name="" required="true" />
+        <label>Password</label>
       </div>
       <div class="user-box">
         <input type="password" name="" required="true" />

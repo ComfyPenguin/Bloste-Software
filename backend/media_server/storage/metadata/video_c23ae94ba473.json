@@ -1,0 +1,12 @@
+{
+  "id": "video_c23ae94ba473",
+  "filesize": 7164453,
+  "duration": 26,
+  "codec": "aac",
+  "fps": 0,
+  "uploadedAt": "2026-01-16T07:43:15.699Z",
+  "status": "completed",
+  "completedAt": "2026-01-16T07:43:44.025Z",
+  "hlsPath": "hls/video_c23ae94ba473",
+  "thumbnailPath": "thumbnails/video_c23ae94ba473.png"
+}
