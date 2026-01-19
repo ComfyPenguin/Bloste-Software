@@ -1,10 +1,12 @@
 package blostesoftware.blostefix.catalogo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import blostesoftware.blostefix.catalogo.dto.CategoriaPostDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPrivateDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO;
 import blostesoftware.blostefix.catalogo.service.CategoriaServiceIMPL;
+import blostesoftware.blostefix.exceptions.CategoriaAlreadyExistsException;
 
 @RestController
 @RequestMapping("/api")
@@ -44,7 +48,7 @@ public class CategoriaController {
     // Post de una nueva categoria
     @PostMapping("/categorias")
     public ResponseEntity<Void> createCategoria(@RequestBody CategoriaPostDTO categoriaDTO) {
-        categoriaService.saveCategoria(CategoriaPostDTO.convertToEntity(categoriaDTO));
+        categoriaService.saveCategoria(categoriaDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     // Put, modificar
@@ -67,5 +71,25 @@ public class CategoriaController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @RestControllerAdvice
+    public class GlobalExceptionHandler {
+
+        @ExceptionHandler(CategoriaAlreadyExistsException.class)
+        public ResponseEntity<String> handleCategoriaDuplicada(
+                CategoriaAlreadyExistsException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT) // 409
+                    .body(ex.getMessage());
+        }
+
+        @ExceptionHandler(DataIntegrityViolationException.class)
+        public ResponseEntity<String> handleConstraint(
+                DataIntegrityViolationException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("La categoría ya existe");
+        }
     }
 }

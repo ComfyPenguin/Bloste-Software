@@ -1,5 +1,5 @@
 // Parte de infraestructura del repositorio
-// Implementa las funcionalidades de la clase abstracta ComarquesRepository
+// Implementa las funcionalidades de la clase abstracta videosRepository
 
 import 'package:flutter/widgets.dart';
 import 'package:frontend/domain/entities/video.dart';

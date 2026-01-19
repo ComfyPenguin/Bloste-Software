@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,31 @@ public class VideoServiceIMPL implements VideoService {
     private VideoRepository videoRepository;
 
     @Override
+
+    public Page<VideoPublicDTO> getVideos(Long categoriaId, int page, int size){
+        Pageable pageable = PageRequest.of(page,size,Sort.by("id").descending());
+
+        Page<Video> result; 
+
+        if(categoriaId != null ){
+            result = videoRepository.findByCategorias_Id(categoriaId, pageable);
+        } else {
+            result = videoRepository.findAll(pageable);
+        }
+        return new PageImpl<>(result.getContent().stream().map(VideoPublicDTO::converToDTO).toList(),pageable,result.getTotalElements());
+    }
+
+    /* @Override
     public Page<VideoPublicDTO> getAllVideosPageable(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Video> videosPage = videoRepository.findAll(pageable);
         return new PageImpl<>(videosPage.getContent().stream().map(VideoPublicDTO::converToDTO).toList(), pageable, videosPage.getTotalElements());
-    }
+    } */
+
+    /* @Override
+    public Page<VideoPublicDTO> getVideosByCategoriaPageable(int page , int size, Categoria categoria){
+        PageRequest pageable = PageRequest.of(page, size, Sort)
+    } */
 
     @Override
     public void saveVideo(VideoPostDTO videoDTO) {

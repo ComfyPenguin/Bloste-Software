@@ -3,12 +3,12 @@ package blostesoftware.blostefix.catalogo.service;
 
 import org.springframework.data.domain.Page;
 
+import blostesoftware.blostefix.catalogo.dto.CategoriaPostDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPrivateDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO;
-import blostesoftware.blostefix.catalogo.models.Categoria;
 
 public interface CategoriaService {
-    void saveCategoria(Categoria categoria);
+    CategoriaPublicDTO saveCategoria(CategoriaPostDTO categoriaPostDTO);
 
     //List<CategoriaPublicDTO> getAllCategorias();
 

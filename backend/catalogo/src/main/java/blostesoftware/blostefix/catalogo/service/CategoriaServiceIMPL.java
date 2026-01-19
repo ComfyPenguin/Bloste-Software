@@ -9,10 +9,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import blostesoftware.blostefix.catalogo.dto.CategoriaPostDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPrivateDTO;
 import blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO;
 import blostesoftware.blostefix.catalogo.models.Categoria;
 import blostesoftware.blostefix.catalogo.repositories.CategoriaRepository;
+import blostesoftware.blostefix.exceptions.CategoriaAlreadyExistsException;
 
 @Service
 public class CategoriaServiceIMPL implements CategoriaService {
@@ -48,8 +50,18 @@ public class CategoriaServiceIMPL implements CategoriaService {
     }
 
     @Override
-    public void saveCategoria(Categoria categoria) {
-        categoriaRepository.save(categoria);
+    public CategoriaPublicDTO saveCategoria(CategoriaPostDTO dto) {
+
+        if (categoriaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
+            throw new CategoriaAlreadyExistsException(
+                "La categoria ya existe"
+            );
+        }
+
+        Categoria categoria = CategoriaPostDTO.convertToEntity(dto);
+        Categoria saved = categoriaRepository.save(categoria);
+
+        return CategoriaPublicDTO.convertToDTO(saved);
     }
 
     @Override

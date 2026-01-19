@@ -32,9 +32,10 @@ public class VideoController {
 
     @GetMapping("/catalogo")
     public ResponseEntity<Page<VideoPublicDTO>> getAllVideos(
+            @RequestParam(required = false) Long categoriaId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        Page<VideoPublicDTO> videos = videoService.getAllVideosPageable(page, size);
+        Page<VideoPublicDTO> videos = videoService.getVideos(categoriaId,page, size);
         return ResponseEntity.ok(videos);
     }
 
