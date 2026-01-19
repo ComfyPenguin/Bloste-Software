@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import LoginForm from '@/components/LoginForm.vue';
+import UploadForm from '@/components/UploadForm.vue';
+
 </script>
 
 <template>
   <main>
-    <LoginForm />
+    <UploadForm />
   </main>
 </template>

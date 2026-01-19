@@ -41,6 +41,8 @@ public class Video implements Serializable{
     private String descripcion;
     private int duracion;
     private String idVideo;
+    private String urlVideo;
+    private String urlImagen;
     private LocalDate fechaSubida;
     private LocalDate fechaActualizacion;
     private boolean visible;
