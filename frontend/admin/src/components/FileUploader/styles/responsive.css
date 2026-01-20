@@ -1,0 +1,18 @@
+/* Larger screens: increase max video height but keep info below */
+@media (min-width: 1200px) {
+  .preview-video {
+    max-height: 50vh; /* slightly larger on very wide screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .preview-video {
+    max-height: 28vh; /* smaller on tablets and stacked layout */
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-video {
+    max-height: 24vh; /* mobile */
+  }
+}

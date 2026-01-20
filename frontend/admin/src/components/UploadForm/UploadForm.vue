@@ -209,7 +209,7 @@ const limpiarFormulario = () => {
 
           <!-- Error de carga -->
           <div v-else-if="errorCargaCategorias" class="error-categorias">
-            <p>⚠️ {{ errorCargaCategorias }}</p>
+            <p>{{ errorCargaCategorias }}</p>
             <button type="button" @click="cargarCategorias" class="btn-reintentar">
               Reintentar
             </button>

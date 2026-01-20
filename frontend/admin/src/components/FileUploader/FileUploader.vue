@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_CATALOGO_URL || 'http://localhost:8080'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_MEDIA_URL || 'http://localhost:4000'
 
 const emit = defineEmits<{
   (e: 'file-selected', title: string): void
@@ -27,7 +27,7 @@ const uploading = ref(false)
 const error = ref('')
 
 const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg']
-const maxSize = 200 * 1024 * 1024 // 200MB
+const maxSize = 5 * 1024 * 1024 * 1024 // 5GB
 
 const onFileChange = (e: Event) => {
   const files = (e.target as HTMLInputElement).files
@@ -41,11 +41,10 @@ const handleFile = (file: File) => {
     return
   }
   if (file.size > maxSize) {
-    error.value = 'Archivo demasiado grande (máx 200MB).'
+    error.value = 'Archivo demasiado grande (máx 5GB).'
     return
   }
   selectedFile.value = file
-  // Emit suggested title (filename without extension)
   const name = file.name.replace(/\.[^/.]+$/, '')
   emit('file-selected', name)
 }
@@ -119,7 +118,7 @@ const removeFile = () => {
       <input ref="fileInput" type="file" accept="video/*" @change="onFileChange" hidden />
       <div class="uploader-message">
         <strong>Arrastra y suelta un video</strong><br />
-        <small>o haz clic para seleccionar (MP4/WebM/OGG, máx 200MB)</small>
+        <small>o haz clic para seleccionar (MP4/WebM/OGG, máx 5GB)</small>
       </div>
     </label>
 
@@ -149,3 +148,4 @@ const removeFile = () => {
 <style src="./styles/form.css" scoped></style>
 <style src="./styles/preview.css" scoped></style>
 <style src="./styles/buttons.css" scoped></style>
+<style src="./styles/responsive.css" scoped></style>
