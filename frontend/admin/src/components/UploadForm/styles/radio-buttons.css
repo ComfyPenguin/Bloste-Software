@@ -1,0 +1,96 @@
+/* Radio buttons */
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: stretch; /* ensure all options get the same height */
+  width: 100%;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  flex: 1; /* make options expand to fill the row */
+  min-width: 0; /* prevent overflow in flex layout */
+}
+
+.radio-option:hover {
+  border-color: #3498db;
+  background: #f8f9fa;
+}
+
+.radio-input {
+  display: none;
+}
+
+.radio-custom {
+  width: 20px;
+  height: 20px;
+  min-width: 20px; /* prevent shrinking */
+  flex: 0 0 20px; /* fixed box in flex layout */
+  border: 2px solid #bdc3c7;
+  border-radius: 50%;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.radio-input:checked + .radio-custom {
+  border-color: #3498db;
+}
+
+.radio-input:checked + .radio-custom::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: #3498db;
+  border-radius: 50%;
+}
+
+.radio-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertically center content when options stretch */
+  min-width: 0; /* allow text truncation inside flex */
+}
+
+.radio-content strong {
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.radio-content small {
+  color: #7f8c8d;
+  font-size: 0.85rem;
+  white-space: nowrap; /* keep on single line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .radio-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  /* allow wrapping on small screens */
+  .radio-content small {
+    white-space: normal;
+  }
+}
+@media (max-width: 480px) {
+  .radio-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+}

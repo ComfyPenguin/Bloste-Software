@@ -34,8 +34,6 @@ async function initializeServices() {
   }
 }
 
-
-
 initializeServices();
 
 // Rutas

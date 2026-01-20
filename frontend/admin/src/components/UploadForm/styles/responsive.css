@@ -1,0 +1,19 @@
+/* Responsivo */
+@media (max-width: 768px) {
+  .upload-form {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .categoria-input-group {
+    flex-direction: column;
+  }
+
+  .categorias-grid {
+    justify-content: center;
+  }
+}
