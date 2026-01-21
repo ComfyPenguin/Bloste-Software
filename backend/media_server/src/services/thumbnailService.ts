@@ -12,7 +12,7 @@ export class ThumbnailService {
   // Generar thumbnail para un vídeo
   async generateThumbnail(videoId: string, inputPath: string): Promise<string> {
     // Crear directorio para thumbnails
-    const thumbnailDir = path.join(storageConfig.publicHlsDir, "thumbnails");
+    const thumbnailDir = path.join(storageConfig.thumbnailDir);
     await fs.ensureDir(thumbnailDir);
 
     const thumbnailPath = path.join(thumbnailDir, `${videoId}.png`);

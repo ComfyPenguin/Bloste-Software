@@ -40,7 +40,7 @@ initializeServices();
 app.use("/api", videoRoutes);
 
 // Servir thumbnails
-app.use("/thumbnails", express.static(path.join(storageConfig.publicHlsDir, "thumbnails")));
+app.use("/thumbnails", express.static(path.join(storageConfig.hlsDir, "thumbnails")));
 
 // Iniciar servidor
 app.listen(env.PORT, () => {

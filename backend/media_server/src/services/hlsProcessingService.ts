@@ -12,7 +12,7 @@ export class HLSProcessingService {
   // Procesar vídeo a HLS
   async processVideo(videoId: string, inputPath: string): Promise<string> {
     // Inicializar directorios necesarios
-    const hlsDir = path.join(storageConfig.publicHlsDir, videoId);
+    const hlsDir = path.join(storageConfig.hlsDir, videoId);
     await fs.ensureDir(hlsDir);
 
     const playlistPath = path.join(hlsDir, "master.m3u8");

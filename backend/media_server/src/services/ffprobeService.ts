@@ -27,6 +27,9 @@ export class FFprobeService {
 
       return {
         duration: Math.floor(Number(info.format.duration)), // en segundos
+        fps: videoStream.r_frame_rate
+          ? eval(videoStream.r_frame_rate) // Convierte "30/1" a 30
+          : 0,
         codec: videoStream.codec_name,
       };
     } catch (error) {

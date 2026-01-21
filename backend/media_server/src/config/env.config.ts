@@ -11,7 +11,8 @@ interface EnvConfig {
   NODE_ENV: "development" | "production";
   UPLOAD_DIR: string;
   METADATA_DIR: string;
-  PUBLIC_HLS_DIR: string;
+  HLS_DIR: string;
+  THUMBNAIL_DIR: string;
   FFMPEG_PATH: string;
   FFPROBE_PATH: string;
 }
@@ -21,7 +22,8 @@ const env: EnvConfig = {
   NODE_ENV: (process.env.NODE_ENV as "development" | "production") || "development",
   UPLOAD_DIR: process.env.UPLOAD_DIR || "./storage/uploads",
   METADATA_DIR: process.env.METADATA_DIR || "./storage/metadata",
-  PUBLIC_HLS_DIR: process.env.PUBLIC_HLS_DIR || "./storage/public",
+  HLS_DIR: process.env.HLS_DIR || "./storage/public/videos",
+  THUMBNAIL_DIR: process.env.THUMBNAIL_DIR || "./storage/public/thumbnails",
   FFMPEG_PATH: ffmpegInstaller.path,
   FFPROBE_PATH: ffprobeInstaller.path,
 };
