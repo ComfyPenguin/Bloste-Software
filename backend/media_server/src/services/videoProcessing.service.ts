@@ -79,8 +79,8 @@ export class VideoProcessingService {
       await cleanupService.deleteOriginalVideo(inputPath);
 
       // Rutas a los endpints
-      const thumbnailPath = "thumbnails/" + `${videoId}.png`;
-      const hlsPath = "hls/" + videoId;
+      const thumbnailPath = "api/thumbnails/" + `${videoId}.png`;
+      const hlsPath = "api/hls/" + videoId;
 
       // Actualizar metadatos con resultado
       await metadataService.updateMetadata(videoId, {

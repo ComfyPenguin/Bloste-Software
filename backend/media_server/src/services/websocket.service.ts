@@ -1,9 +1,9 @@
 import { WebSocketServer, WebSocket } from "ws";
+import type { Data as WebSocketData } from "ws";
 import type { Server } from "http";
 import type { VideoMetadata } from "../types/metadata.type";
 import type { WebSocketWithClientId } from "../types/websocket.type";
 
-//TODO: verificar como funciona todo esto
 // Servicio para gestionar conexiones WebSocket
 export class WebSocketService {
   private wss: WebSocketServer | null = null;
@@ -22,13 +22,13 @@ export class WebSocketService {
       this.clients.add(ws);
 
       // Esperar el primer mensaje con el clientId
-      const onMessage = (data: any) => {
+      const onMessage = (data: WebSocketData) => {
         try {
           const msg = JSON.parse(data.toString());
           if (msg && msg.clientId && typeof msg.clientId === "string") {
             this.clientIdToSocket.set(msg.clientId, ws);
-            ws._clientId = msg.clientId; // Guardar en el socket para limpieza
-            ws.off("message", onMessage); // Solo una vez
+            ws._clientId = msg.clientId; // Guardar en el socket para cerrar conexiones después
+            ws.off("message", onMessage); // Escuchar solo el primer mensaje
             console.log(`WebSocket asociado a clientId: ${msg.clientId}`);
           }
         } catch (e) {
@@ -65,7 +65,7 @@ export class WebSocketService {
     console.log("WebSocket server initialized on /ws");
   }
 
-  // Enviar evento de procesamiento completado
+  // Enviar evento completado
   emitVideoProcessed(videoId: string, metadata: VideoMetadata): void {
     const message = JSON.stringify({
       event: "videoProcessed",
@@ -78,7 +78,7 @@ export class WebSocketService {
     this.sendToVideoOwner(videoId, message);
   }
 
-  // Enviar evento de procesamiento fallido
+  // Enviar evento fallido
   emitVideoFailed(videoId: string, error: string): void {
     const message = JSON.stringify({
       event: "videoFailed",
