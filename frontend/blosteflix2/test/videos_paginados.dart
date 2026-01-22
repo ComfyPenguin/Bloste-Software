@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:blosteflix2/infrastructure/data_sources/catalogo_api.dart';
 
 void main() {
-  final api = CatalogoApi('http://localhost:8080');
+  final api = CatalogoApi('http://10.0.2.2:8080');
 
   test('Devuelve videos paginados', () async {
     final result = await api.getVideos(page: 0, size: 10);

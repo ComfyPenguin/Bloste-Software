@@ -1,7 +1,15 @@
 class MediaLocator {
-  static const String mediaUrl = 'http://10.0.2.2:4000';
+  static final MediaLocator _instance = MediaLocator._internal();
 
-  static String getMediaUrl() {
-    return mediaUrl;
+  factory MediaLocator() {
+    return _instance;
+  }
+
+  MediaLocator._internal();
+
+  final String _mediaUrl = 'http://10.0.2.2:4000';
+
+  String getRemoteURL() {
+    return _mediaUrl;
   }
 }
