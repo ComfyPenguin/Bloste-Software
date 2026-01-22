@@ -16,6 +16,6 @@
 ## Personales
 
 - [x] Eliminar videos despues del procesamiento o guardarlos en memoria temporal.
-- [ ] Middleware de errores.
+- [x] Middleware de errores.
 - [ ] Validar tipos de archivo en subida.
 - [ ] Documentar API con Swagger.

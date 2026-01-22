@@ -2,8 +2,8 @@ import { execFile } from "child_process";
 import { promisify } from "util";
 import * as path from "path";
 import * as fs from "fs-extra";
-import ffmpegConfig from "../config/ffmpeg.config";
-import storageConfig from "../config/storage.config";
+import ffmpegConfig from "../configs/ffmpeg.config";
+import storageConfig from "../configs/storage.config";
 
 const execFileAsync = promisify(execFile);
 

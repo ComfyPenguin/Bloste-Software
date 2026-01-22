@@ -7,9 +7,7 @@ export interface VideoMetadata {
   fps: number;
   hlsPath?: string;
   thumbnailPath?: string;
-  uploadedAt?: Date;
-  completedAt?: Date;
-  status: "uploaded" | "processing" | "completed" | "failed";
+  status?: "uploaded" | "processing" | "completed" | "failed";
   error?: string;
 }
 
@@ -18,5 +16,11 @@ export interface UploadResponse {
   id: string;
   originalFilename: string;
   size: number;
-  uploadedAt: Date;
 }
+
+// Tipado para los datos devueltos por FFprobe
+export type FFprobeData = {
+  codec_type: string;
+  r_frame_rate?: string;
+  codec_name?: string;
+};

@@ -1,11 +1,15 @@
 import express from "express";
 import path from "path";
-import env from "./config/env.config";
-import videoRoutes from "./routes/videoRoutes";
-import { videoProcessingService } from "./services/videoProcessingService";
-import storageConfig from "./config/storage.config";
+import { createServer } from "http";
+import env from "./configs/env.config";
+import videoRoutes from "./routes/video.routes";
+import { videoProcessingService } from "./services/videoProcessing.service";
+import { websocketService } from "./services/websocket.service";
+import storageConfig from "./configs/storage.config";
+import { errorHandler, notFoundHandler } from "./middlewares/error.middleware";
 
 const app = express();
+const httpServer = createServer(app);
 
 // CORS Middleware
 app.use((req, res, next) => {
@@ -28,6 +32,7 @@ app.use(express.json());
 async function initializeServices() {
   try {
     await videoProcessingService.init();
+    websocketService.init(httpServer);
     console.log("Services initialized successfully");
   } catch (error) {
     console.error("Failed to initialize services:", error);
@@ -42,8 +47,13 @@ app.use("/api", videoRoutes);
 // Servir thumbnails
 app.use("/thumbnails", express.static(path.join(storageConfig.hlsDir, "thumbnails")));
 
+// Middleware de manejo de errores
+app.use(notFoundHandler);
+app.use(errorHandler);
+
 // Iniciar servidor
-app.listen(env.PORT, () => {
+httpServer.listen(env.PORT, () => {
   console.log(`Media server listening on port ${env.PORT}`);
+  console.log(`WebSocket server available at ws://localhost:${env.PORT}/ws`);
   console.log(`Environment: ${env.NODE_ENV}`);
 });

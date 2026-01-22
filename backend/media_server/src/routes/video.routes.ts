@@ -1,7 +1,7 @@
 import express, { Router } from "express";
-import { multerUpload as multerMiddleware } from "../middlewares/multerMiddleware";
-import { uploadVideo, getVideoMetadata, getAllVideos } from "../controllers/videoController";
-import storageConfig from "../config/storage.config";
+import { multerUpload as multerMiddleware } from "../middlewares/multer.middleware";
+import { uploadVideo, getVideoMetadata, getAllVideos } from "../controllers/video.controller";
+import storageConfig from "../configs/storage.config";
 
 const router = Router();
 

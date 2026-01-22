@@ -1,6 +1,8 @@
 import * as dotenv from "dotenv";
 import * as path from "path";
+// @ts-ignore
 import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
+// @ts-ignore
 import ffprobeInstaller from "@ffprobe-installer/ffprobe";
 
 // Cargar variables desde .env

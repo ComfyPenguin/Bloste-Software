@@ -2,15 +2,15 @@ import { execFile } from "child_process";
 import { promisify } from "util";
 import * as path from "path";
 import * as fs from "fs-extra";
-import ffmpegConfig from "../config/ffmpeg.config";
-import storageConfig from "../config/storage.config";
+import ffmpegConfig from "../configs/ffmpeg.config";
+import storageConfig from "../configs/storage.config";
 
 const execFileAsync = promisify(execFile);
 
 // Servicio para procesar vídeos a formato HLS
-export class HLSProcessingService {
+export class HLSService {
   // Procesar vídeo a HLS
-  async processVideo(videoId: string, inputPath: string): Promise<string> {
+  async videoToHLS(videoId: string, inputPath: string): Promise<string> {
     // Inicializar directorios necesarios
     const hlsDir = path.join(storageConfig.hlsDir, videoId);
     await fs.ensureDir(hlsDir);
@@ -79,4 +79,4 @@ export class HLSProcessingService {
   }
 }
 
-export const hlsProcessingService = new HLSProcessingService();
+export const hlsService = new HLSService();

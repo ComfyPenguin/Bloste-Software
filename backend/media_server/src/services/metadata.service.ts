@@ -1,7 +1,7 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import storageConfig from "../config/storage.config";
-import type { VideoMetadata } from "../types/metadata";
+import storageConfig from "../configs/storage.config";
+import type { VideoMetadata } from "../types/metadata.type";
 
 // Servicio para gestionar metadatos de vídeo
 export class MetadataService {

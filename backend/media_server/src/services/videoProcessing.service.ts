@@ -1,13 +1,14 @@
 import * as fs from "fs-extra";
 import * as path from "path";
-import env from "../config/env.config";
+import env from "../configs/env.config";
 import { generateVideoId } from "../utils/idGenerator";
-import { ffprobeService } from "./ffprobeService";
-import { hlsProcessingService } from "./hlsProcessingService";
-import { metadataService } from "./metadataService";
-import { thumbnailService } from "./thumbnailService";
-import { cleanupService } from "./cleanupService";
-import type { VideoMetadata, UploadResponse } from "../types";
+import { ffprobeService } from "./ffprobe.service";
+import { hlsService } from "./hls.service";
+import { metadataService } from "./metadata.service";
+import { thumbnailService } from "./thumbnail.service";
+import { cleanupService } from "./cleanup.service";
+import { websocketService } from "./websocket.service";
+import type { VideoMetadata, UploadResponse } from "../types/metadata.type";
 
 // Servicio para gestionar la subida y procesamiento de vídeos
 export class VideoProcessingService {
@@ -20,7 +21,10 @@ export class VideoProcessingService {
   }
 
   // Subir y procesar vídeo
-  async uploadAndProcessVideo(file: Express.Multer.File): Promise<UploadResponse> {
+  async uploadAndProcessVideo(
+    file: Express.Multer.File,
+    clientId: string
+  ): Promise<UploadResponse> {
     const videoId = generateVideoId();
     const fileExtension = path.extname(file.originalname);
     const filename = `${videoId}${fileExtension}`;
@@ -40,35 +44,33 @@ export class VideoProcessingService {
       duration: videoInfo.duration || 0,
       codec: videoInfo.codec || "unknown",
       fps: videoInfo.fps || 0,
-      uploadedAt: new Date(),
       status: "uploaded",
     };
 
     // Guardar metadatos iniciales
     await metadataService.saveMetadata(metadata);
 
-    // Iniciar procesamiento asíncrono
+    // Asociar videoId con clientId en el websocketService
+    websocketService.associateVideoWithClient(videoId, clientId);
+
+    // Iniciar procesamiento
     this.processVideo(videoId, filepath);
 
     return {
       id: videoId,
       originalFilename: file.originalname,
       size: stats.size,
-      uploadedAt: new Date(),
     };
   }
 
   // Procesar vídeo
   private async processVideo(videoId: string, inputPath: string): Promise<void> {
     try {
-      // Actualizar estado a procesando
-      await metadataService.updateMetadata(videoId, {
-        uploadedAt: new Date(),
-        status: "processing",
-      });
+      // Emitir evento de estado
+      websocketService.emitStatusUpdate(videoId);
 
       // Procesar a HLS
-      await hlsProcessingService.processVideo(videoId, inputPath);
+      await hlsService.videoToHLS(videoId, inputPath);
 
       // Generar thumbnail
       await thumbnailService.generateThumbnail(videoId, inputPath);
@@ -82,21 +84,31 @@ export class VideoProcessingService {
 
       // Actualizar metadatos con resultado
       await metadataService.updateMetadata(videoId, {
-        completedAt: new Date(),
         hlsPath: hlsPath,
         thumbnailPath: thumbnailPath,
-        status: "completed",
       });
+
+      // Obtener metadatos completos y emitir evento
+      const completeMetadata = await metadataService.getMetadata(videoId);
+      if (completeMetadata) {
+        websocketService.emitVideoProcessed(videoId, completeMetadata);
+      }
 
       console.log(`Video ${videoId} processed successfully`);
     } catch (error) {
       console.error(`Error processing video ${videoId}:`, error);
 
+      // Obtener mensaje de error
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+
       // Guardar error en metadatos
       await metadataService.updateMetadata(videoId, {
         status: "failed",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: errorMessage,
       });
+
+      // Emitir evento de fallo
+      websocketService.emitVideoFailed(videoId, errorMessage);
     }
   }
 }

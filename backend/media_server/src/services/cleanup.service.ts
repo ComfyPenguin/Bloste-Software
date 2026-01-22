@@ -1,6 +1,6 @@
 import * as fs from "fs-extra";
 
-// Servicio para limpiar archivos después del procesamiento
+// Limpiar archivos después del procesamiento
 export class CleanupService {
   async deleteOriginalVideo(filePath: string): Promise<void> {
     try {
