@@ -7,7 +7,7 @@ import 'package:blosteflix2/infrastructure/data_sources/catalogo_api.dart';
 import 'package:blosteflix2/infrastructure/repository/catalogo_repository_impl.dart';
 
 class CatalogoLocator {
-  String remoteUrl = "http://10.0.2.2:8080";
+  String remoteUrl = "http://10.201.108.174:8080";
 
   // Instància privada estàtica (Patró Singleton)
   static CatalogoLocator? _instancia;

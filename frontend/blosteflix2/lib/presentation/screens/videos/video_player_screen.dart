@@ -350,13 +350,13 @@ Widget _otherVideos() {
       style: TextStyle(color: Colors.grey, fontSize: 16),
     );
   }
-
+  // Todo, adaptar gridvideos() para que sea mas universal y gastarlo aqui.
   return GridView.builder(
       shrinkWrap: true, // Importante: permite incrustar en SingleChildScrollView
       physics: const NeverScrollableScrollPhysics(), // El scroll lo controla el padre
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 1, // 2 columnas en móvil → buen uso del espacio
-      childAspectRatio: 16 / 9, // Formato típico de miniaturas
+      childAspectRatio: 1.3, // Formato típico de miniaturas
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
     ),

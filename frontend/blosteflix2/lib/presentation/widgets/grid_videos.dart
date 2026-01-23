@@ -26,7 +26,9 @@ class GridVideos extends StatelessWidget {
           controller: _scrollController,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            childAspectRatio: crossAxisCount == 1 ? 3 : 1.5,
+            childAspectRatio: 1.3,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
           ),
           itemCount: _videos.length + (_hasMore ? 1 : 0),
           itemBuilder: (context, index) {

@@ -1,4 +1,5 @@
 import 'package:blosteflix2/presentation/screens/home/home_screen.dart';
+import 'package:blosteflix2/presentation/theming/theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,11 +14,7 @@ class Blosteflix extends StatelessWidget {
     return MaterialApp(
       title: 'BlosteFlix',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.orange,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: BlosteTheme.extraDarkTheme,
       home: const HomeScreen(),
     );
   }
