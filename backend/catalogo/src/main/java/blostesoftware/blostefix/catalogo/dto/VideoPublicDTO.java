@@ -1,7 +1,8 @@
 package blostesoftware.blostefix.catalogo.dto;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import blostesoftware.blostefix.catalogo.models.Categoria;
 import blostesoftware.blostefix.catalogo.models.Video;
@@ -22,7 +23,7 @@ public class VideoPublicDTO implements Serializable {
     private String urlImagen;
     private java.time.LocalDate fechaSubida;
     private java.time.LocalDate fechaActualizacion;
-    private List<String> categorias;
+    private Set<String> categorias;
 
     public static VideoPublicDTO converToDTO(Video v){
         VideoPublicDTO videoDTO = new VideoPublicDTO();
@@ -36,15 +37,17 @@ public class VideoPublicDTO implements Serializable {
         videoDTO.setUrlImagen(v.getUrlImagen());
         videoDTO.setFechaSubida(v.getFechaSubida());
         videoDTO.setFechaActualizacion(v.getFechaActualizacion());
-        videoDTO.setCategorias(
-            v.getCategorias().stream()
-                 .map(Categoria::getNombre)
-                 .toList()
-        );
+        if (v.getCategorias() != null) {
+            videoDTO.setCategorias(
+                v.getCategorias().stream()
+                .map(Categoria::getNombre)
+                .collect(Collectors.toSet())
+            );
+        }
         return videoDTO;
     }
 
-    public static Video convertToEntity(VideoPublicDTO videoDTO){
+    /* public static Video convertToEntity(VideoPublicDTO videoDTO){
         Video video = new Video();
         video.setId(videoDTO.getId());
         video.setIdVideo(videoDTO.getIdVideo());
@@ -55,16 +58,8 @@ public class VideoPublicDTO implements Serializable {
         video.setIdVideo(videoDTO.getUrlVideo());
         video.setFechaSubida(videoDTO.getFechaSubida());
         video.setFechaActualizacion(videoDTO.getFechaActualizacion());
-        video.setCategorias(
-            videoDTO.getCategorias().stream()
-                    .map(nombre -> {
-                        Categoria c = new Categoria();
-                        c.setNombre(nombre);
-                        return c;
-                    })
-                    .toList()
-        );
+        video.setCategorias(videoDTO.getCategorias());
         return video;
-    }
+    } */
 
 }

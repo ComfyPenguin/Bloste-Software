@@ -2,7 +2,8 @@ package blostesoftware.blostefix.catalogo.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
+
 import blostesoftware.blostefix.catalogo.models.Categoria;
 import blostesoftware.blostefix.catalogo.models.Video;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class VideoPrivateDTO implements Serializable {
     private LocalDate fechaSubida;
     private LocalDate fechaActualizacion;
     private boolean visible;
-    private List<String> categorias;
+    private Set<Categoria> categorias;
     
     public static VideoPrivateDTO convertToDTO( Video video ){
         VideoPrivateDTO videoDTO = new VideoPrivateDTO();
@@ -32,11 +33,7 @@ public class VideoPrivateDTO implements Serializable {
         videoDTO.setFechaSubida(video.getFechaSubida());
         videoDTO.setFechaActualizacion(video.getFechaActualizacion());
         videoDTO.setVisible(video.isVisible());
-        videoDTO.setCategorias(
-            video.getCategorias().stream()
-                 .map(Categoria::getNombre)
-                 .toList()
-        );
+        videoDTO.setCategorias(video.getCategorias());
         return videoDTO;
     }
 
@@ -51,15 +48,7 @@ public class VideoPrivateDTO implements Serializable {
         video.setFechaSubida(videoDTO.getFechaSubida());
         video.setFechaActualizacion(videoDTO.getFechaActualizacion());
         video.setVisible(videoDTO.isVisible());
-        video.setCategorias(
-            videoDTO.getCategorias().stream()
-                    .map(nombre -> {
-                        Categoria c = new Categoria();
-                        c.setNombre(nombre);
-                        return c;
-                    })
-                    .toList()
-        );
+        video.setCategorias(videoDTO.getCategorias());
         return video;
     }
 }

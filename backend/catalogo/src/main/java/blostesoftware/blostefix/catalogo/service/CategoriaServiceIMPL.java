@@ -54,7 +54,7 @@ public class CategoriaServiceIMPL implements CategoriaService {
 
         if (categoriaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
             throw new CategoriaAlreadyExistsException(
-                "La categoria ya existe"
+                "La\scategoria\sya\sexiste"
             );
         }
 
@@ -70,7 +70,6 @@ public class CategoriaServiceIMPL implements CategoriaService {
         if (categoriaOpt.isPresent()) {
             Categoria categoria = categoriaOpt.get();
             categoria.setNombre(categoriaDTO.getNombre());
-            categoria.setDescripcion(categoriaDTO.getDescripcion());
             categoriaRepository.save(categoria);
             return CategoriaPrivateDTO.convertToDTO(categoria);
         }

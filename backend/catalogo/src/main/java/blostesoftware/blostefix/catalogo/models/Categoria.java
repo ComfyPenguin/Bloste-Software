@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.NaturalId;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,9 +30,9 @@ public class Categoria implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NaturalId
     @Column(nullable = false)
     private String nombre;
-    private String descripcion;
     @ManyToMany( mappedBy = "categorias" , fetch = FetchType.LAZY)
     private List<Video> videos = new ArrayList<>();
 }

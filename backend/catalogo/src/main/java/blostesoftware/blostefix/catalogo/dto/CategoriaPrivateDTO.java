@@ -10,13 +10,11 @@ public class CategoriaPrivateDTO implements Serializable{
     static final long serialVersionUID=1L;
     private Long id;
     private String nombre;
-    private String descripcion;
 
     public static CategoriaPrivateDTO convertToDTO(Categoria categoria){
         CategoriaPrivateDTO categoriaDTO = new CategoriaPrivateDTO();
         categoriaDTO.setId(categoria.getId());
         categoriaDTO.setNombre(categoria.getNombre());
-        categoriaDTO.setDescripcion(categoria.getDescripcion());
         return categoriaDTO;
     }
 
@@ -24,7 +22,6 @@ public class CategoriaPrivateDTO implements Serializable{
         Categoria categoria = new Categoria();
         categoria.setId(categoriaDTO.getId());
         categoria.setNombre(categoriaDTO.getNombre());
-        categoria.setDescripcion(categoriaDTO.getDescripcion());
         return categoria;
     }
 }

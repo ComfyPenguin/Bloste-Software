@@ -3,8 +3,8 @@ package blostesoftware.blostefix.catalogo.models;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -64,5 +64,5 @@ public class Video implements Serializable{
         joinColumns = @JoinColumn(name = "video_id"),
         inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
-    private List<Categoria> categorias = new ArrayList<>();
+    private Set<Categoria> categorias = new HashSet<>();
 }

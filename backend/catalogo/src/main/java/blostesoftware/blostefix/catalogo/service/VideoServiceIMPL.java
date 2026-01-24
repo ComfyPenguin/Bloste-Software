@@ -1,6 +1,8 @@
 package blostesoftware.blostefix.catalogo.service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
 import blostesoftware.blostefix.catalogo.dto.VideoPublicDTO;
 import blostesoftware.blostefix.catalogo.models.*;
+import blostesoftware.blostefix.catalogo.repositories.CategoriaRepository;
 import blostesoftware.blostefix.catalogo.repositories.VideoRepository;
 
 @Service
@@ -20,6 +23,8 @@ public class VideoServiceIMPL implements VideoService {
 
     @Autowired
     private VideoRepository videoRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     @Override
 
@@ -49,8 +54,26 @@ public class VideoServiceIMPL implements VideoService {
     } */
 
     @Override
-    public void saveVideo(VideoPostDTO videoDTO) {
-        videoRepository.save(VideoPostDTO.convertToEntity(videoDTO));
+    public void saveVideo(VideoPostDTO dto) {
+        Video video = VideoPostDTO.convertToEntity(dto);
+        Set<Categoria> categorias = dto.getCategorias().stream()
+        .map(nombre -> {
+            String normalizado = nombre.trim().toLowerCase();
+
+            return categoriaRepository
+                .findByNombre(normalizado)
+                .orElseGet(() -> {
+                    Categoria nueva = new Categoria();
+                    nueva.setNombre(normalizado);
+                    return categoriaRepository.save(nueva);
+                });
+        })
+        .collect(Collectors.toSet());
+
+    video.setCategorias(categorias);
+
+    videoRepository.save(video);
+        
     }
 
     @Override

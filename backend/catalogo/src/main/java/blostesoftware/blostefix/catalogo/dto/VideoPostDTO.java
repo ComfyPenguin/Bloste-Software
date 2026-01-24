@@ -1,9 +1,8 @@
 package blostesoftware.blostefix.catalogo.dto;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
-import blostesoftware.blostefix.catalogo.models.Categoria;
 import blostesoftware.blostefix.catalogo.models.Video;
 import lombok.Data;
 
@@ -19,10 +18,10 @@ public class VideoPostDTO implements Serializable{
     private String urlVideo;
     private String urlImagen;
     // TODO: lista categorias?
-    private List<Categoria> categorias;
+    private Set<String> categorias;
 
-    
-    public static VideoPostDTO convertToDTO(String titulo, String autor, String descripcion, int duracion, boolean isVisible, String idVideo, String urlVideo, String urlImagen, List<Categoria> categorias){
+        // Vamos a simplificar los convertTo, eliminando los que no se usan
+/*     public static VideoPostDTO convertToDTO(String titulo, String autor, String descripcion, int duracion, boolean isVisible, String idVideo, String urlVideo, String urlImagen, Set<String> categorias){
         VideoPostDTO videoDTO = new VideoPostDTO();
         videoDTO.setTitulo(titulo);
         videoDTO.setAutor(autor);
@@ -34,7 +33,7 @@ public class VideoPostDTO implements Serializable{
         videoDTO.setUrlImagen(urlImagen);
         videoDTO.setCategorias(categorias);
         return videoDTO;
-    }
+    } */
 
     public static Video convertToEntity(VideoPostDTO videoDTO){
         Video video = new Video();
@@ -46,7 +45,7 @@ public class VideoPostDTO implements Serializable{
         video.setIdVideo(videoDTO.getIdVideo());
         video.setUrlVideo(videoDTO.getUrlVideo());
         video.setUrlImagen(videoDTO.getUrlImagen());
-        video.setCategorias(videoDTO.getCategorias());
         return video;
     }
+
 }
