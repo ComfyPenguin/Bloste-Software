@@ -7,7 +7,7 @@ import { hlsService } from "./hls.service";
 import { metadataService } from "./metadata.service";
 import { thumbnailService } from "./thumbnail.service";
 import { cleanupService } from "./cleanup.service";
-import { websocketService } from "./websocket.service";
+import { websocketService } from "./webSocket.service";
 import type { VideoMetadata, UploadResponse } from "../types/metadata.type";
 
 // Servicio para gestionar la subida y procesamiento de vídeos

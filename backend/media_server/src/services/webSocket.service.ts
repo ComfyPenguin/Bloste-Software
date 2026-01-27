@@ -47,6 +47,7 @@ export class WebSocketService {
         }
       });
 
+      // Manejar errores
       ws.on("error", (error) => {
         console.error("WebSocket error:", error);
         this.clients.delete(ws);
@@ -61,8 +62,7 @@ export class WebSocketService {
   // Asociar videoId con clientId
   associateVideoWithClient(videoId: string, clientId: string): void {
     this.videoIdToClientId.set(videoId, clientId);
-
-    console.log("WebSocket server initialized on /ws");
+    console.log(`Asociado videoId ${videoId} con clientId ${clientId}`);
   }
 
   // Enviar evento completado

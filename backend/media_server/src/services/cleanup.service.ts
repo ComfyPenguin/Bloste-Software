@@ -10,6 +10,16 @@ export class CleanupService {
       console.error(`Error deleting original video file ${filePath}:`, error);
     }
   }
+
+  // Limpiar metadatos después del procesamiento
+  async deleteMetadataFile(filePath: string): Promise<void> {
+    try {
+      await fs.remove(filePath);
+      console.log(`Metadata file deleted: ${filePath}`);
+    } catch (error) {
+      console.error(`Error deleting metadata file ${filePath}:`, error);
+    }
+  }
 }
 
 export const cleanupService = new CleanupService();

@@ -4,7 +4,7 @@ import { createServer } from "http";
 import env from "./configs/env.config";
 import videoRoutes from "./routes/video.routes";
 import { videoProcessingService } from "./services/videoProcessing.service";
-import { websocketService } from "./services/websocket.service";
+import { websocketService } from "./services/webSocket.service";
 import storageConfig from "./configs/storage.config";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware";
 
@@ -15,7 +15,7 @@ const httpServer = createServer(app);
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, clientid");
   res.header("Access-Control-Max-Age", "3600");
 
   if (req.method === "OPTIONS") {

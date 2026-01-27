@@ -1,6 +1,4 @@
-import { randomBytes } from "crypto";
-
-// Genera un ID único para un vídeo
+// Genera un ID único para un video
 export function generateVideoId(): string {
-  return `video_${randomBytes(6).toString("hex")}`;
+  return `video_${crypto.randomUUID().replace(/-/g, "_")}`;
 }
