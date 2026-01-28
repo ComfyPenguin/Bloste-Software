@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.hibernate.annotations.NaturalId;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,5 +36,6 @@ public class Categoria implements Serializable {
     @Column(nullable = false)
     private String nombre;
     @ManyToMany( mappedBy = "categorias" , fetch = FetchType.LAZY)
+    @JsonBackReference
     private List<Video> videos = new ArrayList<>();
 }

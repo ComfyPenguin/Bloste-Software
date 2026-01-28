@@ -2,7 +2,6 @@ package blostesoftware.blostefix.catalogo.dto;
 
 import java.io.Serializable;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import blostesoftware.blostefix.catalogo.models.Categoria;
 import blostesoftware.blostefix.catalogo.models.Video;
@@ -23,7 +22,7 @@ public class VideoPublicDTO implements Serializable {
     private String urlImagen;
     private java.time.LocalDate fechaSubida;
     private java.time.LocalDate fechaActualizacion;
-    private Set<String> categorias;
+    private Set<Categoria> categorias;
 
     public static VideoPublicDTO converToDTO(Video v){
         VideoPublicDTO videoDTO = new VideoPublicDTO();
@@ -38,11 +37,7 @@ public class VideoPublicDTO implements Serializable {
         videoDTO.setFechaSubida(v.getFechaSubida());
         videoDTO.setFechaActualizacion(v.getFechaActualizacion());
         if (v.getCategorias() != null) {
-            videoDTO.setCategorias(
-                v.getCategorias().stream()
-                .map(Categoria::getNombre)
-                .collect(Collectors.toSet())
-            );
+            videoDTO.setCategorias(v.getCategorias());
         }
         return videoDTO;
     }
