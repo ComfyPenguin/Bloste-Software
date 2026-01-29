@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista de árbol de usuarios normales con sus suscripciones -->
+    <record id="view_bloste_users_tree" model="ir.ui.view">
+        <field name="name">bloste.users.tree</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" decoration-info="is_admin_bloste == True" decoration-danger="subscription_expiry_date and subscription_expiry_date &lt; (context_today()).strftime('%Y-%m-%d')">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="login"/>
+                <field name="is_admin_bloste" string="¿Es Admin?"/>
+                <field name="active_subscription_id" string="Suscripción Activa"/>
+                <field name="subscription_expiry_date" string="Caduca el"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista de formulario de usuario con suscripciones -->
+    <record id="view_bloste_users_form" model="ir.ui.view">
+        <field name="name">bloste.users.form</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Información Básica">
+                            <field name="email"/>
+                            <field name="login"/>
+                            <field name="phone"/>
+                        </group>
+                        <group string="BlosteFlix">
+                            <field name="is_admin_bloste"/>
+                            <field name="bloste_api_uuid"/>
+                            <field name="bloste_status"/>
+                        </group>
+                    </group>
+                    <separator string="Suscripciones"/>
+                    <field name="user_subscription_ids">
+                        <tree>
+                            <field name="subscription_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para ver usuarios de BlosteFlix -->
+    <record id="action_bloste_users" model="ir.actions.act_window">
+        <field name="name">Usuarios BlosteFlix</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('active', '=', True)]</field>
+    </record>
+
+    <!-- Acción para ver solo administradores -->
+    <record id="action_bloste_admins" model="ir.actions.act_window">
+        <field name="name">Administradores</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_admin_bloste', '=', True)]</field>
+    </record>
+
+    <!-- Menús para acceder a estas vistas -->
+    <menuitem id="menu_bloste_users_view"
+              name="Usuarios"
+              parent="bloste_core.menu_bloste_management"
+              action="action_bloste_users"
+              sequence="15"/>
+
+    <menuitem id="menu_bloste_admins_view"
+              name="Administradores"
+              parent="bloste_core.menu_bloste_management"
+              action="action_bloste_admins"
+              sequence="16"/>
+</odoo>
