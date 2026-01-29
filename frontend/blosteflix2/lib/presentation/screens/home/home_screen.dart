@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: Text('BlosteFlix'),
+        title: Image(image: AssetImage('assets/images/blosteflix_white.png')),
       ),
       body: MiniaturasScreen()
     );

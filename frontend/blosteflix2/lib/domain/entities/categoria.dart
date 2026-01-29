@@ -1,12 +1,11 @@
 class Categoria {
-  int id;
+  int? id;
   String nombre;
-  String? descripcion;
 
-  Categoria({required this.id, required this.nombre, this.descripcion});
+  Categoria({required this.id, required this.nombre});
 
   @override
   String toString() {
-    return 'Categoria{id: $id, nombre: $nombre, descripcion: $descripcion}';
+    return 'Categoria{id: $id, nombre: $nombre}';
   }
 }

@@ -1,5 +1,5 @@
-import 'package:blosteflix2/core/catalogo_locator.dart';
-import 'package:blosteflix2/domain/entities/video.dart';
+import 'package:blosteflix2/domain/entities/categoria.dart';
+import 'package:blosteflix2/presentation/widgets/categoria_slider.dart';
 import 'package:blosteflix2/presentation/widgets/grid_videos.dart';
 import 'package:flutter/material.dart';
 
@@ -11,109 +11,73 @@ class MiniaturasScreen extends StatefulWidget {
 }
 
 class _MiniaturasScreenState extends State<MiniaturasScreen> {
-  
-  final ScrollController _scrollController = ScrollController();
-
-  final List<Video> _videos = [];
-
-  static const int MAX_VIDEOS = 20;
-
-  int _currentPage = 0;
-
-  final int _sizeToLoad = 10;
-
-  bool _isLoading = false;
-
-  bool _hasMore = true;
-
-  bool _hasError = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadMoreVideos();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
-          !_isLoading) {
-        _loadMoreVideos();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadMoreVideos() async {
-    if (_isLoading || !_hasMore) return;
-
-    setState(() {
-      _isLoading = true;
-      _hasError = false;
-    });
-
-    try {
-      final paginatedResponse = await CatalogoLocator()
-          .getVideosUseCase
-          .execute(page: _currentPage, size: _sizeToLoad);
-      
-      setState(() {
-        _videos.addAll(paginatedResponse.content);
-        _currentPage++;
-        _isLoading = false;
-        if (paginatedResponse.content.length < _sizeToLoad) {
-          _hasMore = false;
-        }
-        if(_videos.length >= MAX_VIDEOS){
-          _hasMore = false;
-          if(_videos.length >= MAX_VIDEOS){
-            _videos.length = MAX_VIDEOS;
-          }
-        }
-
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _hasError = true;
-      });
-      debugPrint("Error loading videos: $e");
-    }
-  }
+  Categoria? _categoriaSeleccionada; // null = "Todo"
 
   @override
   Widget build(BuildContext context) {
-    if (_videos.isEmpty && !_isLoading) {
-      return Center(child: Column(
-        children: [
-          const Text("No videos available"),
-          TextButton(onPressed: _loadMoreVideos, child: const Text("Retry"))
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          // 1. El slider de categorías (se desplaza con el contenido)
+          SliverPersistentHeader(
+            floating: true,     // aparece al subir aunque no esté pinned
+            pinned: false,      // NO se queda fijo arriba
+            delegate: _CategoriaHeaderDelegate(
+              child: Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: CategoriaSlider(
+                  onCategoriaChanged: (nuevaCategoria) {
+                    setState(() {
+                      _categoriaSeleccionada = nuevaCategoria;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
+
+          // 2. Espacio opcional o divider si quieres separación visual
+          // SliverToBoxAdapter(
+          //   child: Divider(height: 1, thickness: 1),
+          // ),
+
+          // 3. El contenido principal (grid de videos)
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            sliver: GridVideos(
+              categoriaSeleccionada: _categoriaSeleccionada,
+            ),
+          ),
         ],
-      ));    
-    }
-
-    if(_hasError){
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("Error loading videos"),
-            TextButton(
-              onPressed: _loadMoreVideos,
-              child: const Text("Retry"),
-            )
-          ],
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GridVideos(scrollController: _scrollController, videos: _videos, isLoadingMore: _isLoading, hasMore: _hasMore,)
+      ),
     );
   }
-  
+}
+
+// Delegate necesario para SliverPersistentHeader
+class _CategoriaHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  _CategoriaHeaderDelegate({required this.child});
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return child;
+  }
+
+  @override
+  double get maxExtent => 66;   // altura del slider + padding vertical
+
+  @override
+  double get minExtent => 66;
+
+  @override
+  bool shouldRebuild(covariant _CategoriaHeaderDelegate oldDelegate) {
+    return false;
+  }
 }

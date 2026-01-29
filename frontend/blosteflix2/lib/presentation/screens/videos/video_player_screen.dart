@@ -185,7 +185,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     try {
       // Cargamos una página grande (30) para tener margen tras filtrar
       final paginatedResponse = await CatalogoLocator().getVideosUseCase
-          .execute(page: 0, size: 30);
+          .execute(page: 0, size: 30, categoriaId: null);
 
       // Filtramos el vídeo actual y limitamos a 20
       final filteredVideos = paginatedResponse.content
@@ -350,7 +350,7 @@ Widget _otherVideos() {
       style: TextStyle(color: Colors.grey, fontSize: 16),
     );
   }
-  // Todo, adaptar gridvideos() para que sea mas universal y gastarlo aqui.
+  // Todo, adaptar gridvideos() para que sea mas universal y gastarlo aqui. Hecho, falta implementar.
   return GridView.builder(
       shrinkWrap: true, // Importante: permite incrustar en SingleChildScrollView
       physics: const NeverScrollableScrollPhysics(), // El scroll lo controla el padre

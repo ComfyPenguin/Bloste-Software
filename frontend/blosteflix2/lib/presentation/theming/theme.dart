@@ -1,4 +1,3 @@
-import 'package:blosteflix2/presentation/theming/thypography.dart';
 import 'colors.dart';
 import 'package:flutter/material.dart';
 
