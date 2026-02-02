@@ -2,6 +2,7 @@ package blostesoftware.blostefix.catalogo.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import blostesoftware.blostefix.catalogo.models.Categoria;
@@ -17,8 +18,8 @@ public class VideoPrivateDTO implements Serializable {
     private String descripcion;
     private int duracion;
     private String idVideo;
-    private LocalDate fechaSubida;
-    private LocalDate fechaActualizacion;
+    private LocalDateTime fechaSubida;
+    private LocalDateTime fechaActualizacion;
     private boolean visible;
     private Set<Categoria> categorias;
     
