@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 
 class GridVideos extends StatefulWidget {
   final Categoria? categoriaSeleccionada;
-
+  final ScrollController scrollController;
+  
   const GridVideos({
     super.key,
     this.categoriaSeleccionada,
+    required this.scrollController,
   });
 
   @override
@@ -19,7 +21,6 @@ class GridVideos extends StatefulWidget {
 }
 
 class _GridVideosState extends State<GridVideos> {
-  final ScrollController _scrollController = ScrollController();
   final List<Video> _videos = [];
 
   int _currentPage = 0;
@@ -33,11 +34,11 @@ class _GridVideosState extends State<GridVideos> {
     super.initState();
     _loadMoreVideos(); // carga inicial
 
-    _scrollController.addListener(() {
+    widget.scrollController.addListener(() {
       if (!mounted) return;
 
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200 &&
+      if (widget.scrollController.position.pixels >=
+              widget.scrollController.position.maxScrollExtent - 200 &&
           !_isLoading &&
           _hasMore) {
         _loadMoreVideos();
@@ -109,7 +110,7 @@ class _GridVideosState extends State<GridVideos> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    widget.scrollController.dispose();
     super.dispose();
   }
 

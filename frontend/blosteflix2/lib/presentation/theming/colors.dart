@@ -25,7 +25,7 @@ class BlosteColors {
 
   static final ColorScheme extraDark = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xFFEA580C),
+  primary: Color(0xFFF67501),
   onPrimary: Colors.black,
   primaryContainer: Color(0xFFFFB74D),
   onPrimaryContainer: Colors.black,

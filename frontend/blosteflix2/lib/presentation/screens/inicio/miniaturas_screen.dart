@@ -12,15 +12,25 @@ class MiniaturasScreen extends StatefulWidget {
 
 class _MiniaturasScreenState extends State<MiniaturasScreen> {
   Categoria? _categoriaSeleccionada; // null = "Todo"
+  final ScrollController _scrollController = ScrollController();  // Scroll controller para grid_videos
+
+  @override
+  void dispose() {
+    _scrollController.dispose();   // buena práctica
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
+    return SafeArea(
+      top: true,
+      bottom: false,
+      child: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // 1. El slider de categorías (se desplaza con el contenido)
           SliverPersistentHeader(
-            floating: true,     // aparece al subir aunque no esté pinned
+            floating: false,     // false no aparece al subir aunque no esté pinned
             pinned: false,      // NO se queda fijo arriba
             delegate: _CategoriaHeaderDelegate(
               child: Container(
@@ -37,7 +47,7 @@ class _MiniaturasScreenState extends State<MiniaturasScreen> {
             ),
           ),
 
-          // 2. Espacio opcional o divider si quieres separación visual
+          // 2. Espacio opcional o divider  separación visual
           // SliverToBoxAdapter(
           //   child: Divider(height: 1, thickness: 1),
           // ),
@@ -47,6 +57,7 @@ class _MiniaturasScreenState extends State<MiniaturasScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: GridVideos(
               categoriaSeleccionada: _categoriaSeleccionada,
+              scrollController: _scrollController,
             ),
           ),
         ],
