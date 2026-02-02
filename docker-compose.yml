@@ -30,6 +30,7 @@ services:
       # Mapeamos 'odoo_mod' directamente como la carpeta de módulos
       - ./backend/odoo_mod:/mnt/extra-addons
       - ./backend/odoo_mod/odoo_config:/etc/odoo
+      - ./backend/odoo_mod/keys:/etc/odoo/keys:ro
     restart: always
     command: >
       odoo --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
