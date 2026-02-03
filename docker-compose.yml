@@ -22,9 +22,9 @@ services:
     ports:
       - "8069:8069"
     environment:
-      - HOST=${HOST}
-      - USER=${USER}
-      - PASSWORD=${PASSWORD}
+      - ENV_HOST=${ENV_HOST}
+      - ENV_USER=${ENV_USER}
+      - ENV_PASSWORD=${ENV_PASSWORD}
     volumes:
       - odoo_data:/var/lib/odoo
       # Mapeamos 'odoo_mod' directamente como la carpeta de módulos
