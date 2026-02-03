@@ -48,3 +48,7 @@ Thumbs.db
 # Python
 **/__pycache__/
 *.pyc
+
+#Odoo
+.keys/
+

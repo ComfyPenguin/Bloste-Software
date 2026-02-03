@@ -10,7 +10,7 @@ Todos los endpoints expuestos por este módulo siguen un **estilo REST** y **NO 
 No usar este formato:
 
 ```bash
-curl --location 'http://localhost:8069/api/auth/token' \
+curl --location '' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "jsonrpc": "2.0",
@@ -98,6 +98,7 @@ curl -X GET "http://localhost:8069/api/users/me" \
 
 **Respuesta (401):**
 
+
 ```json
 {
   "error": "Unauthorized",
@@ -154,7 +155,7 @@ curl --location 'http://localhost:8069/api/auth/register' \
 
 ### Registro de usuario – `/api/auth/refresh`
 
-Crea una nueva cuenta de usuario **tipo Portal**.
+Refresca el tocken **tipo Portal**.
 
 **Método:** `POST`
 **Content-Type:** `application/json`
