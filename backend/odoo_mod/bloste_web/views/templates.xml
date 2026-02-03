@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template: Login/Registro -->
+    <template id="login_register_template" name="Iniciar Sesión o Registrarse">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h2>Bienvenido a Bloste</h2>
+                            </div>
+                            <div class="card-body">
+                                <ul class="nav nav-tabs mb-4" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#login">Iniciar Sesión</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#register">Registrarse</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <!-- Login Tab -->
+                                    <div class="tab-pane fade show active" id="login">
+                                        <form method="post" action="/web/login">
+                                            <div class="mb-3">
+                                                <label for="login_email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="login_email" name="login" placeholder="correo@ejemplo.com" required="required"/>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="login_password" class="form-label">Contraseña</label>
+                                                <input type="password" class="form-control" id="login_password" name="password" placeholder="Tu contraseña" required="required"/>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Register Tab -->
+                                    <div class="tab-pane fade" id="register">
+                                        <form method="post" action="/web/signup">
+                                            <div class="mb-3">
+                                                <label for="register_name" class="form-label">Nombre Completo</label>
+                                                <input type="text" class="form-control" id="register_name" name="name" placeholder="Tu nombre" required="required"/>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="register_email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="register_email" name="login" placeholder="correo@ejemplo.com" required="required"/>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="register_password" class="form-label">Contraseña</label>
+                                                <input type="password" class="form-control" id="register_password" name="password" placeholder="Tu contraseña" required="required"/>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="register_password_confirm" class="form-label">Confirmar Contraseña</label>
+                                                <input type="password" class="form-control" id="register_password_confirm" name="confirm_password" placeholder="Confirma tu contraseña" required="required"/>
+                                            </div>
+                                            <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Template: Suscripciones -->
+    <template id="subscriptions_template" name="Planes de Suscripción">
+        <t t-call="website.layout">
+            <div class="container mt-5 mb-5">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1>Nuestros Planes de Suscripción</h1>
+                        <p class="text-muted">Elige el plan que mejor se adapta a ti</p>
+                    </div>
+                </div>
+
+                <div class="row" t-if="subscriptions">
+                    <t t-foreach="subscriptions" t-as="sub">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title"><t t-out="sub.name"/></h5>
+                                    <h3 class="text-primary mb-3">$<t t-out="sub.price"/><span class="text-muted fs-6">/mes</span></h3>
+                                    
+                                    <ul class="list-unstyled mb-4">
+                                        <li class="mb-2">
+                                            <i class="fa fa-check text-success"></i>
+                                            Duración: <strong><t t-out="sub.duration"/> días</strong>
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="fa fa-users text-info"></i>
+                                            <t t-out="len(sub.user_subscription_ids)"/> usuarios activos
+                                        </li>
+                                    </ul>
+                                    
+                                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#subscriptionModal" t-att-data-subscription-id="sub.id">
+                                        Seleccionar Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="row" t-else="">
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <p>No hay planes de suscripción disponibles en este momento.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para seleccionar plan -->
+            <div class="modal fade" id="subscriptionModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Confirmar Suscripción</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Estás seguro de que quieres suscribirte a este plan?</p>
+                            <p class="text-muted">Se te redirigirá a la página de pago.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Continuar al Pago</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
