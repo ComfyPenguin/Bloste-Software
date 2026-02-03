@@ -5,9 +5,9 @@ services:
     image: postgres:14
     container_name: odoo16_db
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=odoo
-      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -22,9 +22,9 @@ services:
     ports:
       - "8069:8069"
     environment:
-      - HOST=db
-      - USER=odoo
-      - PASSWORD=odoo
+      - HOST=${HOST}
+      - USER=${USER}
+      - PASSWORD=${PASSWORD}
     volumes:
       - odoo_data:/var/lib/odoo
       # Mapeamos 'odoo_mod' directamente como la carpeta de módulos
