@@ -42,8 +42,8 @@ Genera un **JWT** a partir de credenciales válidas.
 curl --location 'http://localhost:8069/api/auth/token' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "login": "c1@a.a",
-  "password": "1234"
+  "login": "a@a.a",
+  "password": "123"
 }'
 ```
 

@@ -16,7 +16,7 @@ class JWTService:
     @staticmethod
     def get_private_key():
         """Lee la clave privada desde el archivo especificado en odoo.conf"""
-        path = config.get("jwt_private_key")
+        path = config.get("private")
         if not path:
             logger.warning("Clave privada JWT no configurada")
 
@@ -31,7 +31,7 @@ class JWTService:
     @staticmethod
     def get_public_key():
         """Lee la clave pública desde el archivo especificado en odoo.conf"""
-        path = config.get("jwt_public_key")
+        path = config.get("public")
         if not path:
             logger.warning("Clave pública JWT no configurada")
         

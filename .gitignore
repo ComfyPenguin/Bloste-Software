@@ -50,5 +50,5 @@ Thumbs.db
 *.pyc
 
 #Odoo
-.keys/
+backend/odoo_mod/keys
 .env

@@ -2,7 +2,7 @@
     'name': "custom_auth_jwt",
     'summary': """Módulo para getionar JWT""",
     'description': """Módulo para getionar JWT""",
-    'author': "Nova Media",
+    'author': "Blostecorp",
     'website': "https://www.yourcompany.com",
     'category': 'Uncategorized',
     'version': '0.1',
