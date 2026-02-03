@@ -3,6 +3,7 @@ package blostesoftware.blostefix.catalogo.models;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -44,19 +45,19 @@ public class Video implements Serializable{
     private String idVideo;
     private String urlVideo;
     private String urlImagen;
-    private LocalDate fechaSubida;
-    private LocalDate fechaActualizacion;
+    private LocalDateTime fechaSubida;
+    private LocalDateTime fechaActualizacion;
     private boolean visible;
 
     @PrePersist
     protected void onCreate() {
-        fechaSubida = LocalDate.now();
-        fechaActualizacion = LocalDate.now();
+        fechaSubida = LocalDateTime.now();
+        fechaActualizacion = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        fechaActualizacion = LocalDate.now();
+        fechaActualizacion = LocalDateTime.now();
     }
 
     @ManyToMany(fetch = FetchType.LAZY)

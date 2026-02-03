@@ -13,6 +13,7 @@ import type { VideoMetadata, UploadResponse } from "../types/metadata.type";
 // Servicio para gestionar la subida y procesamiento de vídeos
 export class VideoProcessingService {
   private uploadDir = env.UPLOAD_DIR;
+  private metadataDir = env.METADATA_DIR;
 
   // Inicializar directorios necesarios
   async init(): Promise<void> {
@@ -79,8 +80,8 @@ export class VideoProcessingService {
       await cleanupService.deleteOriginalVideo(inputPath);
 
       // Rutas a los endpints
-      const thumbnailPath = "api/thumbnails/" + `${videoId}.png`;
-      const hlsPath = "api/hls/" + videoId;
+      const thumbnailPath = "/api/thumbnails/" + `${videoId}.png`;
+      const hlsPath = "/api/hls/" + videoId;
 
       // Actualizar metadatos con resultado
       await metadataService.updateMetadata(videoId, {
@@ -95,6 +96,7 @@ export class VideoProcessingService {
       }
 
       console.log(`Video ${videoId} processed successfully`);
+      await cleanupService.deleteMetadataFile(`${this.metadataDir}/${videoId}.json`);
     } catch (error) {
       console.error(`Error processing video ${videoId}:`, error);
 

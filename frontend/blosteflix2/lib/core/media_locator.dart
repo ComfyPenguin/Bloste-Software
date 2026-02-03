@@ -7,7 +7,7 @@ class MediaLocator {
 
   MediaLocator._internal();
 
-  final String _mediaUrl = 'http://10.201.108.174:4000';
+  final String _mediaUrl = 'http://10.146.48.159:4000';
 
   String getRemoteURL() {
     return _mediaUrl;

@@ -7,6 +7,7 @@ import { videoProcessingService } from "./services/videoProcessing.service";
 import { websocketService } from "./services/webSocket.service";
 import storageConfig from "./configs/storage.config";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware";
+import { cleanupService } from "./services/cleanup.service";
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,6 +32,7 @@ app.use(express.json());
 // Inicializar servicios
 async function initializeServices() {
   try {
+    await cleanupService.deleteAllFilesInFolder(storageConfig.uploadDir);
     await videoProcessingService.init();
     websocketService.init(httpServer);
     console.log("Services initialized successfully");

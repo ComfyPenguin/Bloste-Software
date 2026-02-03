@@ -1,4 +1,4 @@
-import { ref, onUnmounted, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import type { WebSocketMessage, WebSocketMessageData } from '@/types/websocket.type'
 import env from '@/configs/env.config'
 
@@ -8,10 +8,12 @@ export class WebSocketService {
   private ws: Ref<WebSocket | null>
   public connected: Ref<boolean>
   private clientId: Ref<string>
+  private unexpectedClose: boolean
   private callbacks: Ref<{
     onVideoProcessed?: (data: WebSocketMessageData) => void
     onVideoFailed?: (data: WebSocketMessageData) => void
     onStatusUpdate?: (data: WebSocketMessageData) => void
+    onUnexpectedClose?: () => void // Callback para cierre inesperado
   }>
 
   constructor() {
@@ -19,16 +21,14 @@ export class WebSocketService {
     this.ws = ref<WebSocket | null>(null)
     this.connected = ref(false)
     this.clientId = ref('')
+    this.unexpectedClose = false
     this.callbacks = ref({})
-
-    onUnmounted(() => {
-      this.disconnect()
-    })
   }
 
   // Conectar al WebSocket con un ID de cliente específico
   connect(id: string) {
     this.clientId.value = id
+    this.unexpectedClose = false
     this.ws.value = new WebSocket(this.WEBSOCKET_URL)
 
     this.ws.value.onopen = () => {
@@ -58,18 +58,25 @@ export class WebSocketService {
       }
     }
 
+    // Manejar errores del WebSocket
     this.ws.value.onerror = (error) => {
       console.error('WebSocket error:', error)
+      this.callbacks.value.onUnexpectedClose?.()
     }
 
+    // Manejar cierre del WebSocket
     this.ws.value.onclose = () => {
       console.log('WebSocket disconnected')
       this.connected.value = false
+      if (!this.unexpectedClose) {
+        this.callbacks.value.onUnexpectedClose?.()
+      }
     }
   }
 
   disconnect() {
     if (this.ws.value) {
+      this.unexpectedClose = true
       this.ws.value.close()
       this.ws.value = null
       this.connected.value = false
@@ -88,6 +95,10 @@ export class WebSocketService {
   onStatusUpdate(callback: (data: WebSocketMessageData) => void) {
     this.callbacks.value.onStatusUpdate = callback
   }
+
+  onUnexpectedClose(callback: () => void) {
+    this.callbacks.value.onUnexpectedClose = callback
+  }
 }
 
 export function useWebSocket() {
@@ -99,6 +110,7 @@ export function useWebSocket() {
     onVideoProcessed: (cb: (data: WebSocketMessageData) => void) => service.onVideoProcessed(cb),
     onVideoFailed: (cb: (data: WebSocketMessageData) => void) => service.onVideoFailed(cb),
     onStatusUpdate: (cb: (data: WebSocketMessageData) => void) => service.onStatusUpdate(cb),
+    onUnexpectedClose: (cb: () => void) => service.onUnexpectedClose(cb),
     connected: service.connected,
   }
 }
