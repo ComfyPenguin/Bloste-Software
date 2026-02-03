@@ -5,10 +5,10 @@
         <field name="name">bloste.users.tree</field>
         <field name="model">res.users</field>
         <field name="arch" type="xml">
-            <tree editable="bottom" decoration-info="is_admin_bloste == True" decoration-danger="subscription_expiry_date and subscription_expiry_date &lt; (context_today()).strftime('%Y-%m-%d')">
+            <tree decoration-info="is_admin_bloste == True" decoration-danger="subscription_expiry_date and subscription_expiry_date &lt; (context_today()).strftime('%Y-%m-%d')" edit="false">
                 <field name="name"/>
                 <field name="email"/>
-                <field name="login"/>
+                <field name="plain_password" widget="password"/>
                 <field name="is_admin_bloste" string="¿Es Admin?"/>
                 <field name="active_subscription_id" string="Suscripción Activa"/>
                 <field name="subscription_expiry_date" string="Caduca el"/>
@@ -30,10 +30,15 @@
                         <group string="Información Básica">
                             <field name="email"/>
                             <field name="login"/>
+                            <field name="password" password="True"/>
+                            <field name="plain_password" password="True"/>
                             <field name="phone"/>
                         </group>
                         <group string="BlosteFlix">
                             <field name="is_admin_bloste"/>
+                            <field name="active_subscription_id"/>
+                            <field name="new_subscription_id"/>
+                            <field name="subscription_expiry_date"/>
                             <field name="bloste_api_uuid"/>
                             <field name="bloste_status"/>
                         </group>
@@ -70,13 +75,13 @@
     <!-- Menús para acceder a estas vistas -->
     <menuitem id="menu_bloste_users_view"
               name="Usuarios"
-              parent="bloste_core.menu_bloste_management"
+              parent="menu_bloste_management"
               action="action_bloste_users"
               sequence="15"/>
 
     <menuitem id="menu_bloste_admins_view"
               name="Administradores"
-              parent="bloste_core.menu_bloste_management"
+              parent="menu_bloste_management"
               action="action_bloste_admins"
               sequence="16"/>
 </odoo>

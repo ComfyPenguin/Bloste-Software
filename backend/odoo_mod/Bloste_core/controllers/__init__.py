@@ -1,1 +1,1 @@
-from . import main
+# Web controllers moved to bloste_web module
