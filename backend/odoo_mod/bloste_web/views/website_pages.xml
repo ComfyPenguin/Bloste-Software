@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sitio Web Principal -->
+        <record id="bloste_website" model="website">
+            <field name="name">Bloste</field>
+            <field name="domain">localhost</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Página Principal (Home) -->
+        <record id="website_page_home" model="website.page">
+            <field name="name">Inicio</field>
+            <field name="url">/</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="home_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <template id="home_page_view" name="Página de Inicio">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <h1>Bienvenido a Bloste</h1>
+                            <p class="lead">Plataforma de streaming de contenido</p>
+                            <a href="/suscripciones" class="btn btn-primary btn-lg mt-3">
+                                Ver Planes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Página de Suscripciones -->
+        <record id="website_page_suscripciones" model="website.page">
+            <field name="name">Suscripciones</field>
+            <field name="url">/suscripciones</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="suscripciones_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <template id="suscripciones_page_view" name="Página Suscripciones">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h1>Planes de Suscripción</h1>
+                            <p class="text-muted">Elige el plan que mejor se adapta a ti</p>
+                        </div>
+                    </div>
+
+                    <div class="row" t-if="subscriptions">
+                        <t t-foreach="subscriptions" t-as="sub">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <t t-esc="sub.name"/>
+                                        </h5>
+                                        
+                                        <h3 class="text-primary my-3">
+                                            $<t t-esc="'%.2f' % sub.price"/>
+                                            <span class="fs-6">/mes</span>
+                                        </h3>
+                                        
+                                        <ul class="list-unstyled mb-4">
+                                            <li class="mb-2">
+                                                <i class="fa fa-calendar text-info"></i>
+                                                <t t-esc="sub.duration"/> días
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fa fa-users text-success"></i>
+                                                <t t-esc="len(sub.user_subscription_ids)"/> usuarios
+                                            </li>
+                                        </ul>
+                                        
+                                        <button class="btn btn-primary w-100">
+                                            Suscribirse
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="row" t-else="">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <p>No hay planes disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Página de Login/Registro -->
+        <record id="website_page_login" model="website.page">
+            <field name="name">Iniciar Sesión</field>
+            <field name="url">/in</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="login_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <template id="login_page_view" name="Página de Login">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h2>Bienvenido a Bloste</h2>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-4" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-bs-toggle="tab" href="#login">Iniciar Sesión</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#register">Registrarse</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="login">
+                                            <form method="post" action="/web/login">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" class="form-control" name="login" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contraseña</label>
+                                                    <input type="password" class="form-control" name="password" required="required"/>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                                            </form>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="register">
+                                            <form method="post" action="/web/signup">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nombre Completo</label>
+                                                    <input type="text" class="form-control" name="name" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" class="form-control" name="login" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contraseña</label>
+                                                    <input type="password" class="form-control" name="password" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Confirmar Contraseña</label>
+                                                    <input type="password" class="form-control" name="confirm_password" required="required"/>
+                                                </div>
+                                                <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Página Acerca de -->
+        <record id="website_page_about" model="website.page">
+            <field name="name">Acerca de</field>
+            <field name="url">/about</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="about_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <template id="about_page_view" name="Página Acerca de">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Acerca de Bloste</h1>
+                            <p class="lead mt-4">
+                                Bloste es una plataforma moderna de streaming de contenido de video.
+                            </p>
+                            <p>
+                                Nos dedicamos a proporcionar contenido de calidad a través de planes 
+                                de suscripción flexibles y asequibles.
+                            </p>
+                            <a href="/suscripciones" class="btn btn-primary mt-3">
+                                Ver Planes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Página Contacto -->
+        <record id="website_page_contact" model="website.page">
+            <field name="name">Contacto</field>
+            <field name="url">/contact</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="contact_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <template id="contact_page_view" name="Página Contacto">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Contacto</h1>
+                            <p class="lead mt-4">¿Tienes preguntas? Nos encantaría saber de ti.</p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <h5><i class="fa fa-envelope"></i> Email</h5>
+                                    <p>info@bloste.com</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5><i class="fa fa-phone"></i> Teléfono</h5>
+                                    <p>+1 (555) 123-4567</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5><i class="fa fa-map-marker"></i> Ubicación</h5>
+                                    <p>San Francisco, CA</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
+

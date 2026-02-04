@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Vista de árbol de usuarios normales con sus suscripciones -->
     <record id="view_bloste_users_tree" model="ir.ui.view">
         <field name="name">bloste.users.tree</field>
         <field name="model">res.users</field>
+        <field name="priority" eval="1"/>
         <field name="arch" type="xml">
-            <tree decoration-info="is_admin_bloste == True" decoration-danger="subscription_expiry_date and subscription_expiry_date &lt; (context_today()).strftime('%Y-%m-%d')" edit="false">
+            <tree decoration-info="is_admin_bloste == True" decoration-danger="subscription_expiry_date and subscription_expiry_date &lt; (context_today()).strftime('%Y-%m-%d')">
                 <field name="name"/>
                 <field name="email"/>
-                <field name="plain_password" widget="password"/>
+                <field name="plain_password" password="True"/>
                 <field name="is_admin_bloste" string="¿Es Admin?"/>
                 <field name="active_subscription_id" string="Suscripción Activa"/>
                 <field name="subscription_expiry_date" string="Caduca el"/>
@@ -16,10 +16,10 @@
         </field>
     </record>
 
-    <!-- Vista de formulario de usuario con suscripciones -->
     <record id="view_bloste_users_form" model="ir.ui.view">
         <field name="name">bloste.users.form</field>
         <field name="model">res.users</field>
+        <field name="priority" eval="1"/>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -29,18 +29,13 @@
                     <group>
                         <group string="Información Básica">
                             <field name="email"/>
-                            <field name="login"/>
-                            <field name="password" password="True"/>
-                            <field name="plain_password" password="True"/>
-                            <field name="phone"/>
+                            <field name="plain_password"/>
                         </group>
                         <group string="BlosteFlix">
                             <field name="is_admin_bloste"/>
                             <field name="active_subscription_id"/>
                             <field name="new_subscription_id"/>
                             <field name="subscription_expiry_date"/>
-                            <field name="bloste_api_uuid"/>
-                            <field name="bloste_status"/>
                         </group>
                     </group>
                     <separator string="Suscripciones"/>
@@ -56,7 +51,6 @@
         </field>
     </record>
 
-    <!-- Acción para ver usuarios de BlosteFlix -->
     <record id="action_bloste_users" model="ir.actions.act_window">
         <field name="name">Usuarios BlosteFlix</field>
         <field name="res_model">res.users</field>
@@ -64,7 +58,6 @@
         <field name="domain">[('active', '=', True)]</field>
     </record>
 
-    <!-- Acción para ver solo administradores -->
     <record id="action_bloste_admins" model="ir.actions.act_window">
         <field name="name">Administradores</field>
         <field name="res_model">res.users</field>
@@ -72,7 +65,6 @@
         <field name="domain">[('is_admin_bloste', '=', True)]</field>
     </record>
 
-    <!-- Menús para acceder a estas vistas -->
     <menuitem id="menu_bloste_users_view"
               name="Usuarios"
               parent="menu_bloste_management"

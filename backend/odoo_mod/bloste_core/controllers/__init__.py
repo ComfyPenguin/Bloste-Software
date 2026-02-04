@@ -1,1 +1,0 @@
-# Web controllers moved to bloste_web module

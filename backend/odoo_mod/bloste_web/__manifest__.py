@@ -11,5 +11,6 @@
         'security/ir.model.access.csv',
         'views/menus.xml',
         'views/templates.xml',
+        'views/website_pages.xml',
     ],
 }
