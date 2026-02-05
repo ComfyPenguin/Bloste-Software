@@ -12,7 +12,7 @@ public interface VideoService {
 
     VideoPublicDTO getVideoById(Long id);
 
-    VideoPublicDTO updateVideo(Long id, VideoPostDTO videoDTO);
+    VideoPostDTO updateVideo(Long id, VideoPostDTO videoDTO);
 
     //Page<VideoPublicDTO> getAllVideosPageable(int page, int size);
 

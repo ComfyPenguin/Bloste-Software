@@ -20,20 +20,20 @@ public class VideoPostDTO implements Serializable{
     // TODO: lista categorias?
     private Set<String> categorias;
 
-        // Vamos a simplificar los convertTo, eliminando los que no se usan
-/*     public static VideoPostDTO convertToDTO(String titulo, String autor, String descripcion, int duracion, boolean isVisible, String idVideo, String urlVideo, String urlImagen, Set<String> categorias){
+    
+    public static VideoPostDTO convertToDTO(Video v){
         VideoPostDTO videoDTO = new VideoPostDTO();
-        videoDTO.setTitulo(titulo);
-        videoDTO.setAutor(autor);
-        videoDTO.setDescripcion(descripcion);
-        videoDTO.setDuracion(duracion);
-        videoDTO.setVisible(isVisible);
-        videoDTO.setIdVideo(idVideo);
-        videoDTO.setUrlVideo(urlVideo);
-        videoDTO.setUrlImagen(urlImagen);
-        videoDTO.setCategorias(categorias);
+        videoDTO.setTitulo(v.getTitulo());
+        videoDTO.setAutor(v.getAutor());
+        videoDTO.setDescripcion(v.getDescripcion());
+        videoDTO.setDuracion(v.getDuracion());
+        videoDTO.setVisible(v.isVisible());
+        videoDTO.setIdVideo(v.getIdVideo());
+        videoDTO.setUrlVideo(v.getUrlVideo());
+        videoDTO.setUrlImagen(v.getUrlImagen());
+        videoDTO.setCategorias(v.getCategorias().stream().map(c -> c.getNombre()).collect(java.util.stream.Collectors.toSet()));
         return videoDTO;
-    } */
+    }
 
     public static Video convertToEntity(VideoPostDTO videoDTO){
         Video video = new Video();

@@ -55,14 +55,15 @@ public class VideoController {
     }
 
     @PutMapping("/catalogo/{id}")
-    public ResponseEntity<VideoPublicDTO> updateVideo(
+    public ResponseEntity<VideoPostDTO> updateVideo(
             @PathVariable Long id,
             @RequestBody VideoPostDTO videoDTO) {
-        VideoPublicDTO videoActualizado = videoService.updateVideo(id, videoDTO);
-        if (videoActualizado != null) {
+        try {
+            VideoPostDTO videoActualizado = videoService.updateVideo(id, videoDTO);
             return ResponseEntity.ok(videoActualizado);
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/catalogo/{id}")

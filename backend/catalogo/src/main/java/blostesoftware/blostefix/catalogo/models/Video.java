@@ -2,7 +2,6 @@ package blostesoftware.blostefix.catalogo.models;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
