@@ -30,6 +30,10 @@ class AuthService:
         user =  request.env["res.users"].sudo().browse(uid)
         role = "admin" if user.has_group("base.group_system") else "user"
         
+        # Debug log
+        logger.info(f"Usuario {login} (ID: {uid}) autenticado con rol: {role}")
+        logger.info(f"Grupos del usuario: {[g.name for g in user.groups_id]}")
+        
         # Create refresh token (and persist it in DB)
         refresh_token = JWTService.create_refresh_token(
             user_id=uid,
@@ -115,11 +119,39 @@ class AuthService:
             user = request.env["res.users"].sudo().browse(int(uid))
             if not user.exists():
                 return None
+            
+            # Actualizar el rol actual del usuario en tiempo real
+            # Esto asegura que los cambios de permisos se reflejen inmediatamente
+            current_role = "admin" if user.has_group("base.group_system") else "user"
+            
+            # Opcional: Agregar el rol actual al contexto del request para uso posterior
+            request.user_role = current_role
+            
             return user
         
         except Exception as e:
             logger.warning("JWT inválido; %s", e)
             return None
+        
+    @staticmethod
+    def get_user_data_with_role():
+        """Devuelve el usuario autenticado con su rol actual desde la base de datos."""
+        user = AuthService.get_user_from_request()
+        
+        if not user:
+            return None
+        
+        # Obtener el rol actual del usuario (verificado contra la base de datos)
+        role = "admin" if user.has_group("base.group_system") else "user"
+        
+        return {
+            "id": user.id,
+            "name": user.name,
+            "login": user.login,
+            "email": user.partner_id.email if user.partner_id else user.login,
+            "role": role,  # Rol actual, no del token
+            "partner_id": user.partner_id.id if user.partner_id else None,
+        }
         
     @staticmethod
     def register_user(name, login, password):
@@ -143,6 +175,7 @@ class AuthService:
                 'login': login,
                 'name': name,
                 'password': password,
+                'email': login,  # Guardar el email en el partner
                 'company_id': company.id,
                 'company_ids': [(6, 0, [company.id])],
                 'groups_id': [(6, 0, [portal_group_id])]

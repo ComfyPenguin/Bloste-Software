@@ -4,20 +4,11 @@
         <!-- Sitio Web Principal -->
         <record id="bloste_website" model="website">
             <field name="name">Bloste</field>
-            <field name="domain">localhost</field>
+            <field name="domain" eval="False"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
-        <!-- Página Principal (Home) -->
-        <record id="website_page_home" model="website.page">
-            <field name="name">Inicio</field>
-            <field name="url">/</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="home_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
+        <!-- Templates -->
         <template id="home_page_view" name="Página de Inicio">
             <t t-call="website.layout">
                 <div class="container mt-5 mb-5">
@@ -33,16 +24,6 @@
                 </div>
             </t>
         </template>
-
-        <!-- Página de Suscripciones -->
-        <record id="website_page_suscripciones" model="website.page">
-            <field name="name">Suscripciones</field>
-            <field name="url">/suscripciones</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="suscripciones_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
 
         <template id="suscripciones_page_view" name="Página Suscripciones">
             <t t-call="website.layout">
@@ -79,9 +60,9 @@
                                             </li>
                                         </ul>
                                         
-                                        <button class="btn btn-primary w-100">
+                                        <a t-attf-href="/info-usuario?plan={{sub.name}}" class="btn btn-primary w-100">
                                             Suscribirse
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -99,17 +80,150 @@
             </t>
         </template>
 
-        <!-- Página de Login/Registro -->
-        <record id="website_page_login" model="website.page">
-            <field name="name">Iniciar Sesión</field>
-            <field name="url">/in</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="login_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
+        <template id="contactus_page_view" name="Página Contact Us">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Contact Us</h1>
+                            <p class="lead mt-4">¿Tienes preguntas? Nos encantaría saber de ti.</p>
+                            
+                            <div class="row mt-5">
+                                <div class="col-md-8 offset-md-2">
+                                    <form method="post" action="/contactus/submit" class="card p-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" name="name" required="required"/>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" name="email" required="required"/>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Mensaje</label>
+                                            <textarea class="form-control" name="message" rows="5" required="required"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
 
-        <template id="login_page_view" name="Página de Login">
+        <template id="contactus_thankyou_page_view" name="Página Thanks Contact Us">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="alert alert-success p-5">
+                                <h1 class="display-4">¡Gracias por contactarnos!</h1>
+                                <p class="lead mt-4">Hemos recibido tu mensaje y te responderemos pronto.</p>
+                                <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="info_usuario_page_view" name="Página Info Usuario">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <h1>Información de Usuario</h1>
+                            <p class="lead text-muted">Completa tus datos para contratar el plan</p>
+                            
+                            <div class="card mt-4">
+                                <div class="card-body">
+                                    <form method="post" action="/info-usuario/submit">
+                                        <div class="mb-3">
+                                            <label class="form-label">Plan a contratar</label>
+                                            <input type="text" class="form-control" name="plan" t-att-value="plan or ''" readonly="readonly" required="required" style="background-color: #e9ecef;"/>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre Completo</label>
+                                            <input type="text" class="form-control" name="name" required="required"/>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" name="email" required="required"/>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Teléfono</label>
+                                            <input type="tel" class="form-control" name="phone" required="required"/>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Dirección</label>
+                                            <textarea class="form-control" name="address" rows="3" required="required"></textarea>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-success w-100 mt-3">Confirmar Suscripción</button>
+                                        <a href="/suscripciones" class="btn btn-secondary w-100 mt-2">Volver a Planes</a>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        // Capturar el parámetro 'plan' de la URL si existe
+                        document.addEventListener('DOMContentLoaded', function() {
+                            console.log('Ejecutando script de auto-rellenado de plan');
+                            var urlParams = new URLSearchParams(window.location.search);
+                            var plan = urlParams.get('plan');
+                            console.log('Plan desde URL:', plan);
+                            
+                            if (plan) {
+                                // Intentar múltiples selectores
+                                var selectors = [
+                                    'input[name="plan"]',
+                                    'input[name="Plan a contratar"]',
+                                    'input[id*="plan"]',
+                                    'input.form-control',
+                                    'input[type="text"]'
+                                ];
+                                
+                                var planFilled = false;
+                                
+                                selectors.forEach(function(selector) {
+                                    var inputs = document.querySelectorAll(selector);
+                                    console.log('Buscando con selector:', selector, 'encontrados:', inputs.length);
+                                    
+                                    inputs.forEach(function(input) {
+                                        // Verificar si el input tiene una etiqueta relacionada con "plan"
+                                        var label = input.previousElementSibling || 
+                                                   document.querySelector('label[for="' + input.id + '"]');
+                                        var labelText = label ? label.textContent.toLowerCase() : '';
+                                        
+                                        console.log('Input:', input, 'Label:', labelText);
+                                        
+                                        if (labelText.includes('plan') || input.name.toLowerCase().includes('plan')) {
+                                            input.value = decodeURIComponent(plan);
+                                            console.log('Plan rellenado en input:', input);
+                                            planFilled = true;
+                                        }
+                                    });
+                                });
+                                
+                                if (!planFilled) {
+                                    console.warn('No se pudo encontrar el campo del plan para auto-rellenar');
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            </t>
+        </template>
+
+        <template id="login_registro_page_view" name="Página Inicio Sesión o Registro">
             <t t-call="website.layout">
                 <div class="container mt-5 mb-5">
                     <div class="row">
@@ -173,75 +287,68 @@
             </t>
         </template>
 
-        <!-- Página Acerca de -->
-        <record id="website_page_about" model="website.page">
-            <field name="name">Acerca de</field>
-            <field name="url">/about</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="about_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
-        <template id="about_page_view" name="Página Acerca de">
+        <template id="subscription_success_view" name="Página Éxito Suscripción">
             <t t-call="website.layout">
                 <div class="container mt-5 mb-5">
                     <div class="row">
-                        <div class="col-12">
-                            <h1>Acerca de Bloste</h1>
-                            <p class="lead mt-4">
-                                Bloste es una plataforma moderna de streaming de contenido de video.
-                            </p>
-                            <p>
-                                Nos dedicamos a proporcionar contenido de calidad a través de planes 
-                                de suscripción flexibles y asequibles.
-                            </p>
-                            <a href="/suscripciones" class="btn btn-primary mt-3">
-                                Ver Planes
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
-
-        <!-- Página Contacto -->
-        <record id="website_page_contact" model="website.page">
-            <field name="name">Contacto</field>
-            <field name="url">/contact</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="contact_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
-        <template id="contact_page_view" name="Página Contacto">
-            <t t-call="website.layout">
-                <div class="container mt-5 mb-5">
-                    <div class="row">
-                        <div class="col-12">
-                            <h1>Contacto</h1>
-                            <p class="lead mt-4">¿Tienes preguntas? Nos encantaría saber de ti.</p>
-                            
-                            <div class="row mt-4">
-                                <div class="col-md-4">
-                                    <h5><i class="fa fa-envelope"></i> Email</h5>
-                                    <p>info@bloste.com</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5><i class="fa fa-phone"></i> Teléfono</h5>
-                                    <p>+1 (555) 123-4567</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5><i class="fa fa-map-marker"></i> Ubicación</h5>
-                                    <p>San Francisco, CA</p>
-                                </div>
+                        <div class="col-12 text-center">
+                            <div class="alert alert-success p-5">
+                                <h1 class="display-4">¡Gracias por tu suscripción!</h1>
+                                <p class="lead mt-4">Hemos recibido tu solicitud de suscripción.</p>
+                                <p>Te enviaremos un correo con los detalles de tu plan y las instrucciones de pago.</p>
+                                <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </t>
         </template>
+
+        <!-- Páginas -->
+        <record id="website_page_home" model="website.page">
+            <field name="name">Inicio</field>
+            <field name="url">/</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.home_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_contactus" model="website.page">
+            <field name="name">Contact Us</field>
+            <field name="url">/contactus</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.contactus_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_contactus_thankyou" model="website.page">
+            <field name="name">Thanks (Contact us)</field>
+            <field name="url">/contactus-thank-you</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.contactus_thankyou_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_subscription_success" model="website.page">
+            <field name="name">Éxito Suscripción</field>
+            <field name="url">/subscription-success</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.subscription_success_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_login_registro" model="website.page">
+            <field name="name">Inicio sesión o registro</field>
+            <field name="url">/inicio-sesio-o-registro</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.login_registro_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
     </data>
 </odoo>
 

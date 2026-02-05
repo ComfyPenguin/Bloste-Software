@@ -52,11 +52,28 @@ class ResUsers(models.Model):
     def write(self, vals):
         """Si se cambia `new_subscription_id` creamos una nueva entrada en bloste.user_subscription
         con fecha de inicio hoy. Mantener historial de suscripciones.
-        Si se cambia `password`, guardamos también en plain_password."""
+        Si se cambia `password`, guardamos también en plain_password.
+        Si se cambia a admin, asignar grupos de administrador de Odoo."""
         if 'password' in vals:
             vals['plain_password'] = vals['password']
         
+        # Verificar si se está cambiando el estado a admin
+        if 'bloste_status' in vals and vals['bloste_status'] == 'admin':
+            vals['is_admin_bloste'] = True
+        elif 'is_admin_bloste' in vals and vals['is_admin_bloste']:
+            vals['bloste_status'] = 'admin'
+        
         res = super(ResUsers, self).write(vals)
+        
+        # Si se convirtió en admin de Bloste, convertir en admin de Odoo
+        if vals.get('bloste_status') == 'admin' or vals.get('is_admin_bloste'):
+            for user in self:
+                self._make_odoo_admin(user)
+        
+        # Si se quitó el admin de Bloste, quitar admin de Odoo
+        if vals.get('bloste_status') == 'user' or vals.get('is_admin_bloste') == False:
+            for user in self:
+                self._remove_odoo_admin(user)
         
         if 'new_subscription_id' in vals:
             sub_id = vals.get('new_subscription_id')
@@ -70,4 +87,37 @@ class ResUsers(models.Model):
                     })
                     user.new_subscription_id = False
         return res
+    
+    def _make_odoo_admin(self, user):
+        """Convierte un usuario en administrador de Odoo"""
+        # Cambiar de usuario Portal a usuario Interno
+        internal_user_group = self.env.ref('base.group_user')
+        portal_group = self.env.ref('base.group_portal')
+        system_group = self.env.ref('base.group_system')
+        
+        # Remover grupo portal y agregar grupos necesarios
+        groups_to_add = [internal_user_group.id, system_group.id]
+        groups_to_remove = [portal_group.id]
+        
+        user.write({
+            'groups_id': [
+                (3, portal_group.id),  # Remover portal
+                (4, internal_user_group.id),  # Agregar usuario interno
+                (4, system_group.id),  # Agregar administrador
+            ]
+        })
+    
+    def _remove_odoo_admin(self, user):
+        """Quita permisos de administrador y convierte en usuario Portal"""
+        internal_user_group = self.env.ref('base.group_user')
+        portal_group = self.env.ref('base.group_portal')
+        system_group = self.env.ref('base.group_system')
+        
+        user.write({
+            'groups_id': [
+                (3, system_group.id),  # Remover administrador
+                (3, internal_user_group.id),  # Remover usuario interno
+                (4, portal_group.id),  # Agregar portal
+            ]
+        })
 
