@@ -10,6 +10,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
@@ -32,14 +35,40 @@ public class VideoServiceIMPL implements VideoService {
     public Page<VideoPublicDTO> getVideos(Long categoriaId, int page, int size){
         Pageable pageable = PageRequest.of(page,size,Sort.by("id").descending());
 
-        Page<Video> result; 
+        Page<Video> result;
+        boolean isAdmin = isAdmin();
 
         if(categoriaId != null ){
-            result = videoRepository.findByCategorias_Id(categoriaId, pageable);
+            if (isAdmin) {
+                result = videoRepository.findByCategorias_Id(categoriaId, pageable);
+            } else {
+                result = videoRepository.findByCategorias_IdAndVisibleTrue(categoriaId, pageable);
+            }
         } else {
-            result = videoRepository.findAll(pageable);
+            if (isAdmin) {
+                result = videoRepository.findAll(pageable);
+            } else {
+                result = videoRepository.findByVisibleTrue(pageable);
+            }
         }
         return new PageImpl<>(result.getContent().stream().map(VideoPublicDTO::converToDTO).toList(),pageable,result.getTotalElements());
+    }
+    
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("DEBUG: No authentication found or not authenticated");
+            return false;
+        }
+        
+        System.out.println("DEBUG: Authentication principal: " + authentication.getPrincipal());
+        System.out.println("DEBUG: Authorities: " + authentication.getAuthorities());
+        
+        boolean hasAdminRole = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+        
+        System.out.println("DEBUG: Has admin role: " + hasAdminRole);
+        return hasAdminRole;
     }
 
     /* @Override
@@ -79,8 +108,14 @@ public class VideoServiceIMPL implements VideoService {
 
     @Override
     public VideoPublicDTO getVideoById(Long id) {
-
-        Optional<Video> videoOpt = videoRepository.findById(id);
+        Optional<Video> videoOpt;
+        
+        if (isAdmin()) {
+            videoOpt = videoRepository.findById(id);
+        } else {
+            videoOpt = videoRepository.findByIdAndVisibleTrue(id);
+        }
+        
         if (videoOpt.isPresent()) {
             return VideoPublicDTO.converToDTO(videoOpt.get());
         }
