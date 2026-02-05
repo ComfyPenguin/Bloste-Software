@@ -1,13 +1,9 @@
 import type { FormData } from '@/types/content.type'
 import env from '@/configs/env.config'
 import axios from 'axios'
-import type {
-  ApiResponseCategories,
-  ApiResponseContent,
-  Catalogo,
-} from '@/types/categories.type'
+import type { ApiResponseCategories, ApiResponseContent, Catalogo } from '@/types/categories.type'
 
-const CATALOGO_URL = env.VITE_BACKEND_CATALOGO_URL || 'http://localhost:8080'
+const CATALOGO_URL = env.VITE_BACKEND_CATALOGO_URL
 
 export const catalogoApi = {
   // Guarda el contenido completo (formulario + datos del video procesado)

@@ -11,11 +11,11 @@
 - [x] Implementar procesamiento HLS.
 - [x] Generación de miniaturas.
 - [x] Almacenamiento de metadatos.
-- [ ] Envío de notificación o endpoint de consulta de estado (Web socket).
+- [x] Envío de notificación o endpoint de consulta de estado (Web socket).
 
 ## Personales
 
 - [x] Eliminar videos despues del procesamiento o guardarlos en memoria temporal.
 - [x] Middleware de errores.
-- [ ] Validar tipos de archivo en subida.
+- [x] Validar tipos de archivo en subida.
 - [ ] Documentar API con Swagger.

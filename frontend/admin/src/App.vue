@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
+import { authApi } from './api/auth.api'
+import { handleError } from './middlewares/errorHandler'
 
 // Importar los assets
 import lightModeIcon from './assets/light_mode.svg'
@@ -10,11 +12,53 @@ import logoLight from './assets/full_logo_black.png'
 import logoDark from './assets/full_logo_white.png'
 
 const { isDark, toggleTheme } = useTheme()
-const userName = 'Usuario (futuro JWT)'
+const router = useRouter()
+const route = useRoute()
+const userName = ref('Usuario')
 const isMobileMenuOpen = ref(false)
+const isLoggedIn = ref(false)
 
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const refreshAuthState = async () => {
+  const token = localStorage.getItem('authToken')
+  console.log('Token from localStorage:', token)
+  if (token) {
+    isLoggedIn.value = true
+    try {
+      const userInfo = await authApi.getUserInfo(token)
+      console.log('User info received:', userInfo)
+      if (userInfo.name) {
+        userName.value = userInfo.name
+        console.log('Username set to:', userInfo.name)
+      }
+    } catch (error) {
+      handleError(error, 'Error al obtener la información del usuario')
+    }
+  } else {
+    isLoggedIn.value = false
+    console.log('No token found in localStorage')
+  }
+}
+
+onMounted(async () => {
+  await refreshAuthState()
+})
+
+watch(
+  () => route.fullPath,
+  async () => {
+    await refreshAuthState()
+  },
+)
+
+const logout = () => {
+  localStorage.removeItem('authToken')
+  userName.value = 'Usuario'
+  isLoggedIn.value = false
+  router.push('/login')
 }
 </script>
 
@@ -27,16 +71,21 @@ function toggleMobileMenu() {
 
       <!-- Menú para escritorio -->
       <div class="desktop-menu">
-        <nav class="main-nav">
-          <RouterLink to="/">Subir Video</RouterLink>
-          <RouterLink to="/edit">Editar Video</RouterLink>
+        <nav class="main-nav" :class="{ 'nav-hidden': !isLoggedIn }">
+          <RouterLink to="/">Editar Video</RouterLink>
+          <RouterLink to="/upload">Subir Video</RouterLink>
         </nav>
 
         <div class="right-section">
           <button @click="toggleTheme" class="theme-toggle">
-            <img :src="isDark ? lightModeIcon : darkModeIcon" alt="Toggle Theme" class="theme-icon" />
+            <img
+              :src="isDark ? lightModeIcon : darkModeIcon"
+              alt="Toggle Theme"
+              class="theme-icon"
+            />
           </button>
-          <span class="user-name">{{ userName }}</span>
+          <span v-if="isLoggedIn" class="user-name">{{ userName }}</span>
+          <button v-if="isLoggedIn" @click="logout" class="logout-button">Logout</button>
         </div>
       </div>
 
@@ -50,16 +99,17 @@ function toggleMobileMenu() {
 
     <!-- Menú desplegable para móvil -->
     <div v-if="isMobileMenuOpen" class="mobile-menu">
-      <nav class="main-nav-mobile">
-        <RouterLink to="/" @click="toggleMobileMenu">Subir Video</RouterLink>
-        <RouterLink to="/edit" @click="toggleMobileMenu">Editar Video</RouterLink>
+      <nav v-if="isLoggedIn" class="main-nav-mobile">
+        <RouterLink to="/" @click="toggleMobileMenu">Editar Video</RouterLink>
+        <RouterLink to="/upload" @click="toggleMobileMenu">Subir Video</RouterLink>
       </nav>
 
       <div class="right-section-mobile">
         <button @click="toggleTheme" class="theme-toggle">
           <img :src="isDark ? lightModeIcon : darkModeIcon" alt="Toggle Theme" class="theme-icon" />
         </button>
-        <span class="user-name">{{ userName }}</span>
+        <span v-if="isLoggedIn" class="user-name">{{ userName }}</span>
+        <button v-if="isLoggedIn" @click="logout" class="logout-button">Logout</button>
       </div>
     </div>
   </header>
@@ -73,7 +123,9 @@ header {
   padding: 1rem;
   background-color: var(--color-background-soft);
   border-bottom: 1px solid var(--color-border);
-  position: relative; /* Para el menú móvil */
+  position: sticky; /* Changed from relative */
+  top: 0; /* Ensures it sticks to the top */
+  z-index: 100; /* Ensures it's above other content */
 }
 
 .wrapper {
@@ -116,6 +168,11 @@ header {
   border-bottom-color: var(--color-primary);
 }
 
+.nav-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .right-section {
   display: flex;
   align-items: center;
@@ -142,6 +199,20 @@ header {
 .user-name {
   font-weight: bold;
   color: var(--color-text);
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  filter: brightness(1.1);
 }
 
 /* Estilos para móvil */

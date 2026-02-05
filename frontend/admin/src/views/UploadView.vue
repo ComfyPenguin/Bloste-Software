@@ -202,6 +202,14 @@ h1 {
 
 /* Media Query para pantallas pequeñas */
 @media (max-width: 800px) {
+  .upload-view {
+    padding: 1rem; /* Reduce outer padding */
+  }
+
+  .upload-container {
+    padding: 1rem; /* Reduce inner padding */
+  }
+
   .form-container {
     flex-direction: column;
   }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import env from '@/configs/env.config'
 
-const MEDIA_SERVER_URL = env.VITE_BACKEND_MEDIA_SERVER_URL || 'http://localhost:4000'
+const MEDIA_SERVER_URL = env.VITE_BACKEND_MEDIA_SERVER_URL
 
 export const mediaServerApi = {
   async uploadVideo(file: File, clientId: string) {
@@ -12,7 +12,7 @@ export const mediaServerApi = {
       const response = await axios.post(`${MEDIA_SERVER_URL}/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'clientid': clientId,
+          clientid: clientId,
         },
       })
       return response.data

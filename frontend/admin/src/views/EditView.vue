@@ -108,6 +108,9 @@ function handlePageChange(page: number) {
 
 <style scoped>
 .edit-view-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   padding: 2rem;
   width: 100%;
 }
@@ -120,15 +123,47 @@ h1 {
 
 .loading-state,
 .empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   color: var(--color-text-muted);
   font-size: 1.2rem;
-  margin-top: 4rem;
+  min-height: 400px;
 }
 
 .content-grid {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Media queries para móviles */
+@media (max-width: 768px) {
+  .edit-view-container {
+    padding: 1rem;
+    min-height: 100vh;
+  }
+
+  .content-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-view-container {
+    padding: 0.5rem;
+  }
+
+  .content-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
 }
 </style>

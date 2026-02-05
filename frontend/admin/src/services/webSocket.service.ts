@@ -17,7 +17,7 @@ export class WebSocketService {
   }>
 
   constructor() {
-    this.WEBSOCKET_URL = env.VITE_WEBSOCKET_MEDIA_SERVER_URL || 'ws://localhost:4000/ws'
+    this.WEBSOCKET_URL = env.VITE_WEBSOCKET_MEDIA_SERVER_URL
     this.ws = ref<WebSocket | null>(null)
     this.connected = ref(false)
     this.clientId = ref('')
