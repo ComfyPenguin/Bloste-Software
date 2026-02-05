@@ -1,6 +1,7 @@
 package blostesoftware.blostefix.catalogo.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -72,6 +73,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 
                 System.out.println("DEBUG JWT Filter: Authentication set in context with authorities: " + authentication.getAuthorities());
 
+            } catch (ExpiredJwtException e) {
+                logger.warn("JWT token has expired: " + e.getMessage());
+                System.out.println("DEBUG JWT Filter: Token expired - proceeding with anonymous access");
             } catch (Exception e) {
                 logger.error("JWT validation failed: " + e.getMessage());
                 e.printStackTrace();

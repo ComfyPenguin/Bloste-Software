@@ -39,6 +39,15 @@ public class VideoController {
         return ResponseEntity.ok(videos);
     }
 
+    @GetMapping("/catalogo/search")
+    public ResponseEntity<Page<VideoPublicDTO>> searchVideos(
+            @RequestParam String titulo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<VideoPublicDTO> videos = videoService.searchVideosByTitulo(titulo, page, size);
+        return ResponseEntity.ok(videos);
+    }
+
     @GetMapping("/catalogo/{id}")
     public ResponseEntity<VideoPublicDTO> getVideoById(@PathVariable Long id) {
         VideoPublicDTO video = videoService.getVideoById(id);

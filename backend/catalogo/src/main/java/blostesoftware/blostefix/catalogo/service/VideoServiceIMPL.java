@@ -31,7 +31,6 @@ public class VideoServiceIMPL implements VideoService {
     private CategoriaRepository categoriaRepository;
 
     @Override
-
     public Page<VideoPublicDTO> getVideos(Long categoriaId, int page, int size){
         Pageable pageable = PageRequest.of(page,size,Sort.by("id").descending());
 
@@ -52,6 +51,21 @@ public class VideoServiceIMPL implements VideoService {
             }
         }
         return new PageImpl<>(result.getContent().stream().map(VideoPublicDTO::converToDTO).toList(),pageable,result.getTotalElements());
+    }
+    
+    public Page<VideoPublicDTO> searchVideosByTitulo(String titulo, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        
+        Page<Video> result;
+        boolean isAdmin = isAdmin();
+        
+        if (isAdmin) {
+            result = videoRepository.searchByTitulo(titulo, pageable);
+        } else {
+            result = videoRepository.searchByTituloAndVisibleTrue(titulo, pageable);
+        }
+        
+        return new PageImpl<>(result.getContent().stream().map(VideoPublicDTO::converToDTO).toList(), pageable, result.getTotalElements());
     }
     
     private boolean isAdmin() {
