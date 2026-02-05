@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Sitio Web Principal -->
         <record id="bloste_website" model="website">
             <field name="name">Bloste</field>
@@ -242,6 +242,59 @@
                 </div>
             </t>
         </template>
+        <record id="website_page_contactus" model="website.page">
+            <field name="name">Contact Us</field>
+            <field name="url">/contactus</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.contactus_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_contactus_thankyou" model="website.page">
+            <field name="name">Thanks (Contact us)</field>
+            <field name="url">/contactus-thank-you</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.contactus_thankyou_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_subscription_success" model="website.page">
+            <field name="name">Éxito Suscripción</field>
+            <field name="url">/subscription-success</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.subscription_success_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_suscripciones" model="website.page">
+            <field name="name">Suscripciones</field>
+            <field name="url">/suscripciones</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.suscripciones_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_info_usuario" model="website.page">
+            <field name="name">Info usuario</field>
+            <field name="url">/info-usuario</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.info_usuario_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <record id="website_page_login_registro" model="website.page">
+            <field name="name">Inicio sesión o registro</field>
+            <field name="url">/inicio-sesio-o-registro</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="bloste_web.login_registro_page_view"/>
+            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
     </data>
 </odoo>
 

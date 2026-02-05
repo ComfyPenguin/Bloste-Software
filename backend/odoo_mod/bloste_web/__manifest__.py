@@ -12,5 +12,6 @@
         'views/menus.xml',
         'views/templates.xml',
         'views/website_pages.xml',
+        'data/website_data.xml',
     ],
 }
