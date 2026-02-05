@@ -22,6 +22,7 @@ function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 
+// Función para refrescar el estado de autenticación y obtener la información del usuario
 const refreshAuthState = async () => {
   const token = localStorage.getItem('authToken')
   console.log('Token from localStorage:', token)
@@ -43,10 +44,12 @@ const refreshAuthState = async () => {
   }
 }
 
+// Refrescar el estado de autenticación al montar el componente
 onMounted(async () => {
   await refreshAuthState()
 })
 
+// Refrescar el estado de autenticación cada vez que cambie la ruta
 watch(
   () => route.fullPath,
   async () => {
@@ -54,6 +57,7 @@ watch(
   },
 )
 
+// Función para cerrar sesión
 const logout = () => {
   localStorage.removeItem('authToken')
   userName.value = 'Usuario'

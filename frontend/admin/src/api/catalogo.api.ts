@@ -7,11 +7,13 @@ const CATALOGO_URL = env.VITE_BACKEND_CATALOGO_URL
 
 export const catalogoApi = {
   // Guarda el contenido completo (formulario + datos del video procesado)
-  async saveContent(data: FormData) {
+  // TODO: Agregar token de autenticación en el header
+  async saveContent(data: FormData, token: string) {
     try {
       const response = await axios.post(`${CATALOGO_URL}/api/catalogo`, data, {
         headers: {
           'Content-Type': 'application/json',
+          // Authorization: `Bearer ${token}`,
         },
       })
       return response.data

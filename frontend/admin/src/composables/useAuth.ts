@@ -1,53 +1,47 @@
 import { ref } from 'vue'
-import { authApi } from '@/api/auth.api'
+import { importSPKI, jwtVerify } from 'jose'
+import publicKeyPem from '@/keys/public.pem?raw'
 import { handleError } from '@/middlewares/errorHandler'
 
 interface DecodedToken {
-  id?: number
-  name?: string
-  email?: string
-  partner_id?: number
-  [key: string]: any
+  sub?: string
+  login?: string
+  role?: string
+  iat?: number
+  exp?: number
+  type?: string
 }
 
 export function useAuth() {
   const isAdmin = ref(false)
   const userInfo = ref<DecodedToken | null>(null)
 
-  // Decodificar JWT sin verificar firma (solo para leer datos)
-  function decodeToken(token: string): DecodedToken | null {
-    try {
-      const parts = token.split('.')
-      if (parts.length !== 3) return null
+  const JWT_ALGORITHM = 'RS256'
 
-      const decoded = JSON.parse(atob(parts[1]))
-      return decoded
+  // Verificar JWT con clave pública y devolver el payload
+  async function decodeToken(token: string): Promise<DecodedToken | null> {
+    try {
+      const key = await importSPKI(publicKeyPem.trim(), JWT_ALGORITHM)
+      const { payload } = await jwtVerify(token, key, { algorithms: [JWT_ALGORITHM] })
+      return payload as DecodedToken
     } catch (error) {
-      handleError(error, 'Error al decodificar el token')
+      handleError(error, 'Token inválido o firma no válida')
       return null
     }
   }
 
   // Verificar si el usuario es admin
   async function checkAdminStatus(token: string): Promise<boolean> {
-    try {
-      const userDetails = await authApi.getUserInfo(token)
-      userInfo.value = userDetails
-      console.log('User details:', userDetails)
+    const decoded = await decodeToken(token)
+    userInfo.value = decoded
 
-      // Verificar si el usuario es admin
-      if (userDetails.id === 2 || userDetails.email === 'admin') {
-        isAdmin.value = true
-        return true
-      }
-
-      isAdmin.value = false
-      return false
-    } catch (error) {
-      handleError(error, 'Error al comprobar permisos de administrador')
-      isAdmin.value = false
-      return false
+    if (decoded?.role === 'admin') {
+      isAdmin.value = true
+      return true
     }
+
+    isAdmin.value = false
+    return false
   }
 
   // Obtener token del localStorage

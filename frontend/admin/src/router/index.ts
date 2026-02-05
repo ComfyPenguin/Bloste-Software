@@ -24,23 +24,30 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { requiresGuest: true },
     },
     {
       path: '/signin',
       name: 'signin',
       component: SigninView,
+      meta: { requiresGuest: true },
     },
   ],
 })
 
 // Guard de rutas para verificar si el usuario es admin
 router.beforeEach(async (to, from, next) => {
-  const { requiresAdmin } = to.meta
+  const { requiresAdmin, requiresGuest } = to.meta
+  const { isAuthenticated } = useAuth()
+  const isAdmin = await isAuthenticated()
+
+  // Si requiere ser guest (no estar logeado) pero está logeado, redirigir a home
+  if (requiresGuest && isAdmin) {
+    next('/')
+    return
+  }
 
   if (requiresAdmin) {
-    const { isAuthenticated } = useAuth()
-    const isAdmin = await isAuthenticated()
-
     if (isAdmin) {
       next()
     } else {
