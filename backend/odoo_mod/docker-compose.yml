@@ -25,10 +25,13 @@ services:
       - ENV_PASSWORD=${ENV_PASSWORD}
     volumes:
       - odoo_data:/var/lib/odoo
-      # Mapeamos 'odoo_mod' directamente como la carpeta de módulos
+      # Mapeamos 'Odoo_mod' directamente como la carpeta de módulos
       - .:/mnt/extra-addons
       - ./odoo_config:/etc/odoo
-      - ./keys:/etc/odoo/keys:ro
+      # Mapeo de claves (lectura/escritura para generación automática)
+      - ./keys:/etc/odoo/keys
+      # Mapeo de la raíz del proyecto para exportar .env.public
+      - ../..:/workspace
     command: >
       odoo --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
       --db-filter=.*

@@ -49,6 +49,11 @@ Thumbs.db
 **/__pycache__/
 *.pyc
 
-#Odoo
-backend/odoo_mod/keys
+# Keys JWT - Ignorar claves en todas las carpetas
+**/keys/
+*.pem
 .env
+
+# Excepciones - archivos que SÍ deben incluirse
+!.env.example
+
