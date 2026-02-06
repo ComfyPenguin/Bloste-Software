@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="0">
+<odoo><data noupdate="0">
         <!-- Sitio Web Principal -->
         <record id="bloste_website" model="website">
             <field name="name">Bloste</field>
-            <field name="domain">localhost</field>
+            <field name="domain" eval="False"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
-        <!-- Página Principal (Home) -->
-        <record id="website_page_home" model="website.page">
-            <field name="name">Inicio</field>
-            <field name="url">/</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="home_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
+        <!-- ============================================ -->
+        <!-- TEMPLATES - Definir primero todas las vistas -->
+        <!-- ============================================ -->
 
         <template id="home_page_view" name="Página de Inicio">
             <t t-call="website.layout">
@@ -33,16 +26,6 @@
                 </div>
             </t>
         </template>
-
-        <!-- Página de Suscripciones -->
-        <record id="website_page_suscripciones" model="website.page">
-            <field name="name">Suscripciones</field>
-            <field name="url">/suscripciones</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="suscripciones_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
 
         <template id="suscripciones_page_view" name="Página Suscripciones">
             <t t-call="website.layout">
@@ -79,7 +62,7 @@
                                             </li>
                                         </ul>
                                         
-                                        <button class="btn btn-primary w-100">
+                                        <button class="btn btn-primary w-100 subscription-button" t-att-data-plan="sub.name">
                                             Suscribirse
                                         </button>
                                     </div>
@@ -96,20 +79,91 @@
                         </div>
                     </div>
                 </div>
+                
+                <script type="text/javascript" src="/bloste_web/static/src/js/subscription_redirect.js"/>
             </t>
         </template>
 
-        <!-- Página de Login/Registro -->
-        <record id="website_page_login" model="website.page">
-            <field name="name">Iniciar Sesión</field>
-            <field name="url">/in</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="login_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
+        <template id="contactus_page_view" name="Página Contacto">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <h1>Contáctanos</h1>
+                    <p class="lead">Envíanos tu mensaje</p>
+                    <form method="post" action="/contactus/submit">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="name" class="form-control" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mensaje</label>
+                            <textarea name="message" class="form-control" rows="5" required="required"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+            </t>
+        </template>
 
-        <template id="login_page_view" name="Página de Login">
+        <template id="contactus_thankyou_page_view" name="Gracias por Contactar">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5 text-center">
+                    <h1>¡Gracias por contactarnos!</h1>
+                    <p class="lead">Hemos recibido tu mensaje y te responderemos pronto.</p>
+                    <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
+                </div>
+            </t>
+        </template>
+
+        <template id="info_usuario_page_view" name="Info Usuario">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <h1>Información del Usuario</h1>
+                    <form method="post" action="/info-usuario/submit">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre Completo</label>
+                            <input type="text" name="name" class="form-control" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" name="email" class="form-control" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" name="phone" class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">DNI/NIE</label>
+                            <input type="text" name="vat" class="form-control"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Plan a Contratar</label>
+                            <input type="text" name="subscription_plan" id="subscription_plan" class="form-control" readonly="readonly"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+                
+                <script type="text/javascript" src="/bloste_web/static/src/js/subscription_redirect.js"/>
+            </t>
+        </template>
+
+        <template id="subscription_success_view" name="Suscripción Exitosa">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5 text-center">
+                    <h1>¡Suscripción Exitosa!</h1>
+                    <p class="lead">Gracias por suscribirte a Bloste</p>
+                    <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
+                </div>
+            </t>
+        </template>
+
+        <template id="login_registro_page_view" name="Login/Registro">
             <t t-call="website.layout">
                 <div class="container mt-5 mb-5">
                     <div class="row">
@@ -173,128 +227,79 @@
             </t>
         </template>
 
-        <!-- Página Acerca de -->
-        <record id="website_page_about" model="website.page">
-            <field name="name">Acerca de</field>
-            <field name="url">/about</field>
+        <!-- ============================================ -->
+        <!-- RECORDS - Después de definir los templates -->
+        <!-- ============================================ -->
+
+        <!-- Home Page -->
+        <record id="website_page_home" model="website.page">
+            <field name="name">Inicio</field>
+            <field name="url">/</field>
             <field name="type">qweb</field>
-            <field name="view_id" ref="about_page_view"/>
+            <field name="view_id" ref="home_page_view"/>
             <field name="website_id" ref="bloste_website"/>
             <field name="is_published">True</field>
         </record>
 
-        <template id="about_page_view" name="Página Acerca de">
-            <t t-call="website.layout">
-                <div class="container mt-5 mb-5">
-                    <div class="row">
-                        <div class="col-12">
-                            <h1>Acerca de Bloste</h1>
-                            <p class="lead mt-4">
-                                Bloste es una plataforma moderna de streaming de contenido de video.
-                            </p>
-                            <p>
-                                Nos dedicamos a proporcionar contenido de calidad a través de planes 
-                                de suscripción flexibles y asequibles.
-                            </p>
-                            <a href="/suscripciones" class="btn btn-primary mt-3">
-                                Ver Planes
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
-
-        <!-- Página Contacto -->
-        <record id="website_page_contact" model="website.page">
-            <field name="name">Contacto</field>
-            <field name="url">/contact</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="contact_page_view"/>
-            <field name="website_id" ref="bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
-        <template id="contact_page_view" name="Página Contacto">
-            <t t-call="website.layout">
-                <div class="container mt-5 mb-5">
-                    <div class="row">
-                        <div class="col-12">
-                            <h1>Contacto</h1>
-                            <p class="lead mt-4">¿Tienes preguntas? Nos encantaría saber de ti.</p>
-                            
-                            <div class="row mt-4">
-                                <div class="col-md-4">
-                                    <h5><i class="fa fa-envelope"></i> Email</h5>
-                                    <p>info@bloste.com</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5><i class="fa fa-phone"></i> Teléfono</h5>
-                                    <p>+1 (555) 123-4567</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5><i class="fa fa-map-marker"></i> Ubicación</h5>
-                                    <p>San Francisco, CA</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </t>
-        </template>
-        <record id="website_page_contactus" model="website.page">
-            <field name="name">Contact Us</field>
-            <field name="url">/contactus</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="bloste_web.contactus_page_view"/>
-            <field name="website_id" ref="bloste_web.bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
-        <record id="website_page_contactus_thankyou" model="website.page">
-            <field name="name">Thanks (Contact us)</field>
-            <field name="url">/contactus-thank-you</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="bloste_web.contactus_thankyou_page_view"/>
-            <field name="website_id" ref="bloste_web.bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
-        <record id="website_page_subscription_success" model="website.page">
-            <field name="name">Éxito Suscripción</field>
-            <field name="url">/subscription-success</field>
-            <field name="type">qweb</field>
-            <field name="view_id" ref="bloste_web.subscription_success_view"/>
-            <field name="website_id" ref="bloste_web.bloste_website"/>
-            <field name="is_published">True</field>
-        </record>
-
+        <!-- Suscripciones Page -->
         <record id="website_page_suscripciones" model="website.page">
             <field name="name">Suscripciones</field>
             <field name="url">/suscripciones</field>
             <field name="type">qweb</field>
-            <field name="view_id" ref="bloste_web.suscripciones_page_view"/>
-            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="view_id" ref="suscripciones_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
             <field name="is_published">True</field>
         </record>
 
+        <!-- Contact Us Page -->
+        <record id="website_page_contactus" model="website.page">
+            <field name="name">Contact Us</field>
+            <field name="url">/contactus</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="contactus_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Thank You Page -->
+        <record id="website_page_contactus_thankyou" model="website.page">
+            <field name="name">Thanks (Contact us)</field>
+            <field name="url">/contactus-thank-you</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="contactus_thankyou_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Info Usuario Page -->
         <record id="website_page_info_usuario" model="website.page">
             <field name="name">Info usuario</field>
             <field name="url">/info-usuario</field>
             <field name="type">qweb</field>
-            <field name="view_id" ref="bloste_web.info_usuario_page_view"/>
-            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="view_id" ref="info_usuario_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
             <field name="is_published">True</field>
         </record>
 
+        <!-- Subscription Success Page -->
+        <record id="website_page_subscription_success" model="website.page">
+            <field name="name">Éxito Suscripción</field>
+            <field name="url">/subscription-success</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="subscription_success_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Login/Registro Page -->
         <record id="website_page_login_registro" model="website.page">
             <field name="name">Inicio sesión o registro</field>
             <field name="url">/inicio-sesio-o-registro</field>
             <field name="type">qweb</field>
-            <field name="view_id" ref="bloste_web.login_registro_page_view"/>
-            <field name="website_id" ref="bloste_web.bloste_website"/>
+            <field name="view_id" ref="login_registro_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
             <field name="is_published">True</field>
         </record>
+
     </data>
 </odoo>
-

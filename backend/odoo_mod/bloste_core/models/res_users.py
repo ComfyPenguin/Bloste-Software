@@ -10,7 +10,6 @@ class ResUsers(models.Model):
         ('admin', 'Administrador')
     ], string='Estado en BlosteFlix', default='user')
     is_admin_bloste = fields.Boolean(string='¿Es Admin en BlosteFlix?', default=False)
-    plain_password = fields.Char(string='Contraseña', help='Contraseña en texto plano')
     
     active_subscription_id = fields.Many2one('bloste.subscription', string='Suscripción Activa', compute='_compute_active_subscription', store=True)
     subscription_expiry_date = fields.Date(string='Caducidad de Suscripción', compute='_compute_subscription_expiry', store=True, readonly=True)
@@ -41,21 +40,15 @@ class ResUsers(models.Model):
 
     @api.model
     def create(self, vals):
-        """Al crear un usuario, si no se proporciona login, usar el email.
-        Si se proporciona password, guardarlo también en plain_password."""
+        """Al crear un usuario, si no se proporciona login, usar el email."""
         if 'email' in vals and 'login' not in vals:
             vals['login'] = vals['email']
-        if 'password' in vals:
-            vals['plain_password'] = vals['password']
         return super(ResUsers, self).create(vals)
 
     def write(self, vals):
         """Si se cambia `new_subscription_id` creamos una nueva entrada en bloste.user_subscription
         con fecha de inicio hoy. Mantener historial de suscripciones.
-        Si se cambia `password`, guardamos también en plain_password.
         Si se cambia a admin de Bloste, asignar grupos de administrador de Odoo."""
-        if 'password' in vals:
-            vals['plain_password'] = vals['password']
         
         # Verificar si se está cambiando el estado a admin
         if 'bloste_status' in vals and vals['bloste_status'] == 'admin':
