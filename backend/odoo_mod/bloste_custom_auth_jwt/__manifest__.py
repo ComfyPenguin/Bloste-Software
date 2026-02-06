@@ -14,4 +14,6 @@
         'views/templates.xml',
     ],
     'images': ['static/description/icon.png'],
+    'installable': True,
+    'application': False,
 }

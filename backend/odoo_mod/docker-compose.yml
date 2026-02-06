@@ -33,8 +33,10 @@ services:
       # Mapeo de la raíz del proyecto para exportar .env.public
       - ../..:/workspace
     command: >
-      odoo --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+      odoo --config=/etc/odoo/odoo.conf
+      --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
       --db-filter=.*
+      --without-demo=all
 
 volumes:
   db_data:

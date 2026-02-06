@@ -185,20 +185,29 @@ class AuthService:
             logger.error("Error al crar el usuario: %s", e)
             return {"ok": False, "error": str(e)}
         
-        exp_seconds = int(config.get('jwt_expiration', 3000))
-        token = JWTService.create_token(
+        # Create refresh token (and persist it in DB)
+        refresh_token = JWTService.create_refresh_token(
+            user_id=new_user.id,
+            login=new_user.login,
+            role="user"
+        )
+
+        # Create access token
+        access_token = JWTService.create_token(
             payload={
                 "sub": str(new_user.id),
                 "login": new_user.login,
                 "role": "user",
             },
-            expires_in=exp_seconds
+            token_type=TOKEN_TYPE_ACCESS,
+            expires_in=ACCESS_TOKEN_EXPIRES_IN
         )
 
         token_data = {
-            "token": token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
             "token_type": "Bearer",
-            "expires_in": exp_seconds
+            "expires_in": ACCESS_TOKEN_EXPIRES_IN
         }
 
         return {"ok": True, "data": token_data}

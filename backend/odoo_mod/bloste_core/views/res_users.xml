@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <tree decoration-info="is_admin_bloste == True" decoration-danger="subscription_expiry_date and subscription_expiry_date &lt; (context_today()).strftime('%Y-%m-%d')">
                 <field name="name"/>
+                <field name="login"/>
                 <field name="email"/>
-                <field name="plain_password" password="True"/>
                 <field name="is_admin_bloste" string="¿Es Admin?"/>
                 <field name="active_subscription_id" string="Suscripción Activa"/>
                 <field name="subscription_expiry_date" string="Caduca el"/>
@@ -28,8 +28,9 @@
                     </div>
                     <group>
                         <group string="Información Básica">
+                            <field name="login"/>
                             <field name="email"/>
-                            <field name="plain_password"/>
+                            <field name="password" password="True"/>
                         </group>
                         <group string="BlosteFlix">
                             <field name="is_admin_bloste"/>
