@@ -15,7 +15,9 @@ interface RegisterData {
   password: string
 }
 
+// API para autenticación y gestión de usuarios de odoo
 export const authApi = {
+  // Iniciar sesión y obtener tokens
   async login(loginCredentials: LoginCredentials) {
     try {
       const response = await axios.post(`${AUTH_URL}/api/auth/token`, loginCredentials, {
@@ -28,6 +30,26 @@ export const authApi = {
       throw new Error(handleError(error, 'Error al iniciar sesión'))
     }
   },
+
+  // Renovar el token usando el refresh token
+  async refreshToken(refreshToken: string) {
+    try {
+      const response = await axios.post(
+        `${AUTH_URL}/api/auth/refresh`,
+        { refresh_token: refreshToken },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      return response.data
+    } catch (error) {
+      throw new Error(handleError(error, 'Error al renovar el token'))
+    }
+  },
+
+  // Registrar un nuevo usuario
   async register(registerData: RegisterData) {
     try {
       const response = await axios.post(`${AUTH_URL}/api/auth/register`, registerData, {
@@ -41,19 +63,7 @@ export const authApi = {
     }
   },
 
-  async logout() {
-    try {
-      const response = await axios.post(`${AUTH_URL}/api/auth/logout`, null, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      return response.data
-    } catch (error) {
-      throw new Error(handleError(error, 'Error al cerrar sesión'))
-    }
-  },
-
+  // Obtener información del usuario autenticado
   async getUserInfo(token: string) {
     try {
       const response = await axios.get(`${AUTH_URL}/api/users/me`, {

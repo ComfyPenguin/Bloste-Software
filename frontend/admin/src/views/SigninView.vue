@@ -12,6 +12,7 @@ const confirmPassword = ref('')
 const router = useRouter()
 const toast = useToast()
 
+// Función para manejar el registro
 const register = async () => {
   if (password.value !== confirmPassword.value) {
     toast.error('Las contraseñas no coinciden')
@@ -24,16 +25,13 @@ const register = async () => {
       login: login.value,
       password: password.value,
     })
-    console.log('Registro exitoso:', response)
 
-    // Guardar el token devuelto
     if (response.token) {
-      localStorage.setItem('authToken', response.token)
-      toast.success('Registro exitoso! Bienvenido ' + login.value + '!')
-      router.push('/') // Redireccionar a la página principal
-    } else {
-      toast.success('Registro exitoso! Ahora puedes iniciar sesión.')
+      toast.success('Registro exitoso!')
+      toast.info('Un administrador revisará tu solicitud y te dará acceso pronto')
       router.push('/login')
+    } else {
+      toast.error('Registro fallido: Token no recibido')
     }
   } catch (error: unknown) {
     toast.error(handleError(error, 'Registro fallido'))

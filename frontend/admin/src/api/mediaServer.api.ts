@@ -3,6 +3,7 @@ import env from '@/configs/env.config'
 
 const MEDIA_SERVER_URL = env.VITE_BACKEND_MEDIA_SERVER_URL
 
+// API para interactuar con el servidor de medios (subida de videos)
 export const mediaServerApi = {
   async uploadVideo(file: File, clientId: string) {
     const formData = new FormData()

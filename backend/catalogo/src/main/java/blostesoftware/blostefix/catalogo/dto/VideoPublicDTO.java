@@ -19,6 +19,7 @@ public class VideoPublicDTO implements Serializable {
     private String autor;
     private String descripcion;
     private int duracion;
+    private boolean isVisible;
     private String urlVideo;
     private String urlImagen;
     private LocalDateTime fechaSubida;
@@ -32,6 +33,7 @@ public class VideoPublicDTO implements Serializable {
         videoDTO.setTitulo(v.getTitulo());
         videoDTO.setAutor(v.getAutor());
         videoDTO.setDescripcion(v.getDescripcion());
+        videoDTO.setVisible(v.isVisible());
         videoDTO.setDuracion(v.getDuracion());
         videoDTO.setUrlVideo(v.getUrlVideo());
         videoDTO.setUrlImagen(v.getUrlImagen());

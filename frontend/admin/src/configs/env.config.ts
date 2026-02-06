@@ -6,6 +6,7 @@ interface EnvConfig {
   VITE_APP_ENV?: string
 }
 
+// Carga de variables de entorno con valores predeterminados
 export const env: EnvConfig = {
   VITE_BACKEND_MEDIA_SERVER_URL:
     import.meta.env.VITE_BACKEND_MEDIA_SERVER_URL || 'http://localhost:4000',

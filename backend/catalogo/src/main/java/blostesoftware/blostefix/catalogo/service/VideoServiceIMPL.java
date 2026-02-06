@@ -145,7 +145,6 @@ public class VideoServiceIMPL implements VideoService {
         video.setTitulo(videoDTO.getTitulo());
         video.setAutor(videoDTO.getAutor());
         video.setDescripcion(videoDTO.getDescripcion());
-        video.setDuracion(videoDTO.getDuracion());
         video.setVisible(videoDTO.isVisible());
 
         // Actualizar categorías si están presentes en el DTO
@@ -165,7 +164,7 @@ public class VideoServiceIMPL implements VideoService {
             video.setCategorias(categorias);
         }
 
-        // NO actualizar: idVideo, urlVideo, urlImagen (son generados por el sistema)
+        // NO actualizar: duracion, idVideo, urlVideo, urlImagen (son generados por el sistema)
 
         videoRepository.save(video);
         return VideoPostDTO.convertToDTO(video);

@@ -2,7 +2,7 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from './router/router'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
@@ -28,13 +28,17 @@ app.use(Toast, {
   transition: 'Vue-Toastification__fade',
   maxToasts: 10,
   newestOnTop: true,
-  filterBeforeCreate: (toast: any, toasts: any[]) => {
-    if (toasts.filter((t) => t.type === toast.type).length !== 0) {
-      // Returning false discards the toast
-      return false
-    }
-    // You can modify the toast if you want
-    return toast
+  filterToasts: (toasts: any[]) => {
+    // Keep track of existing types
+    const types: Record<string, boolean> = {}
+    return toasts.reduce((aggToasts, toast) => {
+      // Check if type was not seen before
+      if (!types[toast.type]) {
+        aggToasts.push(toast)
+        types[toast.type] = true
+      }
+      return aggToasts
+    }, [])
   },
 })
 

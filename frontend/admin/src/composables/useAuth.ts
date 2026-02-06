@@ -1,6 +1,7 @@
 import { ref } from 'vue'
-import { importSPKI, jwtVerify } from 'jose'
+import { decodeJwt, importSPKI, jwtVerify } from 'jose'
 import publicKeyPem from '@/keys/public.pem?raw'
+import { authApi } from '@/api/auth.api'
 import { handleError } from '@/middlewares/errorHandler'
 
 interface DecodedToken {
@@ -49,9 +50,58 @@ export function useAuth() {
     return localStorage.getItem('authToken')
   }
 
+  // Obtener refresh token del localStorage
+  function getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken')
+  }
+
+  // Verificar si el token ha expirado o está a punto de expirar
+  function isTokenExpired(token: string): boolean {
+    //Tiempo de gracia para renovar el token antes de que expire
+    const TOKEN_EXPIRY_MARGIN_SECONDS = 120
+    try {
+      const { exp } = decodeJwt(token)
+      if (!exp) return false
+      const now = Math.floor(Date.now() / 1000)
+      return exp <= now + TOKEN_EXPIRY_MARGIN_SECONDS
+    } catch (error) {
+      handleError(error, 'No se pudo leer el token')
+      return true
+    }
+  }
+
+  // Renovar el token usando el refresh token
+  async function refreshAccessToken(): Promise<string | null> {
+    try {
+      const refreshToken = getRefreshToken()
+      if (!refreshToken) return null
+      const response = await authApi.refreshToken(refreshToken)
+      if (response?.access_token) {
+        localStorage.setItem('authToken', response.access_token)
+      }
+      if (response?.refresh_token) {
+        localStorage.setItem('refreshToken', response.refresh_token)
+      }
+      return response?.access_token ?? null
+    } catch (error) {
+      handleError(error, 'Error al renovar el token')
+      return null
+    }
+  }
+
+  // Obtener un token válido, renovándolo si fuese necesario
+  async function getValidToken(): Promise<string | null> {
+    const token = getToken()
+    if (!token) return null
+    if (isTokenExpired(token)) {
+      return await refreshAccessToken()
+    }
+    return token
+  }
+
   // Verificar si el usuario está autenticado y es admin
   async function isAuthenticated(): Promise<boolean> {
-    const token = getToken()
+    const token = await getValidToken()
     if (!token) return false
 
     return await checkAdminStatus(token)
@@ -63,6 +113,7 @@ export function useAuth() {
     decodeToken,
     checkAdminStatus,
     getToken,
+    getValidToken,
     isAuthenticated,
   }
 }

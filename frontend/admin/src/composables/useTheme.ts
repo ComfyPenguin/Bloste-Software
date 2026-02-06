@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 const isDark = ref(false)
 const THEME_KEY = 'vueuse-color-scheme'
 
-// Function to apply the theme to the HTML element
+// Funcion para aplicar el tema oscuro o claro
 function applyTheme(dark: boolean) {
   if (dark) {
     document.documentElement.classList.add('dark')
@@ -14,26 +14,26 @@ function applyTheme(dark: boolean) {
 
 export function useTheme() {
   onMounted(() => {
-    // Read theme from localStorage on mount
+    // Leer el tema almacenado en localStorage o usar la preferencia del sistema
     const storedTheme = localStorage.getItem(THEME_KEY)
     if (storedTheme === 'dark') {
       isDark.value = true
     } else if (storedTheme === 'light') {
       isDark.value = false
     } else {
-      // If no stored theme, check prefers-color-scheme
+      // Si no hay tema almacenado, usar la preferencia del sistema
       isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
     }
     applyTheme(isDark.value)
   })
 
-  // Watch for changes in isDark and apply theme
+  // Observar cambios en isDark y aplicar el tema
   watch(isDark, (newVal) => {
     applyTheme(newVal)
     localStorage.setItem(THEME_KEY, newVal ? 'dark' : 'light')
   })
 
-  // Function to toggle the theme
+  // Funcion para alternar el tema
   function toggleTheme() {
     isDark.value = !isDark.value
   }

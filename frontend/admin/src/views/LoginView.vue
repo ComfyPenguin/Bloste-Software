@@ -12,13 +12,17 @@ const password = ref('')
 const router = useRouter()
 const { checkAdminStatus } = useAuth()
 
+// Función para manejar el inicio de sesión
 const login = async () => {
   try {
     const response = await authApi.login({ login: email.value, password: password.value })
-    console.log('Login successful:', response)
 
     if (response.access_token) {
       localStorage.setItem('authToken', response.access_token)
+      console.log('Access token almacenado:', response.access_token)
+      if (response.refresh_token) {
+        localStorage.setItem('refreshToken', response.refresh_token)
+      }
 
       // Verificar si es admin
       const isAdmin = await checkAdminStatus(response.access_token)
@@ -28,6 +32,7 @@ const login = async () => {
         router.push('/') // Redireccionar a la página principal después del login
       } else {
         localStorage.removeItem('authToken')
+        localStorage.removeItem('refreshToken')
         toast.error('Solo administradores pueden acceder a esta aplicación')
         email.value = ''
         password.value = ''

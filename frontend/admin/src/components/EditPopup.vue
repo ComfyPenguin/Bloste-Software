@@ -2,11 +2,12 @@
 import { ref, watch } from 'vue'
 import DataForm from './DataForm.vue'
 import type { FormData } from '@/types/content.type'
-import { catalogoApi } from '@/api/catalogo.api'
+import type { Catalogo } from '@/types/categories.type'
 import { useToast } from '@/composables/useToast'
 
 const props = defineProps<{
   itemId: number | null
+  item: Catalogo | null
   visible: boolean
 }>()
 
@@ -18,46 +19,62 @@ const formData = ref<FormData>({
   descripcion: '',
   autor: '',
   categorias: [],
-  duracion: 0,
   visible: true,
 })
 
+// Evitar scroll del fondo cuando el popup está abierto
 watch(
   () => props.visible,
-  async (isVisible) => {
-    if (isVisible && props.itemId) {
-      try {
-        const item = await catalogoApi.getContentById(props.itemId)
-        formData.value = {
-          titulo: item.titulo,
-          descripcion: item.descripcion,
-          autor: item.autor,
-          categorias: Array.isArray(item.categoria) ? item.categoria.map((c) => c.nombre) : [],
-          duracion: item.duracion,
-          visible: true, // `visible` is not part of Catalogo, default to true
-          idVideo: item.idVideo,
-          urlImagen: item.urlImagen,
-          urlVideo: item.urlVideo,
-        }
-      } catch (error) {
-        toast.error('No se pudo cargar la información para editar.')
-        console.error(error)
-        handleClose()
-      }
+  (isVisible) => {
+    if (isVisible) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
     }
   },
 )
 
+// Actualizar el estado del formulario cuando se abra el popup con un nuevo item
+watch([() => props.visible, () => props.item], async ([isVisible, item]) => {
+  if (isVisible && item) {
+    try {
+      const categoriasFromItem = Array.isArray(item.categorias)
+        ? item.categorias.map((c) => c.nombre.charAt(0).toUpperCase() + c.nombre.slice(1))
+        : []
+      formData.value = {
+        titulo: item.titulo,
+        descripcion: item.descripcion,
+        autor: item.autor,
+        categorias: categoriasFromItem,
+        visible: Boolean(item.visible),
+      }
+    } catch (error) {
+      toast.error('No se pudo cargar la información para editar.')
+      console.error(error)
+      handleClose()
+    }
+  }
+})
+
+// Funciones para manejar eventos del popup
 function handleFormUpdate(newFormState: FormData) {
   formData.value = newFormState
 }
 
+// Función para manejar el guardado de cambios desde el popup de edición
 function handleSave() {
   if (props.itemId) {
-    emit('save', { ...formData.value })
+    emit('save', {
+      titulo: formData.value.titulo,
+      descripcion: formData.value.descripcion,
+      autor: formData.value.autor,
+      categorias: formData.value.categorias,
+      visible: formData.value.visible,
+    })
   }
 }
 
+// Función para manejar el cierre del popup
 function handleClose() {
   emit('close')
 }
@@ -131,6 +148,8 @@ function handleClose() {
 .popup-body {
   overflow-y: auto;
   flex-grow: 1;
+  padding-right: 1rem;
+  margin-right: -1rem;
 }
 
 .popup-footer {

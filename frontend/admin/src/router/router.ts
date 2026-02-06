@@ -4,6 +4,7 @@ import EditView from '../views/EditView.vue'
 import LoginView from '../views/LoginView.vue'
 import SigninView from '../views/SigninView.vue'
 import { useAuth } from '../composables/useAuth'
+import { useToast } from 'vue-toastification'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,19 +41,21 @@ router.beforeEach(async (to, from, next) => {
   const { requiresAdmin, requiresGuest } = to.meta
   const { isAuthenticated } = useAuth()
   const isAdmin = await isAuthenticated()
+  const toast = useToast()
 
-  // Si requiere ser guest (no estar logeado) pero está logeado, redirigir a home
+  // Si la ruta requiere ser invitado y el usuario es admin, redirigir al home
   if (requiresGuest && isAdmin) {
     next('/')
     return
   }
 
+  // Si la ruta requiere ser admin, verificar el estado de autenticación
   if (requiresAdmin) {
     if (isAdmin) {
       next()
     } else {
-      alert('Solo administradores pueden acceder a esta página')
       next('/login')
+      toast.error('Solo los administradores tienen acceso a esa dirección')
     }
   } else {
     next()

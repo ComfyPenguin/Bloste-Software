@@ -11,7 +11,7 @@ const props = defineProps<{
   form: FormData
 }>()
 
-// Local state for all form fields
+// Estado local para el formulario, inicializado con los valores de props.form
 const form = reactive<FormData>({
   titulo: props.form.titulo,
   descripcion: props.form.descripcion,
@@ -21,12 +21,12 @@ const form = reactive<FormData>({
   duracion: props.form.duracion,
 })
 
-// State for the new category UI
+// Estado para la nueva categoría en la UI
 const availableCategories = ref<string[]>([])
 const newCategoryInput = ref('')
 
-// Fetch available categories when the component is mounted
-onMounted(async () => {
+// Función para cargar las categorías
+async function fetchCategories() {
   try {
     const response = await catalogoApi.getCategories()
     // Extrae los nombres de las categorías del array content
@@ -38,9 +38,19 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error fetching categories:', error)
   }
+}
+
+// Cargar las categorías disponibles al montar el componente
+onMounted(async () => {
+  await fetchCategories()
 })
 
-// Function to add a category to the list
+// Exponer la función para que el componente padre pueda refetchear
+defineExpose({
+  fetchCategories,
+})
+
+// Función para añadir una categoría a la lista
 function addCategory(category: string) {
   const cat = category.trim()
   if (cat && !form.categorias.includes(cat)) {
@@ -48,18 +58,18 @@ function addCategory(category: string) {
   }
 }
 
-// Function to handle the submission of a new category
+// Función para manejar el envío de una nueva categoría
 function handleNewCategorySubmit() {
   addCategory(newCategoryInput.value)
-  newCategoryInput.value = '' // Clear input
+  newCategoryInput.value = ''
 }
 
-// Function to remove a category from the list
+// Función para eliminar una categoría de la lista
 function removeCategory(categoryToRemove: string) {
   form.categorias = form.categorias.filter((cat) => cat !== categoryToRemove)
 }
 
-// Watch for changes in the form prop from the parent
+// Vigilar cambios y actualizar el estado local del formulario en consecuencia
 watch(
   () => props.form,
   (newVal) => {
@@ -73,7 +83,7 @@ watch(
   { deep: true },
 )
 
-// Watch for any changes in the form object and emit them to the parent
+// Vigilar cambios en el objeto form y emitirlos al componente padre
 watch(
   form,
   (newFormState) => {
@@ -279,9 +289,12 @@ watch(
 
 .available-categories {
   display: flex;
-  overflow-x: auto;
+  flex-wrap: wrap;
   gap: 0.5rem;
+  overflow-x: auto;
   padding-bottom: 10px; /* Space for scrollbar */
+  max-height: calc(3 * (1.5rem + 0.8rem + 0.5rem)); /* 3 rows */
+  align-content: flex-start;
 }
 
 .category-tag {

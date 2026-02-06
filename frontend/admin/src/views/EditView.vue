@@ -5,7 +5,7 @@ import type { Catalogo } from '@/types/categories.type'
 import type { FormData } from '@/types/content.type'
 import CatalogCard from '@/components/CatalogCard.vue'
 import EditPopup from '@/components/EditPopup.vue'
-import Pagination from '@/components/Pagination.vue'
+import PageNavigator from '@/components/PageNavigator.vue'
 import { useToast } from '@/composables/useToast'
 
 const contentList = ref<Catalogo[]>([])
@@ -21,6 +21,7 @@ const pageSize = ref(18)
 
 const toast = useToast()
 
+// Función para cargar el contenido paginado
 async function fetchContent(page = 0) {
   isLoading.value = true
   try {
@@ -39,18 +40,27 @@ async function fetchContent(page = 0) {
   }
 }
 
+// Cargar el contenido al montar el componente
 onMounted(() => fetchContent(currentPage.value))
 
-function handleCardClick(item: Catalogo) {
-  selectedItem.value = item
-  isPopupVisible.value = true
+async function handleCardClick(item: Catalogo) {
+  try {
+    const fullItem = await catalogoApi.getContentById(item.id)
+    selectedItem.value = fullItem
+    isPopupVisible.value = true
+  } catch (error) {
+    toast.error('Error al cargar el contenido seleccionado.')
+    console.error(error)
+  }
 }
 
+// Función para manejar el cierre del popup de edición
 function handleClosePopup() {
   isPopupVisible.value = false
   selectedItem.value = null
 }
 
+// Función para manejar el guardado de cambios desde el popup de edición
 async function handleSaveChanges(updatedData: FormData) {
   if (!selectedItem.value) return
 
@@ -65,6 +75,7 @@ async function handleSaveChanges(updatedData: FormData) {
   }
 }
 
+// Función para manejar el cambio de página desde el PageNavigator
 function handlePageChange(page: number) {
   fetchContent(page)
 }
@@ -89,7 +100,7 @@ function handlePageChange(page: number) {
           @click="handleCardClick(item)"
         />
       </div>
-      <Pagination
+      <PageNavigator
         :current-page="currentPage"
         :total-pages="totalPages"
         :total-elements="totalElements"
@@ -99,6 +110,7 @@ function handlePageChange(page: number) {
 
     <EditPopup
       :item-id="selectedItem?.id ?? null"
+      :item="selectedItem"
       :visible="isPopupVisible"
       @close="handleClosePopup"
       @save="handleSaveChanges"

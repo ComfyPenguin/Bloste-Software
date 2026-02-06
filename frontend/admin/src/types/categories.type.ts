@@ -4,12 +4,13 @@ export interface Categoria {
 }
 
 export interface Catalogo {
+  visible: boolean
   id: number
   titulo: string
   descripcion: string
   autor: string
   duracion: number
-  categoria: Categoria[]
+  categorias: Categoria[]
   fechaSubida: string
   fechaActualizacion: string
   idVideo: string

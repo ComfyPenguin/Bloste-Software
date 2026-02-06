@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import { RouterLink, RouterView, useRouter, useRoute } from 'vue-router'
 import { useTheme } from './composables/useTheme'
 import { authApi } from './api/auth.api'
+import { useAuth } from './composables/useAuth'
 import { handleError } from './middlewares/errorHandler'
 
 // Importar los assets
@@ -14,9 +15,10 @@ import logoDark from './assets/full_logo_white.png'
 const { isDark, toggleTheme } = useTheme()
 const router = useRouter()
 const route = useRoute()
-const userName = ref('Usuario')
+const userName = ref('')
 const isMobileMenuOpen = ref(false)
 const isLoggedIn = ref(false)
+const { getValidToken } = useAuth()
 
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -24,16 +26,13 @@ function toggleMobileMenu() {
 
 // Función para refrescar el estado de autenticación y obtener la información del usuario
 const refreshAuthState = async () => {
-  const token = localStorage.getItem('authToken')
-  console.log('Token from localStorage:', token)
+  const token = await getValidToken()
   if (token) {
     isLoggedIn.value = true
     try {
       const userInfo = await authApi.getUserInfo(token)
-      console.log('User info received:', userInfo)
       if (userInfo.name) {
         userName.value = userInfo.name
-        console.log('Username set to:', userInfo.name)
       }
     } catch (error) {
       handleError(error, 'Error al obtener la información del usuario')
@@ -60,7 +59,8 @@ watch(
 // Función para cerrar sesión
 const logout = () => {
   localStorage.removeItem('authToken')
-  userName.value = 'Usuario'
+  localStorage.removeItem('refreshToken')
+  userName.value = ''
   isLoggedIn.value = false
   router.push('/login')
 }
@@ -88,7 +88,9 @@ const logout = () => {
               class="theme-icon"
             />
           </button>
-          <span v-if="isLoggedIn" class="user-name">{{ userName }}</span>
+          <span v-if="isLoggedIn" class="user-name">{{
+            userName.charAt(0).toUpperCase() + userName.slice(1)
+          }}</span>
           <button v-if="isLoggedIn" @click="logout" class="logout-button">Logout</button>
         </div>
       </div>
@@ -112,7 +114,9 @@ const logout = () => {
         <button @click="toggleTheme" class="theme-toggle">
           <img :src="isDark ? lightModeIcon : darkModeIcon" alt="Toggle Theme" class="theme-icon" />
         </button>
-        <span v-if="isLoggedIn" class="user-name">{{ userName }}</span>
+        <span v-if="isLoggedIn" class="user-name">{{
+          userName.charAt(0).toUpperCase() + userName.slice(1)
+        }}</span>
         <button v-if="isLoggedIn" @click="logout" class="logout-button">Logout</button>
       </div>
     </div>

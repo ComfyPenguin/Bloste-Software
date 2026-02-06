@@ -26,7 +26,7 @@ class Endpoints(StrEnum):
         return self.value
 
 # Token Expiration Times (in seconds)
-ACCESS_TOKEN_EXPIRES_IN = 3600  # 1 hour
+ACCESS_TOKEN_EXPIRES_IN = 300  # 5 minutes
 LOGIN_TOKEN_EXPIRES_IN = 300   # 5 minutes
 REFRESH_TOKEN_EXPIRES_IN = 604800 # 7 days
 

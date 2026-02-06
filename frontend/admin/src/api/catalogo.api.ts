@@ -2,18 +2,28 @@ import type { FormData } from '@/types/content.type'
 import env from '@/configs/env.config'
 import axios from 'axios'
 import type { ApiResponseCategories, ApiResponseContent, Catalogo } from '@/types/categories.type'
+import { useAuth } from '@/composables/useAuth'
 
 const CATALOGO_URL = env.VITE_BACKEND_CATALOGO_URL
+const { getValidToken } = useAuth()
 
 export const catalogoApi = {
+  async getAuthHeader() {
+    const token = await getValidToken()
+    if (!token) {
+      throw new Error('Token de autenticación no encontrado')
+    }
+    return { Authorization: `Bearer ${token}` }
+  },
+
   // Guarda el contenido completo (formulario + datos del video procesado)
-  // TODO: Agregar token de autenticación en el header
-  async saveContent(data: FormData, token: string) {
+  async saveContent(data: FormData) {
     try {
+      const authHeader = await this.getAuthHeader()
       const response = await axios.post(`${CATALOGO_URL}/api/catalogo`, data, {
         headers: {
           'Content-Type': 'application/json',
-          // Authorization: `Bearer ${token}`,
+          ...authHeader,
         },
       })
       return response.data
@@ -24,28 +34,50 @@ export const catalogoApi = {
 
   // Obtener contenidos paginados
   async getContentsPaginated(page: number = 0, size: number = 10) {
+    const authHeader = await this.getAuthHeader()
+    console.log('Obteniendo contenidos paginados con token:', authHeader.Authorization)
     const response = await axios.get<ApiResponseContent>(
       `${CATALOGO_URL}/api/catalogo?page=${page}&size=${size}`,
+      {
+        headers: {
+          ...authHeader,
+        },
+      },
     )
     return response.data
   },
 
   // Obtener todos los videos
   async getAllContents() {
-    const response = await axios.get<ApiResponseContent>(`${CATALOGO_URL}/api/catalogo/all`)
+    const authHeader = await this.getAuthHeader()
+    const response = await axios.get<ApiResponseContent>(`${CATALOGO_URL}/api/catalogo`, {
+      headers: {
+        ...authHeader,
+      },
+    })
     return response.data
   },
 
   // Obtener las categorías
   async getCategories() {
-    const response = await axios.get<ApiResponseCategories>(`${CATALOGO_URL}/api/categorias`)
+    const authHeader = await this.getAuthHeader()
+    const response = await axios.get<ApiResponseCategories>(`${CATALOGO_URL}/api/categorias`, {
+      headers: {
+        ...authHeader,
+      },
+    })
     return response.data
   },
 
   // Obtener contenido por su ID
   async getContentById(id: number) {
     try {
-      const response = await axios.get<Catalogo>(`${CATALOGO_URL}/api/catalogo/${id}`)
+      const authHeader = await this.getAuthHeader()
+      const response = await axios.get<Catalogo>(`${CATALOGO_URL}/api/catalogo/${id}`, {
+        headers: {
+          ...authHeader,
+        },
+      })
       return response.data
     } catch {
       throw new Error('Error al obtener el contenido por ID')
@@ -55,9 +87,11 @@ export const catalogoApi = {
   // Actualizar un contenido existente
   async updateContent(id: number, data: FormData) {
     try {
+      const authHeader = await this.getAuthHeader()
       const response = await axios.put(`${CATALOGO_URL}/api/catalogo/${id}`, data, {
         headers: {
           'Content-Type': 'application/json',
+          ...authHeader,
         },
       })
       return response.data

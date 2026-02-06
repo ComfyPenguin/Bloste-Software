@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['page-change'])
 
+// Computed property para generar un array de números de página basado en el total de páginas
 const pageNumbers = computed(() => {
   const pages = []
   for (let i = 0; i < props.totalPages; i++) {
@@ -17,6 +18,7 @@ const pageNumbers = computed(() => {
   return pages
 })
 
+// Función para manejar el cambio de página, emitiendo el nuevo número de página al componente padre
 function changePage(page: number) {
   if (page >= 0 && page < props.totalPages) {
     emit('page-change', page)

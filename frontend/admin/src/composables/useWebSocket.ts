@@ -101,6 +101,7 @@ export class WebSocketService {
   }
 }
 
+// Composable para usar el servicio WebSocket en componentes Vue
 export function useWebSocket() {
   const service = new WebSocketService()
 

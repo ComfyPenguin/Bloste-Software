@@ -4,13 +4,14 @@ import VideoUploader from '@/components/VideoUploader.vue'
 import DataForm from '@/components/DataForm.vue'
 import { catalogoApi } from '@/api/catalogo.api'
 import { mediaServerApi } from '@/api/mediaServer.api'
-import { useWebSocket } from '@/services/webSocket.service.ts'
+import { useWebSocket } from '@/composables/useWebSocket'
 import { generateClientId } from '@/utils/idGenerator.ts'
 import type { WebSocketMessageData } from '@/types/websocket.type'
 import type { FormData } from '@/types/content.type'
 import { useToast } from '@/composables/useToast'
 
 const videoUploader = ref<InstanceType<typeof VideoUploader> | null>(null)
+const dataForm = ref<InstanceType<typeof DataForm> | null>(null)
 const videoFile = ref<File | null>(null)
 const videoMetadata = ref<FormData>({
   titulo: '',
@@ -22,8 +23,7 @@ const videoMetadata = ref<FormData>({
 })
 const isSubmitting = ref(false)
 const clientId = generateClientId()
-const { success, error, info } = useToast()
-
+const toast = useToast()
 const { connect, onVideoProcessed, onVideoFailed, onUnexpectedClose, disconnect } = useWebSocket()
 
 // Manejar el evento de video procesado
@@ -38,10 +38,10 @@ onVideoProcessed(async (data: WebSocketMessageData) => {
       urlVideo: data.metadata?.hlsPath ?? videoMetadata.value.urlVideo,
     }
     await catalogoApi.saveContent(contentToSave)
-    success(`Video: ${contentToSave.titulo}\nGuardado correctamente en el catálogo.`)
+    toast.success(`Video: ${contentToSave.titulo}\nGuardado correctamente en el catálogo.`)
     clearForm()
   } catch (err) {
-    error(`Video: ${videoMetadata.value.titulo}\nError al guardar el video en el catálogo.`)
+    toast.error(`Video: ${videoMetadata.value.titulo}\nError al guardar el video en el catálogo.`)
     console.error(err)
   } finally {
     isSubmitting.value = false
@@ -51,7 +51,7 @@ onVideoProcessed(async (data: WebSocketMessageData) => {
 
 // Manejar errores desde el WebSocket
 onVideoFailed((data: WebSocketMessageData) => {
-  error(`Error en el procesado: ${data.error}`)
+  toast.error(`Error en el procesado: ${data.error}`)
   isSubmitting.value = false
   disconnect()
 })
@@ -59,7 +59,7 @@ onVideoFailed((data: WebSocketMessageData) => {
 // Manejar cierre inesperado del WebSocket
 onUnexpectedClose(() => {
   if (isSubmitting.value) {
-    error('Se ha perdido la conexión con el servidor de procesado de videos.')
+    toast.error('Se ha perdido la conexión con el servidor de procesado de videos.')
     isSubmitting.value = false
   }
 })
@@ -103,11 +103,16 @@ function clearForm() {
   if (videoUploader.value) {
     videoUploader.value.resetUploader()
   }
+
+  // Refetchear las categorías
+  if (dataForm.value) {
+    dataForm.value.fetchCategories()
+  }
 }
 
 async function submit() {
   if (isFormInvalid.value || !videoFile.value) {
-    info('Por favor, completa todos los campos requeridos y selecciona un video.')
+    toast.info('Por favor, completa todos los campos requeridos y selecciona un video.')
     return
   }
 
@@ -115,11 +120,11 @@ async function submit() {
 
   // Conectar el WebSocket al enviar el video
   try {
-    info('Procesando video...')
+    toast.info('Procesando video...')
     connect(clientId)
     await mediaServerApi.uploadVideo(videoFile.value, clientId)
   } catch (err) {
-    error(`Video: ${videoMetadata.value.titulo}\nError al procesar el video.`)
+    toast.error(`Video: ${videoMetadata.value.titulo}\nError al procesar el video.`)
     console.error(err)
     isSubmitting.value = false
   }
@@ -138,7 +143,7 @@ async function submit() {
           />
         </div>
         <div class="form-section">
-          <DataForm :form="videoMetadata" @update:form="handleFormUpdate" />
+          <DataForm ref="dataForm" :form="videoMetadata" @update:form="handleFormUpdate" />
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import env from '@/configs/env.config'
 
+// Middleware para manejar errores de forma centralizada
 export function handleError(error: unknown, fallbackMessage = 'Ha ocurrido un error'): string {
   const isDev = env.VITE_APP_ENV === 'development'
 
@@ -13,7 +14,7 @@ export function handleError(error: unknown, fallbackMessage = 'Ha ocurrido un er
   }
 
   if (isDev) {
-    // Detalle completo en desarrollo
+    // Detalles completos en desarrollo
     console.error(error)
   }
 

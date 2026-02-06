@@ -9,10 +9,12 @@ const fileInput = ref<HTMLInputElement | null>(null)
 
 const emit = defineEmits(['update:file', 'update:videoTitle'])
 
+// Función para manejar el cambio de archivo en el input
 function handleFileChange(event: Event) {
   const target = event.target as HTMLInputElement
   const selectedFile = target.files?.[0]
 
+  // Validar que se ha seleccionado un archivo y que es un video
   if (selectedFile && selectedFile.type.startsWith('video/')) {
     file.value = selectedFile
 
@@ -47,6 +49,7 @@ function handleFileChange(event: Event) {
   }
 }
 
+// Función para resetear el uploader
 function resetUploader() {
   file.value = null
   videoSrc.value = null
