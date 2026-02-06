@@ -1,0 +1,6 @@
+# Forzar line endings LF para scripts de shell (necesario para Docker)
+*.sh text eol=lf
+
+# Archivos binarios (no convertir line endings)
+*.pem binary
+*.key binary
