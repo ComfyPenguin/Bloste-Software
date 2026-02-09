@@ -3,7 +3,10 @@ import 'package:blosteflix2/core/media_locator.dart';
 import 'package:blosteflix2/domain/entities/video.dart';
 import 'package:blosteflix2/presentation/screens/videos/video_player_screen.dart';
 import 'package:blosteflix2/presentation/widgets/miniaturas_card.dart';
+import 'package:blosteflix2/presentation/services/auth_token_service.dart';
+import 'package:blosteflix2/infrastructure/data_sources/auth_local_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -23,10 +26,16 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _isLoading = false;
   bool _hasMore = true;
   bool _hasError = false;
+  String? _authToken;
+  late AuthTokenService _authTokenService;
 
   @override
   void initState() {
     super.initState();
+    _authTokenService = AuthTokenService(
+      AuthLocalStorage(const FlutterSecureStorage()),
+    );
+    _loadAuthToken();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200 &&
@@ -35,6 +44,20 @@ class _SearchScreenState extends State<SearchScreen> {
         _loadMore();
       }
     });
+  }
+
+  /// Carga el token de autenticación
+  Future<void> _loadAuthToken() async {
+    try {
+      final token = await _authTokenService.getAccessToken();
+      if (mounted) {
+        setState(() {
+          _authToken = token;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al cargar token: $e');
+    }
   }
 
   @override
@@ -65,10 +88,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
     try {
       final response = await CatalogoLocator().searchVideosUsecase.execute(
-            titulo: _query,
-            page: _currentPage,
-            size: _sizeToLoad,
-          );
+        titulo: _query,
+        page: _currentPage,
+        size: _sizeToLoad,
+      );
 
       if (!mounted) return;
 
@@ -171,7 +194,9 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 1,
+                  crossAxisCount: MediaQuery.of(context).size.width > 600
+                      ? 4
+                      : 1,
                   childAspectRatio: 1.3,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
@@ -179,7 +204,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     if (index == _results.length) {
-                      if (!_isLoading && !_hasMore) return const SizedBox.shrink();
+                      if (!_isLoading && !_hasMore)
+                        return const SizedBox.shrink();
                       return const Padding(
                         padding: EdgeInsets.all(16),
                         child: Center(child: CircularProgressIndicator()),
@@ -195,14 +221,20 @@ class _SearchScreenState extends State<SearchScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => VideoPlayerScreen(video: video),
+                            builder: (context) =>
+                                VideoPlayerScreen(video: video),
                           ),
                         );
                       },
-                      child: MiniaturasCard(thumbnailUrl: thumbnailUrl, video: video),
+                      child: MiniaturasCard(
+                        thumbnailUrl: thumbnailUrl,
+                        video: video,
+                        authToken: _authToken,
+                      ),
                     );
                   },
-                  childCount: _results.length + (_isLoading || _hasMore ? 1 : 0),
+                  childCount:
+                      _results.length + (_isLoading || _hasMore ? 1 : 0),
                 ),
               ),
             ),

@@ -2,10 +2,13 @@ import 'package:blosteflix2/core/catalogo_locator.dart';
 import 'package:blosteflix2/core/media_locator.dart';
 import 'package:blosteflix2/domain/entities/video.dart';
 import 'package:blosteflix2/presentation/widgets/miniaturas_card.dart';
+import 'package:blosteflix2/presentation/services/auth_token_service.dart';
+import 'package:blosteflix2/infrastructure/data_sources/auth_local_storage.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final Video video;
@@ -22,10 +25,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   String? _errorMessage;
   List<Video> _relatedVideos = [];
   bool _isLoadingRelated = true;
+  String? _authToken;
+  late AuthTokenService _authTokenService;
 
   // Mapa: etiqueta visible → sufijo real en la URL
   final Map<String, String> _qualityMap = {
-    'Auto': 'master.m3u8',      // Sufijo → redirige a master.m3u8 (adaptive)
+    'Auto': 'master.m3u8', // Sufijo → redirige a master.m3u8 (adaptive)
     '480p': '480/playlist.m3u8',
     '720p': '720/playlist.m3u8',
     '1080p': '1080/playlist.m3u8',
@@ -43,14 +48,43 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       DeviceOrientation.landscapeRight,
     ]);
 
+    // Inicializar servicio de autenticación
+    _authTokenService = AuthTokenService(
+      AuthLocalStorage(const FlutterSecureStorage()),
+    );
+
     // Calidad por defecto: Auto
     _selectedQualityLabel = 'Auto';
 
-    final String videoUrl = _getVideoUrl();
-    debugPrint('Intentando cargar video HLS desde: $videoUrl');
+    _loadAuthToken();
+  }
 
-    _initializePlayer(videoUrl);
-    _loadRelatedVideos();
+  /// Carga el token de autenticación del almacenamiento
+  Future<void> _loadAuthToken() async {
+    try {
+      final token = await _authTokenService.getAccessToken();
+      setState(() {
+        _authToken = token;
+      });
+
+      if (token != null) {
+        debugPrint('Token de autenticación cargado exitosamente');
+      } else {
+        debugPrint('Error: No se encontró token de autenticación');
+      }
+
+      // Proceder a cargar el video
+      final String videoUrl = _getVideoUrl();
+      debugPrint('Intentando cargar video HLS desde: $videoUrl');
+
+      _initializePlayer(videoUrl);
+      _loadRelatedVideos();
+    } catch (e) {
+      debugPrint('Error al cargar el token de autenticación: $e');
+      setState(() {
+        _errorMessage = 'Error de autenticación: $e';
+      });
+    }
   }
 
   String _getVideoUrl() {
@@ -62,11 +96,24 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   Future<void> _initializePlayer(String url) async {
     try {
-      _videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(url));
+      // Preparar headers con token de autenticación
+      final Map<String, String> headers = {};
+      if (_authToken != null) {
+        headers['Authorization'] = 'Bearer $_authToken';
+        debugPrint('Headers con token de autenticación');
+      } else {
+        debugPrint('Error: Se intenta cargar video sin token');
+      }
+
+      _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(url),
+        httpHeaders: headers,
+      );
 
       _videoPlayerController!.addListener(() {
         if (_videoPlayerController!.value.hasError) {
-          final error = _videoPlayerController!.value.errorDescription ??
+          final error =
+              _videoPlayerController!.value.errorDescription ??
               'Error desconocido en el reproductor';
           debugPrint('Error del VideoPlayer: $error');
           if (mounted) {
@@ -209,7 +256,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       // Opcional: mostrar SnackBar de error
     }
   }
-  
 
   @override
   void dispose() {
@@ -245,21 +291,34 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(label, style: const TextStyle(color: Colors.white)),
+                        Text(
+                          label,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         if (label == _selectedQualityLabel)
-                          const Icon(Icons.check, color: Colors.white, size: 20),
+                          const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                       ],
                     ),
                   );
                 }).toList(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         _selectedQualityLabel,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       ),
                       const Icon(Icons.arrow_drop_down, color: Colors.white),
                     ],
@@ -291,10 +350,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child: _buildPlayer(),
-        ),
+        AspectRatio(aspectRatio: 16 / 9, child: _buildPlayer()),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -304,9 +360,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 Text(
                   widget.video.title,
                   style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -322,9 +379,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 const Text(
                   'Videos relacionados',
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 _otherVideos(),
@@ -337,37 +395,39 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   // Reemplaza completamente el método _otherVideos()
-Widget _otherVideos() {
-  if (_isLoadingRelated) {
-    return const Center(
-      child: CircularProgressIndicator(color: Colors.white),
-    );
-  }
+  Widget _otherVideos() {
+    if (_isLoadingRelated) {
+      return const Center(
+        child: CircularProgressIndicator(color: Colors.white),
+      );
+    }
 
-  if (_relatedVideos.isEmpty) {
-    return const Text(
-      'No hay vídeos relacionados',
-      style: TextStyle(color: Colors.grey, fontSize: 16),
-    );
-  }
-  // Todo, adaptar gridvideos() para que sea mas universal y gastarlo aqui. Hecho, falta implementar.
-  return GridView.builder(
-      shrinkWrap: true, // Importante: permite incrustar en SingleChildScrollView
-      physics: const NeverScrollableScrollPhysics(), // El scroll lo controla el padre
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 1, // 2 columnas en móvil → buen uso del espacio
-      childAspectRatio: 1.3, // Formato típico de miniaturas
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-    ),
-    itemCount: _relatedVideos.length,
+    if (_relatedVideos.isEmpty) {
+      return const Text(
+        'No hay vídeos relacionados',
+        style: TextStyle(color: Colors.grey, fontSize: 16),
+      );
+    }
+    // Todo, adaptar gridvideos() para que sea mas universal y gastarlo aqui. Hecho, falta implementar.
+    return GridView.builder(
+      shrinkWrap:
+          true, // Importante: permite incrustar en SingleChildScrollView
+      physics:
+          const NeverScrollableScrollPhysics(), // El scroll lo controla el padre
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 1, // 2 columnas en móvil → buen uso del espacio
+        childAspectRatio: 1.3, // Formato típico de miniaturas
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: _relatedVideos.length,
       itemBuilder: (context, index) {
-      final video = _relatedVideos[index];
-      final remoteUrl = MediaLocator().getRemoteURL();
-      final thumbnailUrl = '$remoteUrl${video.urlthumbnail}';
+        final video = _relatedVideos[index];
+        final remoteUrl = MediaLocator().getRemoteURL();
+        final thumbnailUrl = '$remoteUrl${video.urlthumbnail}';
 
-      return GestureDetector(
-        onTap: () {
+        return GestureDetector(
+          onTap: () {
             Navigator.pushReplacement(
               context,
               PageRouteBuilder(
@@ -383,10 +443,7 @@ Widget _otherVideos() {
               ),
             );
           },
-        child: MiniaturasCard(
-          thumbnailUrl: thumbnailUrl,
-          video: video,
-          ),
+          child: MiniaturasCard(thumbnailUrl: thumbnailUrl, video: video),
         );
       },
     );
@@ -406,9 +463,7 @@ Widget _otherVideos() {
           backgroundColor: Colors.black,
           appBar: orientation == Orientation.landscape
               ? null
-              : AppBar(
-                  title: Text(widget.video.title),
-                ),
+              : AppBar(title: Text(widget.video.title)),
           body: orientation == Orientation.landscape
               ? Center(child: _buildPlayer())
               : _buildPortraitLayout(),
