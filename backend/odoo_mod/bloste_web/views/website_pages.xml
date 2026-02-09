@@ -23,26 +23,26 @@
                     </div>
                 </div>
 
-                <!-- Features Section -->
+                <!-- Seccio de caracteristiques -->
                 <div class="container my-5">
                     <div class="row text-center g-4">
                         <div class="col-md-4">
                             <div class="p-4">
-                                <h2 class="mb-3">📱</h2>
+                                <h2 class="mb-3">💻</h2>
                                 <h5 class="fw-bold">Multiplataforma</h5>
                                 <p class="fw-medium" style="color: #2d2d2d;">Disponible en todos tus dispositivos</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-4">
-                                <h2 class="mb-3">🎯</h2>
+                                <h2 class="mb-3">✓</h2>
                                 <h5 class="fw-bold">Sin Compromisos</h5>
                                 <p class="fw-medium" style="color: #2d2d2d;">Cancela cuando quieras</p>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="p-4">
-                                <h2 class="mb-3">⚡</h2>
+                                <h2 class="mb-3">★</h2>
                                 <h5 class="fw-bold">Alta Calidad</h5>
                                 <p class="fw-medium" style="color: #2d2d2d;">Streaming en HD y 4K</p>
                             </div>
@@ -391,6 +391,39 @@
             <field name="view_id" ref="login_registro_page_view"/>
             <field name="website_id" ref="bloste_website"/>
             <field name="is_published">True</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- MENÚS DEL SITIO WEB - Navegación superior -->
+        <!-- ============================================ -->
+        
+        <!-- Menú: Inicio -->
+        <record id="website_menu_home" model="website.menu">
+            <field name="name">Inicio</field>
+            <field name="url">/</field>
+            <field name="page_id" ref="website_page_home"/>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">10</field>
+            <field name="website_id" ref="bloste_website"/>
+        </record>
+
+        <!-- Menú: Planes -->
+        <record id="website_menu_suscripciones" model="website.menu">
+            <field name="name">Planes</field>
+            <field name="url">/suscripciones</field>
+            <field name="page_id" ref="website_page_suscripciones"/>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">20</field>
+            <field name="website_id" ref="bloste_website"/>
+        </record>
+
+        <!-- Menú: Registrarse -->
+        <record id="website_menu_registro" model="website.menu">
+            <field name="name">Registrarse</field>
+            <field name="url">/in</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">30</field>
+            <field name="website_id" ref="bloste_website"/>
         </record>
 
     </data>
