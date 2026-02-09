@@ -26,12 +26,12 @@ const register = async () => {
       password: password.value,
     })
 
-    if (response.token) {
+    if (response.status === 201) {
       toast.success('Registro exitoso!')
       toast.info('Un administrador revisará tu solicitud y te dará acceso pronto')
       router.push('/login')
     } else {
-      toast.error('Registro fallido: Token no recibido')
+      toast.error('Registro fallido')
     }
   } catch (error: unknown) {
     toast.error(handleError(error, 'Registro fallido'))

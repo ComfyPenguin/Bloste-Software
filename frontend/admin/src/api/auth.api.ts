@@ -57,8 +57,11 @@ export const authApi = {
           'Content-Type': 'application/json',
         },
       })
-      return response.data
-    } catch (error) {
+      return { data: response.data, status: response.status }
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        throw new Error('El usuario ya existe')
+      }
       throw new Error(handleError(error, 'Error al registrar el usuario'))
     }
   },

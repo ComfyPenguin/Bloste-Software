@@ -1,4 +1,6 @@
-set -e
+#!/bin/bash
+
+
 
 # Arxiu de la clau publica JWT
 PUBLIC_KEY_FILE="/etc/odoo/keys/public.pem"
@@ -6,14 +8,15 @@ PUBLIC_KEY_FILE="/etc/odoo/keys/public.pem"
 # Genera les claus JWT si no existixen
 /usr/local/bin/generate-jwt-keys.sh
 
-# Comprova que la clau no estiga buida
+# Verificar que la clave publica tenga contenido
 if [ ! -s "$PUBLIC_KEY_FILE" ]; then
-    echo "Error: La clau publica esta buida. No s'exportara."
+    echo "Error: La clave publica esta vacia. No se exportara."
     exec "$@"
     exit 0
 fi
 
-echo "Exportant clau publica a les carpetes keys..."
+# Exportar clave publica a multiples carpetas del proyecto
+echo "Exportando clave publica a las carpetas keys..."
 
 # Llista de destins on copiar la clau publica
 DESTINATIONS=(
@@ -26,21 +29,23 @@ DESTINATIONS=(
 # Copia la clau a tots els projectes
 for DEST in "${DESTINATIONS[@]}"; do
     DEST_DIR=$(dirname "$DEST")
-    mkdir -p "$DEST_DIR"
-    # Si el fitxer existix pero esta buit, l'esborra
+    mkdir -p "$DEST_DIR" 2>/dev/null || true
+    # Eliminar el archivo destino si existe y esta vacio
     if [ -f "$DEST" ] && [ ! -s "$DEST" ]; then
-        rm -f "$DEST"
+        rm -f "$DEST" 2>/dev/null || true
     fi
-    cp "$PUBLIC_KEY_FILE" "$DEST"
+    # Copiar la clave (ignorar errores de permiso)
+    cp "$PUBLIC_KEY_FILE" "$DEST" 2>/dev/null || true
+    # Verificar que se copio correctamente
     if [ -s "$DEST" ]; then
-        echo "OK: Clau publica copiada a: $DEST"
+        echo "Clave publica copiada a: $DEST"
     else
-        echo "ERROR: No s'ha pogut copiar a: $DEST"
+        echo "Advertencia: No se pudo copiar a $DEST (puede existir ya desde el host)"
     fi
 done
 
-echo "OK: La clau en Odoo_mod/keys/public.pem ja esta disponible (volum muntat)"
-echo "OK: Proces d'exportacio completat"
+echo "La clave en Odoo_mod/keys/public.pem ya esta disponible (volumen montado)"
+echo "Proceso de exportacion completado"
 
 # Inicia Odoo amb els parametres que s'han passat al contenidor
 exec "$@"
