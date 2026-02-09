@@ -5,3 +5,5 @@ dist
 storage/public/*
 storage/metadata/*
 storage/uploads/*
+
+src/keys/public.pem
