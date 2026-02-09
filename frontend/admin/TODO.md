@@ -2,15 +2,15 @@
 
 ## Sprint 3 - Frontend — Clients (Vue 3 + Vite)
 
-- [ ] Inicio de sesión
+- [x] Inicio de sesión
 - [x] Selección de archivo local
 - [x] Envío mínimo al servidor
 
 ## Sprint 4 - Frontend — Clients (Vue 3 + Vite)
 
 - [x] Recepción de metadatos
-- [ ] Edición
-- [ ] Registro final
+- [x] Edición
+- [x] Registro final
 
 ## Personales
 

@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class MediaLocator {
   static final MediaLocator _instance = MediaLocator._internal();
 
@@ -7,9 +9,10 @@ class MediaLocator {
 
   MediaLocator._internal();
 
-  final String _mediaUrl = 'http://10.106.45.159:4000';
+  late final String _mediaUrl;
 
   String getRemoteURL() {
+    _mediaUrl = dotenv.env['MEDIA_URL'] ?? 'http://localhost:4000';
     return _mediaUrl;
   }
 }

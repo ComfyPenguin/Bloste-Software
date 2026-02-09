@@ -17,7 +17,6 @@ public class VideoPostDTO implements Serializable{
     private String idVideo;
     private String urlVideo;
     private String urlImagen;
-    // TODO: lista categorias?
     private Set<String> categorias;
 
     

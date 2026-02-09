@@ -5,9 +5,10 @@ import 'package:blosteflix2/domain/usecases/videos/get_videos_id_usecase.dart';
 import 'package:blosteflix2/domain/usecases/videos/get_videos_usecase.dart';
 import 'package:blosteflix2/infrastructure/data_sources/catalogo_api.dart';
 import 'package:blosteflix2/infrastructure/repository/catalogo_repository_impl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class CatalogoLocator {
-  String remoteUrl = "http://10.106.45.159:8080";
+  late String remoteUrl;
 
   // Instància privada estàtica (Patró Singleton)
   static CatalogoLocator? _instancia;
@@ -28,6 +29,7 @@ class CatalogoLocator {
   }
 
   CatalogoLocator._() {
+    remoteUrl = dotenv.env['CATALOGO_URL'] ?? 'http://localhost:8080';
     _api = CatalogoApi(remoteUrl);
 
     _catalogoRepository = CatalogoRepositoryImpl(_api);
