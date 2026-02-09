@@ -15,6 +15,7 @@ class MiniaturasCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasAuthToken = authToken != null && authToken!.isNotEmpty;
     return Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -27,27 +28,30 @@ class MiniaturasCard extends StatelessWidget {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: Image.network(
-              thumbnailUrl,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              headers: authToken != null
-                  ? {'Authorization': 'Bearer $authToken'}
-                  : {},
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Center(child: CircularProgressIndicator()),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.error, color: Colors.red),
-                );
-              },
-            ),
+            child: hasAuthToken
+                ? Image.network(
+                    thumbnailUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    headers: {'Authorization': 'Bearer $authToken'},
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.error, color: Colors.red),
+                      );
+                    },
+                  )
+                : Container(
+                    color: Colors.grey[300],
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),

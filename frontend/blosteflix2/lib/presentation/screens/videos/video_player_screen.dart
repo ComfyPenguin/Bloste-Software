@@ -443,7 +443,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               ),
             );
           },
-          child: MiniaturasCard(thumbnailUrl: thumbnailUrl, video: video),
+          child: MiniaturasCard(
+            thumbnailUrl: thumbnailUrl,
+            video: video,
+            authToken: _authToken,
+          ),
         );
       },
     );
