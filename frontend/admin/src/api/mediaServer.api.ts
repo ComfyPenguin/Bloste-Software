@@ -8,12 +8,14 @@ export const mediaServerApi = {
   async uploadVideo(file: File, clientId: string) {
     const formData = new FormData()
     formData.append('video', file)
+    const token = localStorage.getItem('authToken')
 
     try {
       const response = await axios.post(`${MEDIA_SERVER_URL}/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           clientid: clientId,
+          Authorization: `Bearer ${token}`,
         },
       })
       return response.data
