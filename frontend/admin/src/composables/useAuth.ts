@@ -107,6 +107,37 @@ export function useAuth() {
     return await checkAdminStatus(token)
   }
 
+  // Cargar una imagen con autenticación
+  async function getImageWithAuth(imageUrl: string): Promise<string> {
+    try {
+      const token = await getValidToken()
+
+      if (!token) {
+        // Si no hay token, devolver la URL original
+        console.warn('No se encontró token para cargar la imagen')
+        return imageUrl
+      }
+
+      const response = await fetch(imageUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        console.error(`Error al cargar imagen: ${response.status}`)
+        return imageUrl
+      }
+
+      // Crear una URL de objeto para la imagen
+      const blob = await response.blob()
+      return URL.createObjectURL(blob)
+    } catch (error) {
+      handleError(error, 'Error al cargar imagen con autenticación')
+      return imageUrl
+    }
+  }
+
   return {
     isAdmin,
     userInfo,
@@ -115,5 +146,6 @@ export function useAuth() {
     getToken,
     getValidToken,
     isAuthenticated,
+    getImageWithAuth,
   }
 }

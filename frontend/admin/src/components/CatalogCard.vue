@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import type { Catalogo } from '@/types/categories.type'
 import env from '@/configs/env.config'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import imageNotFound from '@/assets/image_not_found.svg'
 import { Formatter } from '@/utils/formatter'
+import { useAuth } from '@/composables/useAuth'
 
 const props = defineProps<{
   item: Catalogo
 }>()
 
 const imageBaseUrl = env.VITE_BACKEND_MEDIA_SERVER_URL as string
-const imageSrc = ref(imageBaseUrl + props.item.urlImagen)
+const imageSrc = ref(imageNotFound)
+const objectUrl = ref<string | null>(null)
+const useAuthInstance = useAuth()
 
 const emit = defineEmits(['click'])
 
@@ -21,6 +24,24 @@ function handleClick() {
 function handleImageError() {
   imageSrc.value = imageNotFound
 }
+
+onMounted(async () => {
+  try {
+    const imageUrl = imageBaseUrl + props.item.urlImagen
+    const authenticatedImageUrl = await useAuthInstance.getImageWithAuth(imageUrl)
+    objectUrl.value = authenticatedImageUrl
+    imageSrc.value = authenticatedImageUrl
+  } catch (error) {
+    console.error('Error al cargar imagen autenticada:', error)
+    imageSrc.value = imageNotFound
+  }
+})
+
+onBeforeUnmount(() => {
+  if (objectUrl.value?.startsWith('blob:')) {
+    URL.revokeObjectURL(objectUrl.value)
+  }
+})
 
 const formattedDuration = computed(() => Formatter.durationTime(props.item.duracion))
 const relativeUploadDate = computed(() => Formatter.timeAgo(props.item.fechaSubida))
