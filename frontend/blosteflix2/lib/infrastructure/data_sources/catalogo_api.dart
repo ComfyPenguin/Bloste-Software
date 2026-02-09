@@ -49,6 +49,38 @@ class CatalogoApi {
     }
   }
 
+  Future<Paginated<Video>> searchVideos({
+    required String titulo,
+    required int page,
+    required int size,
+  }) async {
+    final uri = Uri.parse('$urlBase/api/catalogo/search').replace(
+      queryParameters: {
+        'titulo': titulo,
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+    http.Response data = await http.get(uri);
+
+    if (data.statusCode == HttpStatus.ok) {
+      final body = utf8.decode(data.bodyBytes);
+      final jsonData = jsonDecode(body) as Map<String, dynamic>;
+      return Paginated.fromJson(
+        jsonData,
+        (json) => VideoMapper.fromJson(json),
+      );
+    } else {
+      return Paginated<Video>(
+        content: [],
+        page: 0,
+        size: size,
+        totalPages: 0,
+        last: true,
+      );
+    }
+  }
+
   Future<Video> getVideosID(int id) async {
     final uri = Uri.parse('$urlBase/api/catalogo/$id');
     http.Response data = await http.get(uri);

@@ -10,6 +10,12 @@ abstract class CatalogoRepository {
     int? categoriaId,
   });
 
+  Future<Paginated<Video>> searchVideos({
+    required String titulo,
+    required int page,
+    required int size,
+  });
+
   Future<Video?> getById(int id);
 
   Future<Paginated<Categoria>> getCategorias({

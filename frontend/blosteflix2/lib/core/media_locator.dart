@@ -9,10 +9,10 @@ class MediaLocator {
 
   MediaLocator._internal();
 
-  late final String _mediaUrl;
+  String? _mediaUrl;
 
   String getRemoteURL() {
-    _mediaUrl = dotenv.env['MEDIA_URL'] ?? 'http://localhost:4000';
-    return _mediaUrl;
+    _mediaUrl ??= dotenv.env['MEDIA_URL'] ?? 'http://localhost:4000';
+    return _mediaUrl!;
   }
 }

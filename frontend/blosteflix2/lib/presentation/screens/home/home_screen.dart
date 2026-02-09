@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:blosteflix2/presentation/screens/account/account_screen.dart';
 import 'package:blosteflix2/presentation/screens/inicio/miniaturas_screen.dart';
+import 'package:blosteflix2/presentation/screens/search/search_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,13 +15,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   
   int _selectedIndex = 0;
-  final List<String> _titles = ['Inicio', 'Buscar', 'Favoritos', 'Cuenta'];
+  final List<String> _titles = ['Inicio', 'Buscar', 'Cuenta'];
 
   final List<Widget> _pages = [
     MiniaturasScreen(),// Inicio
-    const Center(child: Text('Pantalla de Búsqueda')), // Placeholder
-    const Center(child: Text('Pantalla de Favoritos')), // Placeholder
-    const Center(child: Text('Pantalla de Cuenta')),   // Placeholder
+    const SearchScreen(), // Buscar
+    const AccountScreen(),   // Cuenta
   ];
 
   void _onItemTapped(int index) {
@@ -115,7 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home), label: ''),
           NavigationDestination(icon: Icon(Icons.search), label: ''),
-          NavigationDestination(icon: Icon(Icons.star), label: ''),
           NavigationDestination(icon: Icon(Icons.person), label: '')
         ],
       )

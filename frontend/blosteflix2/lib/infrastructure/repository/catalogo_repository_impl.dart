@@ -16,6 +16,15 @@ class CatalogoRepositoryImpl extends CatalogoRepository{
   }
 
   @override
+  Future<Paginated<Video>> searchVideos({
+    required String titulo,
+    required int page,
+    required int size,
+  }) {
+    return remote.searchVideos(titulo: titulo, page: page, size: size);
+  }
+
+  @override
   Future<Video?> getById(int id) async {
     return remote.getVideosID(id);
   }

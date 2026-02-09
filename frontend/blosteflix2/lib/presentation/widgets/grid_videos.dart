@@ -110,7 +110,6 @@ class _GridVideosState extends State<GridVideos> {
 
   @override
   void dispose() {
-    widget.scrollController.dispose();
     super.dispose();
   }
 

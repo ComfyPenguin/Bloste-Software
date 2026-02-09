@@ -3,6 +3,7 @@ import 'package:blosteflix2/domain/usecases/categories/get_categories_id_usecase
 import 'package:blosteflix2/domain/usecases/categories/get_categories_usecase.dart';
 import 'package:blosteflix2/domain/usecases/videos/get_videos_id_usecase.dart';
 import 'package:blosteflix2/domain/usecases/videos/get_videos_usecase.dart';
+import 'package:blosteflix2/domain/usecases/videos/search_videos_usecase.dart';
 import 'package:blosteflix2/infrastructure/data_sources/catalogo_api.dart';
 import 'package:blosteflix2/infrastructure/repository/catalogo_repository_impl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,6 +21,7 @@ class CatalogoLocator {
   // Use cases
   late final GetVideosUseCase getVideosUseCase;
   late final GetVideosIdUsecase getVideosIdUsecase;
+  late final SearchVideosUsecase searchVideosUsecase;
   late final GetCategoriesUsecase getCategoriesUsecase;
   late final GetCategoriesIdUsecase getCategoriesIdUsecase;
 
@@ -36,6 +38,7 @@ class CatalogoLocator {
 
     getVideosUseCase = GetVideosUseCase(_catalogoRepository);
     getVideosIdUsecase = GetVideosIdUsecase(_catalogoRepository);
+    searchVideosUsecase = SearchVideosUsecase(_catalogoRepository);
     getCategoriesUsecase = GetCategoriesUsecase(_catalogoRepository);
     getCategoriesIdUsecase = GetCategoriesIdUsecase(_catalogoRepository);
   }

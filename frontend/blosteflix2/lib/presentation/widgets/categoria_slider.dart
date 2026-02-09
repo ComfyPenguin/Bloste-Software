@@ -28,7 +28,6 @@ class _CategoriaSliderState extends State<CategoriaSlider> {
   final int _sizeToLoad = 15;
   bool _isLoading = false;
   bool _hasMore = true;
-  bool _hasError = false;
 
   @override
   void initState() {
@@ -55,12 +54,15 @@ class _CategoriaSliderState extends State<CategoriaSlider> {
 
   Future<void> _loadMoreCategorias() async {
     if (_isLoading || !_hasMore) return;
+    if (!mounted) return;
     setState(() => _isLoading = true);
 
     try {
       final paginated = await CatalogoLocator()
           .getCategoriesUsecase
           .execute(page: _currentPage, size: _sizeToLoad);
+
+      if (!mounted) return;
 
       setState(() {
         for (final cat in paginated.content) {
@@ -77,9 +79,9 @@ class _CategoriaSliderState extends State<CategoriaSlider> {
         }
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _hasError = true;
       });
     }
   }
