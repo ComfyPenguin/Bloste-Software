@@ -24,7 +24,7 @@ coverage
 *.sln
 *.sw?
 .env
-src/keys/public.pem
+src/keys/*
 
 *.tsbuildinfo
 
