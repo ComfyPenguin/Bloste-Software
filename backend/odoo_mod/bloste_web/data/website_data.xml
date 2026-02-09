@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Sitio Web Principal - siempre se actualiza -->
+        <!-- Pagina Sitio Web Principal -->
         <record id="bloste_website" model="website">
             <field name="name">Bloste</field>
             <field name="domain" eval="False"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
-        <!-- Home Page -->
+        <!-- Pagina Home -->
         <record id="website_page_home" model="website.page">
             <field name="name">Inicio</field>
             <field name="url">/</field>
@@ -18,7 +18,7 @@
             <field name="is_published" eval="True"/>
         </record>
 
-        <!-- Suscripciones Page -->
+        <!-- Pagina Suscripciones -->
         <record id="website_page_suscripciones" model="website.page">
             <field name="name">Suscripciones</field>
             <field name="url">/suscripciones</field>
@@ -28,7 +28,7 @@
             <field name="is_published" eval="True"/>
         </record>
 
-        <!-- Contact Us Page -->
+        <!-- Pagina Contact Us -->
         <record id="website_page_contactus" model="website.page">
             <field name="name">Contact Us</field>
             <field name="url">/contactus</field>
@@ -38,7 +38,7 @@
             <field name="is_published" eval="True"/>
         </record>
 
-        <!-- Thank You Page -->
+        <!-- Pagina Thank You -->
         <record id="website_page_contactus_thankyou" model="website.page">
             <field name="name">Thanks (Contact us)</field>
             <field name="url">/contactus-thank-you</field>
@@ -48,7 +48,7 @@
             <field name="is_published" eval="True"/>
         </record>
 
-        <!-- Info Usuario Page -->
+        <!-- Pagina Info Usuario -->
         <record id="website_page_info_usuario" model="website.page">
             <field name="name">Info usuario</field>
             <field name="url">/info-usuario</field>
@@ -58,7 +58,7 @@
             <field name="is_published" eval="True"/>
         </record>
 
-        <!-- Subscription Success Page -->
+        <!-- Pagina Subscription Success -->
         <record id="website_page_subscription_success" model="website.page">
             <field name="name">Éxito Suscripción</field>
             <field name="url">/subscription-success</field>
@@ -68,7 +68,7 @@
             <field name="is_published" eval="True"/>
         </record>
 
-        <!-- Login/Registro Page -->
+        <!-- Pagina Login/Registro -->
         <record id="website_page_login_registro" model="website.page">
             <field name="name">Inicio sesión o registro</field>
             <field name="url">/inicio-sesio-o-registro</field>

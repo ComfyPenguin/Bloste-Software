@@ -72,7 +72,6 @@ class BlosteWebsite(http.Controller):
                 'plan': subscription_plan,
             })
         
-        # Buscar el usuario por email
         user = request.env['res.users'].sudo().search([('login', '=', email)], limit=1)
         
         if not user:
@@ -82,9 +81,7 @@ class BlosteWebsite(http.Controller):
                 'plan': subscription_plan,
             })
         
-        # Verificar la contraseña SIN cambiar la sesión actual
         try:
-            # Verificar credenciales sin autenticar (no cambia la sesión)
             user.sudo()._check_credentials(password, request.env)
             _logger.info(f"Credenciales verificadas correctamente para: {email} (ID: {user.id})")
         except AccessDenied:
@@ -100,13 +97,11 @@ class BlosteWebsite(http.Controller):
                 'plan': subscription_plan,
             })
         
-        # Buscar y asignar suscripción
         if subscription_plan:
             subscription = request.env['bloste.subscription'].sudo().search([('name', '=', subscription_plan)], limit=1)
             if subscription:
                 _logger.info(f"Suscripción encontrada: {subscription.name} (ID: {subscription.id})")
                 
-                # Verificar si el usuario ya tiene esta suscripción activa
                 existing_subscription = request.env['bloste.user_subscription'].sudo().search([
                     ('user_id', '=', user.id),
                     ('subscription_id', '=', subscription.id),
@@ -115,7 +110,6 @@ class BlosteWebsite(http.Controller):
                 if existing_subscription:
                     _logger.info(f"Usuario {user.login} ya tiene la suscripción {subscription.name}")
                 else:
-                    # Crear registro de suscripción
                     new_subscription = request.env['bloste.user_subscription'].sudo().create({
                         'user_id': user.id,
                         'subscription_id': subscription.id,

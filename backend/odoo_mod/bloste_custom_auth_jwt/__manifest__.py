@@ -10,8 +10,6 @@
     'external_dependencies': {'python': ['PyJWT']},
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
     ],
     'images': ['static/description/icon.png'],
     'installable': True,

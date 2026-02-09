@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Cargar CSS de colores personalizados en todas las páginas web -->
     <template id="bloste_assets" inherit_id="website.layout" name="Bloste Assets">
         <xpath expr="//head" position="inside">
             <link rel="stylesheet" href="/bloste_web/static/src/css/bloste_colors.css"/>

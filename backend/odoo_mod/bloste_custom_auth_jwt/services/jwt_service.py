@@ -1,11 +1,11 @@
 import jwt
 import logging
 import datetime
-import odoo # Added for odoo.SUPERUSER_ID
+import odoo
 
 from odoo.tools import config
-from odoo.http import request # Needed for request.env to interact with Odoo models
-import hashlib # For hashing refresh tokens
+from odoo.http import request
+import hashlib
 
 from ..constants import Configuration, ACCESS_TOKEN_EXPIRES_IN, LOGIN_TOKEN_EXPIRES_IN, TOKEN_TYPE_ACCESS, TOKEN_TYPE_LOGIN, REFRESH_TOKEN_EXPIRES_IN, TOKEN_TYPE_REFRESH
 
@@ -53,13 +53,12 @@ class JWTService:
         """Crear un JWT firmado con expiración y tipo de token."""
         now = datetime.datetime.now(datetime.timezone.utc)
 
-        # Determine expiration time based on token_type
         if expires_in is None:
             if token_type == TOKEN_TYPE_LOGIN:
                 expires_in_seconds = LOGIN_TOKEN_EXPIRES_IN
-            elif token_type == TOKEN_TYPE_REFRESH: # Added for refresh token
+            elif token_type == TOKEN_TYPE_REFRESH:
                 expires_in_seconds = REFRESH_TOKEN_EXPIRES_IN
-            else: # Default to ACCESS_TOKEN_EXPIRES_IN for 'access' or unknown types
+            else:
                 expires_in_seconds = ACCESS_TOKEN_EXPIRES_IN
         else:
             expires_in_seconds = expires_in
@@ -68,7 +67,7 @@ class JWTService:
         data.update({
             "iat": int(now.timestamp()),
             "exp": int((now + datetime.timedelta(seconds=expires_in_seconds)).timestamp()),
-            "type": token_type # Add token type to payload
+            "type": token_type
         })
 
         private_key = JWTService.get_private_key()
@@ -99,13 +98,11 @@ class JWTService:
 
         token_hash = JWTService._generate_token_hash(refresh_token)
 
-        # Convertimos a naive datetime (sin tzinfo) antes de guardar en Odoo
         now_utc = datetime.datetime.utcnow()
         expires_at_dt = now_utc + datetime.timedelta(seconds=REFRESH_TOKEN_EXPIRES_IN)
         issued_at_dt = now_utc
 
         try:
-            # Ejecutar como superusuario para crear registro
             env_as_superuser = request.env(user=odoo.SUPERUSER_ID, su=True)
             env_as_superuser['auth.refresh.token'].create({
                 'user_id': user_id,
@@ -147,7 +144,6 @@ class JWTService:
             user_id = int(payload.get('sub'))
             token_hash = JWTService._generate_token_hash(token)
 
-            # Check against the database record
             env_as_superuser = request.env(user=odoo.SUPERUSER_ID, su=True)
             refresh_token_record = env_as_superuser['auth.refresh.token'].search([
                 ('token_hash', '=', token_hash),
@@ -160,7 +156,7 @@ class JWTService:
                 logger.warning("Refresh token no encontrado, revocado o expirado en la BD.")
                 return None
             
-            return user_id # Return user_id if token is valid
+            return user_id
             
         except jwt.ExpiredSignatureError:
             logger.warning("Refresh token expirado.")

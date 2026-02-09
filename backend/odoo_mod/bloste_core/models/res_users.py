@@ -21,7 +21,6 @@ class ResUsers(models.Model):
     def _compute_password_display(self):
         """Muestra un indicador de que el usuario tiene contraseña configurada"""
         for record in self:
-            # Si el usuario tiene login configurado, asumimos que tiene contraseña
             if record.login:
                 record.password_display = '••••••••'
             else:
@@ -61,7 +60,6 @@ class ResUsers(models.Model):
         con fecha de inicio hoy. Mantener historial de suscripciones.
         Si se cambia a admin de Bloste, asignar grupos de administrador de Odoo."""
         
-        # Verificar si se está cambiando el estado a admin
         if 'bloste_status' in vals and vals['bloste_status'] == 'admin':
             vals['is_admin_bloste'] = True
         elif 'is_admin_bloste' in vals and vals['is_admin_bloste']:
@@ -69,12 +67,10 @@ class ResUsers(models.Model):
         
         res = super(ResUsers, self).write(vals)
         
-        # Si se convirtió en admin de Bloste, convertir en admin de Odoo
         if vals.get('bloste_status') == 'admin' or vals.get('is_admin_bloste'):
             for user in self:
                 self._make_odoo_admin(user)
         
-        # Si se quitó el admin de Bloste, quitar admin de Odoo
         if vals.get('bloste_status') == 'user' or vals.get('is_admin_bloste') == False:
             for user in self:
                 self._remove_odoo_admin(user)
@@ -94,17 +90,15 @@ class ResUsers(models.Model):
     
     def _make_odoo_admin(self, user):
         """Convierte un usuario en administrador de Odoo"""
-        # Cambiar de usuario Portal a usuario Interno
         internal_user_group = self.env.ref('base.group_user')
         portal_group = self.env.ref('base.group_portal')
         system_group = self.env.ref('base.group_system')
         
-        # Remover grupo portal y agregar grupos necesarios
         user.write({
             'groups_id': [
-                (3, portal_group.id),  # Remover portal
-                (4, internal_user_group.id),  # Agregar usuario interno
-                (4, system_group.id),  # Agregar administrador
+                (3, portal_group.id),
+                (4, internal_user_group.id),
+                (4, system_group.id),
             ]
         })
     
@@ -116,9 +110,9 @@ class ResUsers(models.Model):
         
         user.write({
             'groups_id': [
-                (3, system_group.id),  # Remover administrador
-                (3, internal_user_group.id),  # Remover usuario interno
-                (4, portal_group.id),  # Agregar portal
+                (3, system_group.id),
+                (3, internal_user_group.id),
+                (4, portal_group.id),
             ]
         })
 

@@ -30,18 +30,15 @@ class AuthService:
         user =  request.env["res.users"].sudo().browse(uid)
         role = "admin" if user.has_group("base.group_system") else "user"
         
-        # Debug log
         logger.info(f"Usuario {login} (ID: {uid}) autenticado con rol: {role}")
         logger.info(f"Grupos del usuario: {[g.name for g in user.groups_id]}")
         
-        # Create refresh token (and persist it in DB)
         refresh_token = JWTService.create_refresh_token(
             user_id=uid,
             login=login,
             role=role
         )
 
-        # Create access token
         access_token = JWTService.create_token(
             payload={
                 "sub": str(uid),
@@ -56,7 +53,7 @@ class AuthService:
             "access_token": access_token,
             "refresh_token": refresh_token,
             "token_type": "Bearer",
-            "expires_in": ACCESS_TOKEN_EXPIRES_IN # Primary expiration for the access token
+            "expires_in": ACCESS_TOKEN_EXPIRES_IN
         }
     
     @staticmethod
@@ -76,7 +73,6 @@ class AuthService:
         
         role = "admin" if user.has_group("base.group_system") else "user"
 
-        # Issue a new access token
         new_access_token = JWTService.create_token(
             payload={
                 "sub": str(user_id),
@@ -89,7 +85,7 @@ class AuthService:
 
         return {
             "access_token": new_access_token,
-            "refresh_token": refresh_token, # Return the same refresh token, no rotation for now
+            "refresh_token": refresh_token,
             "token_type": "Bearer",
             "expires_in": ACCESS_TOKEN_EXPIRES_IN
         }
@@ -107,7 +103,6 @@ class AuthService:
         try:
             payload = JWTService.decode_token(token)
             
-            # Asegurar que el token es de tipo 'access'
             if payload.get("type") != TOKEN_TYPE_ACCESS:
                 logger.warning("Invalid token type for access: %s", payload.get("type"))
                 return None
@@ -120,11 +115,8 @@ class AuthService:
             if not user.exists():
                 return None
             
-            # Actualizar el rol actual del usuario en tiempo real
-            # Esto asegura que los cambios de permisos se reflejen inmediatamente
             current_role = "admin" if user.has_group("base.group_system") else "user"
             
-            # Opcional: Agregar el rol actual al contexto del request para uso posterior
             request.user_role = current_role
             
             return user
@@ -141,7 +133,6 @@ class AuthService:
         if not user:
             return None
         
-        # Obtener el rol actual del usuario (verificado contra la base de datos)
         role = "admin" if user.has_group("base.group_system") else "user"
         
         return {
@@ -149,7 +140,7 @@ class AuthService:
             "name": user.name,
             "login": user.login,
             "email": user.partner_id.email if user.partner_id else user.login,
-            "role": role,  # Rol actual, no del token
+            "role": role,
             "partner_id": user.partner_id.id if user.partner_id else None,
         }
         
@@ -164,9 +155,6 @@ class AuthService:
             return {"ok": False, "error": "Usuario existe actualmente"}
         
         try:
-            # Para la creación de usuarios bajo 'auth=none', el usuario del entorno está vacío.
-            # Esto causa un error en 'mail_thread.message_post' al crear un usuario del portal.
-            # Debemos ejecutar la creación en un entorno con un usuario válido, como el superusuario.
             env_as_superuser = request.env(user=odoo.SUPERUSER_ID, su=True)
 
             portal_group_id = env_as_superuser.ref('base.group_portal').id
@@ -175,7 +163,7 @@ class AuthService:
                 'login': login,
                 'name': name,
                 'password': password,
-                'email': login,  # Guardar el email en el partner
+                'email': login,
                 'company_id': company.id,
                 'company_ids': [(6, 0, [company.id])],
                 'groups_id': [(6, 0, [portal_group_id])]
@@ -185,14 +173,12 @@ class AuthService:
             logger.error("Error al crar el usuario: %s", e)
             return {"ok": False, "error": str(e)}
         
-        # Create refresh token (and persist it in DB)
         refresh_token = JWTService.create_refresh_token(
             user_id=new_user.id,
             login=new_user.login,
             role="user"
         )
 
-        # Create access token
         access_token = JWTService.create_token(
             payload={
                 "sub": str(new_user.id),
