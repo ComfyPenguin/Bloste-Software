@@ -22,6 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
         var button = e.target.closest('a, button');
         if (!button) return;
         
+        // IMPORTANTE: No interceptar clics dentro del formulario de pago
+        if (button.closest('#payment-form')) {
+            console.log('[Bloste] Clic en formulario de pago - NO interceptar');
+            return; // Dejar que el formulario se envíe normalmente
+        }
+        
+        console.log('[Bloste] Evaluando clic en botón:', button.textContent.trim());
+        
         // Verificar si es un botón de suscripción
         var buttonText = button.textContent.trim().toLowerCase();
         if (buttonText.includes('suscrib') || buttonText.includes('contratar') || buttonText.includes('elegir')) {

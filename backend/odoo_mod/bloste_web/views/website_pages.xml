@@ -13,14 +13,39 @@
 
         <template id="home_page_view" name="Página de Inicio">
             <t t-call="website.layout">
-                <div class="container mt-5 mb-5">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h1>Bienvenido a Bloste</h1>
-                            <p class="lead">Plataforma de streaming de contenido</p>
-                            <a href="/suscripciones" class="btn btn-primary btn-lg mt-3">
-                                Ver Planes
-                            </a>
+                <!-- Hero Section -->
+                <div class="text-center py-5" style="background: linear-gradient(135deg, #FC7D1C 0%, #9A48D0 100%);">
+                    <div class="container">
+                        <h1 class="display-4 text-white fw-bold mb-4">Bienvenido a BlosteFlix</h1>
+                        <p class="lead text-white mb-4 fw-semibold">Disfruta de películas y series en streaming</p>
+                        <a href="/suscripciones" class="btn btn-light btn-lg px-4 me-2">Ver Planes</a>
+                        <a href="/in" class="btn btn-outline-light btn-lg px-4">Registrarse</a>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="container my-5">
+                    <div class="row text-center g-4">
+                        <div class="col-md-4">
+                            <div class="p-4">
+                                <h2 class="mb-3">📱</h2>
+                                <h5 class="fw-bold">Multiplataforma</h5>
+                                <p class="fw-medium" style="color: #2d2d2d;">Disponible en todos tus dispositivos</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4">
+                                <h2 class="mb-3">🎯</h2>
+                                <h5 class="fw-bold">Sin Compromisos</h5>
+                                <p class="fw-medium" style="color: #2d2d2d;">Cancela cuando quieras</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4">
+                                <h2 class="mb-3">⚡</h2>
+                                <h5 class="fw-bold">Alta Calidad</h5>
+                                <p class="fw-medium" style="color: #2d2d2d;">Streaming en HD y 4K</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -33,7 +58,7 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <h1>Planes de Suscripción</h1>
-                            <p class="text-muted">Elige el plan que mejor se adapta a ti</p>
+                            <p class="fs-5" style="color: #4a4a4a;">Elige el plan que mejor se adapta a ti</p>
                         </div>
                     </div>
 
@@ -55,10 +80,6 @@
                                             <li class="mb-2">
                                                 <i class="fa fa-calendar text-info"></i>
                                                 <t t-esc="sub.duration"/> días
-                                            </li>
-                                            <li class="mb-2">
-                                                <i class="fa fa-users text-success"></i>
-                                                <t t-esc="len(sub.user_subscription_ids)"/> usuarios
                                             </li>
                                         </ul>
                                         
@@ -121,35 +142,106 @@
 
         <template id="info_usuario_page_view" name="Info Usuario">
             <t t-call="website.layout">
+                <link rel="stylesheet" href="/bloste_web/static/src/css/bloste_colors.css"/>
                 <div class="container mt-5 mb-5">
-                    <h1>Información del Usuario</h1>
-                    <form method="post" action="/info-usuario/submit">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <div class="mb-3">
-                            <label class="form-label">Nombre Completo</label>
-                            <input type="text" name="name" class="form-control" required="required"/>
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="card shadow-lg">
+                                <div class="card-header text-white" style="background: linear-gradient(135deg, var(--bloste-primary, #FC7D1C) 0%, var(--bloste-secondary, #9A48D0) 100%);">
+                                    <h2 class="mb-0 text-center fw-bold">Métodos de Pago</h2>
+                                    <p class="mb-0 text-center fw-semibold">Inicia sesión para contratar tu plan</p>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div id="message-container">
+                                        <t t-if="error">
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <t t-out="error"/>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <form id="payment-form" method="post" action="/info-usuario/submit">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold" style="color: #2d2d2d;">Plan Seleccionado</label>
+                                            <input type="text" name="subscription_plan" id="subscription_plan" class="form-control form-control-lg fw-bold" readonly="readonly" style="background-color: #f8f9fa; color: #1a1a1a;" t-att-value="plan"/>
+                                        </div>
+                                        
+                                        <hr class="my-4"/>
+                                        
+                                        <h5 class="mb-3">Datos de Acceso</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="login_email" class="form-label fw-bold">Email</label>
+                                            <input type="email" id="login_email" name="email" class="form-control form-control-lg" placeholder="correo@ejemplo.com" required="required"/>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label for="login_password" class="form-label fw-bold">Contraseña</label>
+                                            <input type="password" id="login_password" name="password" class="form-control form-control-lg" placeholder="Tu contraseña" required="required"/>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-lg w-100 text-white" style="background: linear-gradient(135deg, var(--bloste-primary, #FC7D1C) 0%, var(--bloste-secondary, #9A48D0) 100%); border: none;" id="submit-btn">
+                                            <span id="btn-text">Contratar</span>
+                                            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                        </button>
+                                        
+                                        <div class="text-center mt-3">
+                                            <p class="mb-0" style="color: #4a4a4a;">¿No tienes cuenta? <a href="/in" class="text-decoration-none fw-semibold" style="color: var(--bloste-primary);">Regístrate aquí</a></p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Correo Electrónico</label>
-                            <input type="email" name="email" class="form-control" required="required"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Teléfono</label>
-                            <input type="tel" name="phone" class="form-control"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">DNI/NIE</label>
-                            <input type="text" name="vat" class="form-control"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Plan a Contratar</label>
-                            <input type="text" name="subscription_plan" id="subscription_plan" class="form-control" readonly="readonly"/>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                    </form>
+                    </div>
                 </div>
                 
-                <script type="text/javascript" src="/bloste_web/static/src/js/subscription_redirect.js"/>
+                <script type="text/javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        console.log('[Bloste] Página de contratar cargada');
+                        var form = document.getElementById('payment-form');
+                        if (form) {
+                            console.log('[Bloste] Formulario encontrado');
+                            form.addEventListener('submit', function(e) {
+                                console.log('[Bloste] Formulario enviándose...');
+                                console.log('[Bloste] Email:', document.getElementById('login_email').value);
+                                console.log('[Bloste] Plan:', document.getElementById('subscription_plan').value);
+                                // NO llamar e.preventDefault() - dejar que el formulario se envíe normalmente
+                            });
+                        } else {
+                            console.error('[Bloste] ERROR: Formulario no encontrado!');
+                        }
+                    });
+                </script>
+                
+                <style>
+                    .card {
+                        border: none;
+                        border-radius: 15px;
+                        overflow: hidden;
+                    }
+                    
+                    .card-header {
+                        padding: 2rem 1rem;
+                    }
+                    
+                    .form-control:focus {
+                        border-color: var(--bloste-primary, #FC7D1C);
+                        box-shadow: 0 0 0 0.2rem rgba(252, 125, 28, 0.25);
+                    }
+                    
+                    .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 5px 15px rgba(252, 125, 28, 0.3);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .form-label {
+                        color: #333;
+                        margin-bottom: 0.5rem;
+                    }
+                </style>
             </t>
         </template>
 

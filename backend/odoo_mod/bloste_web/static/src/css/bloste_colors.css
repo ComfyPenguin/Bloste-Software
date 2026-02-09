@@ -1,0 +1,110 @@
+/* Colores personalizados de Bloste */
+:root {
+    --bloste-primary: #FC7D1C;
+    --bloste-secondary: #9A48D0;
+    --bloste-white: #FFFFFF;
+    --bloste-dark: #383E45;
+    --bloste-success: #10b981;
+    --bloste-info: #06b6d4;
+    --bloste-warning: #f59e0b;
+    --bloste-danger: #ef4444;
+}
+
+/* Aplicar colores a botones */
+.btn-primary {
+    background-color: var(--bloste-primary) !important;
+    border-color: var(--bloste-primary) !important;
+    color: var(--bloste-white) !important;
+}
+
+.btn-primary:hover {
+    background-color: #e5711a !important;
+    border-color: #e5711a !important;
+}
+
+.btn-secondary {
+    background-color: var(--bloste-secondary) !important;
+    border-color: var(--bloste-secondary) !important;
+    color: var(--bloste-white) !important;
+}
+
+.btn-secondary:hover {
+    background-color: #8a3cbd !important;
+    border-color: #8a3cbd !important;
+}
+
+/* Aplicar colores a textos */
+.text-primary {
+    color: var(--bloste-primary) !important;
+}
+
+.text-secondary {
+    color: var(--bloste-secondary) !important;
+}
+
+.text-success {
+    color: var(--bloste-success) !important;
+}
+
+.text-info {
+    color: var(--bloste-info) !important;
+}
+
+.text-warning {
+    color: var(--bloste-warning) !important;
+}
+
+.text-danger {
+    color: var(--bloste-danger) !important;
+}
+
+.text-muted {
+    color: var(--bloste-dark) !important;
+}
+
+/* Aplicar colores a fondos */
+.bg-primary {
+    background-color: var(--bloste-primary) !important;
+    color: var(--bloste-white) !important;
+}
+
+.bg-secondary {
+    background-color: var(--bloste-secondary) !important;
+    color: var(--bloste-white) !important;
+}
+
+.bg-dark {
+    background-color: var(--bloste-dark) !important;
+    color: var(--bloste-white) !important;
+}
+
+.card-header.bg-primary {
+    background-color: var(--bloste-primary) !important;
+    color: var(--bloste-white) !important;
+}
+
+/* Tarjetas */
+.card {
+    border-color: rgba(252, 125, 28, 0.2) !important;
+}
+
+.card:hover {
+    border-color: var(--bloste-primary) !important;
+    box-shadow: 0 0 15px rgba(252, 125, 28, 0.3) !important;
+}
+
+/* Alertas */
+.alert-info {
+    background-color: rgba(6, 182, 212, 0.1) !important;
+    border-color: var(--bloste-info) !important;
+    color: #0e7490 !important;
+}
+
+/* Enlaces */
+a {
+    color: var(--bloste-primary) !important;
+}
+
+a:hover {
+    color: var(--bloste-secondary) !important;
+}

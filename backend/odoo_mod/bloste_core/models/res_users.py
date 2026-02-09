@@ -15,6 +15,17 @@ class ResUsers(models.Model):
     subscription_expiry_date = fields.Date(string='Caducidad de Suscripción', compute='_compute_subscription_expiry', store=True, readonly=True)
     
     new_subscription_id = fields.Many2one('bloste.subscription', string='Asignar Suscripción')
+    password_display = fields.Char(string='Contraseña', compute='_compute_password_display', readonly=True)
+
+    @api.depends('login')
+    def _compute_password_display(self):
+        """Muestra un indicador de que el usuario tiene contraseña configurada"""
+        for record in self:
+            # Si el usuario tiene login configurado, asumimos que tiene contraseña
+            if record.login:
+                record.password_display = '••••••••'
+            else:
+                record.password_display = 'No configurada'
 
     @api.depends('user_subscription_ids.end_date')
     def _compute_subscription_expiry(self):
