@@ -8,7 +8,7 @@ import 'package:blosteflix2/infrastructure/repository/auth_repository_impl.dart'
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AuthLocator {
-  String remoteUrl = "http://192.168.1.138:8069";
+  late String remoteUrl;
 
   static AuthLocator? _instancia;
 
@@ -22,13 +22,13 @@ class AuthLocator {
   late final RefreshTokenUsecase refreshTokenUsecase;
   late final LoginUsecase loginUsecase;
 
-  factory AuthLocator(){
+  factory AuthLocator() {
     _instancia ??= AuthLocator._();
     return _instancia!;
   }
 
-  AuthLocator._(){
-    remoteUrl = dotenv.env['AUTH_URL'] ?? remoteUrl;
+  AuthLocator._() {
+    remoteUrl = dotenv.env['AUTH_URL'] ?? 'http://localhost:8069';
     _api = AuthApi(remoteUrl);
     _authRepository = AuthRepositoryImpl(_api);
     getUserFromTokenUsecase = GetUserFromTokenUsecase(_authRepository);
