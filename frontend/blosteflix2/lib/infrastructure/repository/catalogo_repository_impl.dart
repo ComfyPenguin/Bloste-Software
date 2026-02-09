@@ -2,7 +2,7 @@ import 'package:blosteflix2/domain/entities/categoria.dart';
 import 'package:blosteflix2/domain/entities/video.dart';
 import 'package:blosteflix2/domain/repositories/catalogo_repository.dart';
 import 'package:blosteflix2/infrastructure/data_sources/catalogo_api.dart';
-import 'package:blosteflix2/infrastructure/dtos/paginated.dart';
+import 'package:blosteflix2/infrastructure/dtos/extra/paginated.dart';
 
 class CatalogoRepositoryImpl extends CatalogoRepository{
 

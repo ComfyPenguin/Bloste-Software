@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:blosteflix2/domain/entities/categoria.dart';
 import 'package:blosteflix2/domain/entities/video.dart';
-import 'package:blosteflix2/infrastructure/dtos/paginated.dart';
+import 'package:blosteflix2/infrastructure/dtos/extra/paginated.dart';
 import 'package:blosteflix2/infrastructure/mappers/categoria_mapper.dart';
 import 'package:blosteflix2/infrastructure/mappers/video_mapper.dart';
 import 'package:http/http.dart' as http;
 
-// No es "purista" se deberia usar Dynamic en vez de Video o Categoria, para asi poder devolver un error HttpStatus
-
+// Faltan comprobaciones de errores HTTP TO-DO
 class CatalogoApi {
   String urlBase;
 
