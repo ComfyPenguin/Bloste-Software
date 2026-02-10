@@ -142,15 +142,39 @@
                     border: none;
                     border-radius: 15px;
                     overflow: hidden;
+                    background-color: #ffffff !important;
                 }
                 
                 .card-header {
                     padding: 2rem 1rem;
                 }
                 
+                .card-body {
+                    background-color: #ffffff !important;
+                    color: #212529 !important;
+                }
+                
+                .form-label {
+                    color: #212529 !important;
+                    margin-bottom: 0.5rem;
+                    font-weight: 600;
+                }
+                
+                .form-control {
+                    background-color: #ffffff !important;
+                    color: #212529 !important;
+                    border: 1px solid #ced4da;
+                }
+                
                 .form-control:focus {
                     border-color: var(--bloste-primary, #FC7D1C);
                     box-shadow: 0 0 0 0.2rem rgba(252, 125, 28, 0.25);
+                    background-color: #ffffff !important;
+                    color: #212529 !important;
+                }
+                
+                .form-control::placeholder {
+                    color: #6c757d !important;
                 }
                 
                 .btn:hover {
@@ -159,9 +183,8 @@
                     transition: all 0.3s ease;
                 }
                 
-                .form-label {
-                    color: #333;
-                    margin-bottom: 0.5rem;
+                #message-container .alert {
+                    color: #212529 !important;
                 }
             </style>
         </t>
