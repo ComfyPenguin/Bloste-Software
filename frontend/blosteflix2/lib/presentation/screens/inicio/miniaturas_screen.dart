@@ -7,12 +7,27 @@ class MiniaturasScreen extends StatefulWidget {
   const MiniaturasScreen({super.key});
 
   @override
-  State<MiniaturasScreen> createState() => _MiniaturasScreenState();
+  State<MiniaturasScreen> createState() => MiniaturasScreenState();
 }
 
-class _MiniaturasScreenState extends State<MiniaturasScreen> {
+class MiniaturasScreenState extends State<MiniaturasScreen> {
   Categoria? _categoriaSeleccionada; // null = "Todo"
   final ScrollController _scrollController = ScrollController();  // Scroll controller para grid_videos
+  int _reloadTick = 0;
+
+  void reloadVideos() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
+    }
+
+    setState(() {
+      _reloadTick++;
+    });
+  }
 
   @override
   void dispose() {
@@ -56,6 +71,7 @@ class _MiniaturasScreenState extends State<MiniaturasScreen> {
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: GridVideos(
+              key: ValueKey('grid_videos_$_reloadTick'),
               categoriaSeleccionada: _categoriaSeleccionada,
               scrollController: _scrollController,
             ),

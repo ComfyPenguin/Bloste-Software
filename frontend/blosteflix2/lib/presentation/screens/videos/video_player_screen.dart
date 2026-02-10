@@ -1,6 +1,7 @@
 import 'package:blosteflix2/core/catalogo_locator.dart';
 import 'package:blosteflix2/core/media_locator.dart';
 import 'package:blosteflix2/domain/entities/video.dart';
+import 'package:blosteflix2/presentation/utils/duration_formatter.dart';
 import 'package:blosteflix2/presentation/widgets/miniaturas_card.dart';
 import 'package:blosteflix2/presentation/services/auth_token_service.dart';
 import 'package:blosteflix2/infrastructure/data_sources/auth_local_storage.dart';
@@ -447,6 +448,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             thumbnailUrl: thumbnailUrl,
             video: video,
             authToken: _authToken,
+            durationText: formatDurationText(video.duration),
           ),
         );
       },

@@ -16,14 +16,26 @@ class _HomeScreenState extends State<HomeScreen> {
   
   int _selectedIndex = 0;
   final List<String> _titles = ['Inicio', 'Buscar', 'Cuenta'];
-
-  final List<Widget> _pages = [
-    MiniaturasScreen(),// Inicio
-    const SearchScreen(), // Buscar
-    const AccountScreen(),   // Cuenta
-  ];
+  final GlobalKey<MiniaturasScreenState> _homeKey =
+      GlobalKey<MiniaturasScreenState>();
+  DateTime? _lastTapTime;
+  int? _lastTapIndex;
 
   void _onItemTapped(int index) {
+    final now = DateTime.now();
+    final isDoubleTap =
+        _lastTapIndex == index &&
+        _lastTapTime != null &&
+        now.difference(_lastTapTime!) <= const Duration(milliseconds: 350);
+
+    _lastTapIndex = index;
+    _lastTapTime = now;
+
+    if (index == 0 && _selectedIndex == 0 && isDoubleTap) {
+      _homeKey.currentState?.reloadVideos();
+      return;
+    }
+
     setState(() {
       _selectedIndex = index;
     });
@@ -108,7 +120,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: _pages,
+        children: [
+          MiniaturasScreen(key: _homeKey),// Inicio
+          const SearchScreen(), // Buscar
+          const AccountScreen(),   // Cuenta
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,

@@ -3,6 +3,7 @@ import 'package:blosteflix2/core/media_locator.dart';
 import 'package:blosteflix2/domain/entities/categoria.dart';
 import 'package:blosteflix2/domain/entities/video.dart';
 import 'package:blosteflix2/presentation/screens/videos/video_player_screen.dart';
+import 'package:blosteflix2/presentation/utils/duration_formatter.dart';
 import 'package:blosteflix2/presentation/widgets/miniaturas_card.dart';
 import 'package:blosteflix2/presentation/services/auth_token_service.dart';
 import 'package:blosteflix2/infrastructure/data_sources/auth_local_storage.dart';
@@ -222,6 +223,7 @@ class _GridVideosState extends State<GridVideos> {
             thumbnailUrl: thumbnailUrl,
             video: video,
             authToken: _authToken,
+            durationText: formatDurationText(video.duration),
           ),
         );
       }, childCount: _videos.length + (_isLoading || _hasMore ? 1 : 0)),
