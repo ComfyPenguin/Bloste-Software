@@ -7,6 +7,7 @@ from ..constants import Endpoints
 
 class UserController(http.Controller):
     
+    # Ruta para obtener los datos del usuario autenticado mediante JWT /users/me
     @http.route(Endpoints.USER_ME, type='http', auth='none', csrf=False, cors='*', methods=['GET'])
     def get_user_data(self, **kw):
         """Devuelve los datos del usuario autenticado mediante JWT."""

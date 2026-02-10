@@ -1,6 +1,6 @@
 from odoo import models, fields, api
 
-
+# Este modelo representa los tokens de refresco para la autenticación JWT
 class RefreshToken(models.Model):
     _name = 'auth.refresh.token'
     _description = 'Refresh Token'

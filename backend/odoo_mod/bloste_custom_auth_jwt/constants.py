@@ -8,12 +8,14 @@ except ImportError:
         """Enum where members are also instances of str."""
         pass
 
+# Constantes del módulo de autenticación JWT
 class Configuration(StrEnum):
     """Constantes del módulo"""
     NAME_MODULO = 'custom_auth_jwt'
     ALGORITHM_RS = 'RS256'
     DECODE = 'utf-8'
 
+# Rutas de endpoint para autenticación JWT
 class Endpoints(StrEnum):
     """Rutas de endoint"""
     AUTH_TOKEN = '/api/auth/token'

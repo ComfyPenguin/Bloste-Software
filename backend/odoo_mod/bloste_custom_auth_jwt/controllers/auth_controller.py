@@ -5,9 +5,10 @@ from ..utils.http import json_response, get_json_body
 
 from ..constants import Endpoints
 
-
+# Controlador para manejar las rutas de autenticación JWT
 class AuthController(http.Controller):
 
+    # Ruta para autenticar usuarios y obtener tokens JWT /auth/token (login)
     @http.route(Endpoints.AUTH_TOKEN, type='http', auth='none', csrf=False, cors='*', methods=['POST'])
     def authenticate(self, **kw):
         """Autentica un usuario y devuelve tokens JWT de acceso y login."""
@@ -35,6 +36,7 @@ class AuthController(http.Controller):
 
         return json_response(token_data, status=200)
     
+    # Ruta para refrescar el access token utilizando un refresh token válido /auth/refresh
     @http.route(Endpoints.AUTH_REFRESH, type='http', auth='none', csrf=False, cors='*', methods=['POST'])
     def refresh_token(self, **kw):
         """Refresca un access token utilizando un refresh token válido."""
@@ -60,6 +62,7 @@ class AuthController(http.Controller):
 
         return json_response(token_data, status=200)
 
+    # Ruta para registrar un nuevo usuario /auth/register
     @http.route(Endpoints.AUTH_REGISTER, type='http', auth='none', csrf=False, cors='*', methods=['POST'])
     def register(self, **kw):
         """Crear una nueva cuenta de usuario"""
