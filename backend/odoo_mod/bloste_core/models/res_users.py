@@ -17,6 +17,7 @@ class ResUsers(models.Model):
     new_subscription_id = fields.Many2one('bloste.subscription', string='Asignar Suscripción')
     password_display = fields.Char(string='Contraseña', compute='_compute_password_display', readonly=True)
 
+    # Relación con el modelo de suscripciones para facilitar búsquedas y filtrados
     @api.depends('login')
     def _compute_password_display(self):
         """Muestra un indicador de que el usuario tiene contraseña configurada"""
@@ -26,6 +27,7 @@ class ResUsers(models.Model):
             else:
                 record.password_display = 'No configurada'
 
+    # Cálculo de la fecha de caducidad de la suscripción activa y la suscripción activa
     @api.depends('user_subscription_ids.end_date')
     def _compute_subscription_expiry(self):
         """Obtiene la fecha de caducidad de la suscripción activa"""
@@ -37,6 +39,7 @@ class ResUsers(models.Model):
                 expiry_date = sorted(valid_subs, key=lambda s: s.end_date)[0].end_date
             record.subscription_expiry_date = expiry_date
 
+    # Cálculo de la suscripción activa basada en la fecha de caducidad más próxima
     @api.depends('user_subscription_ids.end_date')
     def _compute_active_subscription(self):
         """Establece `active_subscription_id` como la suscripción con fecha de caducidad más próxima (no caducada)."""
@@ -48,6 +51,7 @@ class ResUsers(models.Model):
                 active_sub = sorted(valid_subs, key=lambda s: s.end_date)[0].subscription_id
             record.active_subscription_id = active_sub
 
+    # Sobrescribir create y write para manejar la lógica de suscripciones y estado de admin
     @api.model
     def create(self, vals):
         """Al crear un usuario, si no se proporciona login, usar el email."""
@@ -88,6 +92,7 @@ class ResUsers(models.Model):
                     user.new_subscription_id = False
         return res
     
+    # Métodos auxiliares para manejar permisos de administrador en Odoo
     def _make_odoo_admin(self, user):
         """Convierte un usuario en administrador de Odoo"""
         internal_user_group = self.env.ref('base.group_user')
@@ -102,6 +107,7 @@ class ResUsers(models.Model):
             ]
         })
     
+    # Quita permisos de administrador y convierte en usuario Portal
     def _remove_odoo_admin(self, user):
         """Quita permisos de administrador y convierte en usuario Portal"""
         internal_user_group = self.env.ref('base.group_user')
