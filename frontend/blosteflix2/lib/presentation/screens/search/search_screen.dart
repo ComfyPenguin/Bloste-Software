@@ -205,8 +205,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     if (index == _results.length) {
-                      if (!_isLoading && !_hasMore)
+                      if (!_isLoading && !_hasMore) {
                         return const SizedBox.shrink();
+                      }
                       return const Padding(
                         padding: EdgeInsets.all(16),
                         child: Center(child: CircularProgressIndicator()),

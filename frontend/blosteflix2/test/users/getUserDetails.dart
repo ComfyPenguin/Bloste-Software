@@ -1,4 +1,3 @@
-import 'package:blosteflix2/domain/entities/auth_tokens.dart';
 import 'package:blosteflix2/domain/entities/usuario.dart';
 import 'package:blosteflix2/infrastructure/data_sources/auth_api.dart';
 import 'package:flutter_test/flutter_test.dart';

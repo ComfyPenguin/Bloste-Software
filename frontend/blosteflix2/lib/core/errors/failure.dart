@@ -38,25 +38,25 @@ class ForbiddenFailure extends HttpFailure {
 }
 
 class NotFoundFailure extends HttpFailure {
-  NotFoundFailure({String message = 'Not Found'}) : super(message: message);
+  NotFoundFailure({super.message = 'Not Found'});
 }
 
 class ConflictFailure extends HttpFailure {
-  ConflictFailure({String message = 'Conflict'}) : super(message: message);
+  ConflictFailure({super.message = 'Conflict'});
 }
 
 class InternalServerErrorFailure extends HttpFailure {
-  InternalServerErrorFailure({String message = 'Internal Server Error'}) : super(message: message);
+  InternalServerErrorFailure({super.message = 'Internal Server Error'});
 }
 
 class ServiceUnavailableFailure extends HttpFailure {
-  ServiceUnavailableFailure({String message = 'Service Unavailable'}) : super(message: message);
+  ServiceUnavailableFailure({super.message = 'Service Unavailable'});
 }
 
 class NetworkFailure extends HttpFailure {
-  NetworkFailure({String message = 'Network Error'}) : super(message: message);
+  NetworkFailure({super.message = 'Network Error'});
 }
 
 class UnknownFailure extends HttpFailure {
-  UnknownFailure({String message = 'Unknown Error'}) : super(message: message);
+  UnknownFailure({super.message = 'Unknown Error'});
 }
