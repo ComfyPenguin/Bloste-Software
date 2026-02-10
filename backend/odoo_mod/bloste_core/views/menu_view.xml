@@ -1,0 +1,17 @@
+<odoo>
+    <menuitem id="menu_bloste_root" 
+              name="Bloste Software" 
+              web_icon="base,static/description/settings.png"
+              sequence="10"/>
+
+    <menuitem id="menu_bloste_management" 
+              name="Gestión" 
+              parent="menu_bloste_root" 
+              sequence="10"/>
+
+    <menuitem id="menu_bloste_subs" 
+              name="Suscripciones" 
+              parent="menu_bloste_management" 
+              action="action_bloste_subscription" 
+              sequence="10"/>
+</odoo>

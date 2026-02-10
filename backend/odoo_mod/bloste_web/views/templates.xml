@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template: Registro -->
+    <template id="login_register_template" name="Registrarse en Bloste">
+        <t t-call="website.layout">
+            <link rel="stylesheet" href="/bloste_web/static/src/css/bloste_colors.css"/>
+            <div class="container mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card shadow-lg">
+                            <div class="card-header text-white" style="background: linear-gradient(135deg, var(--bloste-primary, #FC7D1C) 0%, var(--bloste-secondary, #9A48D0) 100%);">
+                                <h2 class="mb-0 text-center fw-bold">Bienvenido a Bloste</h2>
+                                <p class="mb-0 text-center fw-semibold">Crea tu cuenta para comenzar</p>
+                            </div>
+                            <div class="card-body p-4">
+                                <div id="message-container"></div>
+                                <form id="register-form">
+                                    <div class="mb-3">
+                                        <label for="register_name" class="form-label fw-bold">Nombre Completo</label>
+                                        <input type="text" class="form-control form-control-lg" id="register_name" name="name" placeholder="Tu nombre" required="required"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="register_email" class="form-label fw-bold">Email</label>
+                                        <input type="email" class="form-control form-control-lg" id="register_email" name="login" placeholder="correo@ejemplo.com" required="required"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="register_password" class="form-label fw-bold">Contraseña</label>
+                                        <input type="password" class="form-control form-control-lg" id="register_password" name="password" placeholder="Tu contraseña" required="required" minlength="6"/>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="register_password_confirm" class="form-label fw-bold">Confirmar Contraseña</label>
+                                        <input type="password" class="form-control form-control-lg" id="register_password_confirm" name="confirm_password" placeholder="Confirma tu contraseña" required="required" minlength="6"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-lg w-100 text-white" style="background: linear-gradient(135deg, var(--bloste-primary, #FC7D1C) 0%, var(--bloste-secondary, #9A48D0) 100%); border: none;" id="submit-btn">
+                                        <span id="btn-text">Registrarse</span>
+                                        <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.getElementById('register-form');
+                    const messageContainer = document.getElementById('message-container');
+                    const submitBtn = document.getElementById('submit-btn');
+                    const btnText = document.getElementById('btn-text');
+                    const btnSpinner = document.getElementById('btn-spinner');
+
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        
+                        // Limpiar mensajes anteriores
+                        messageContainer.innerHTML = '';
+                        
+                        // Obtener valores del formulario
+                        const name = document.getElementById('register_name').value.trim();
+                        const login = document.getElementById('register_email').value.trim();
+                        const password = document.getElementById('register_password').value;
+                        const confirmPassword = document.getElementById('register_password_confirm').value;
+                        
+                        // Validar que las contraseñas coincidan
+                        if (password !== confirmPassword) {
+                            showMessage('Las contraseñas no coinciden', 'danger');
+                            return;
+                        }
+                        
+                        // Validar longitud de contraseña
+                        if (password.length &lt; 6) {
+                            showMessage('La contraseña debe tener al menos 6 caracteres', 'danger');
+                            return;
+                        }
+                        
+                        // Deshabilitar botón y mostrar spinner
+                        submitBtn.disabled = true;
+                        btnText.textContent = 'Creando cuenta...';
+                        btnSpinner.classList.remove('d-none');
+                        
+                        try {
+                            const response = await fetch('/api/auth/register', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    name: name,
+                                    login: login,
+                                    password: password
+                                })
+                            });
+                            
+                            const data = await response.json();
+                            
+                            if (response.ok) {
+                                showMessage('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
+                                form.reset();
+                                
+                                // Redirigir a la página de suscripción exitosa
+                                setTimeout(() => {
+                                    window.location.href = '/subscription-success';
+                                }, 1500);
+                            } else {
+                                const errorMsg = data.error || 'Error al crear la cuenta. Por favor, intenta nuevamente.';
+                                showMessage(errorMsg, 'danger');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            showMessage('Error de conexión. Por favor, verifica tu conexión a internet.', 'danger');
+                        } finally {
+                            // Rehabilitar botón y ocultar spinner
+                            submitBtn.disabled = false;
+                            btnText.textContent = 'Registrarse';
+                            btnSpinner.classList.add('d-none');
+                        }
+                    });
+                    
+                    function showMessage(message, type) {
+                        const alertDiv = document.createElement('div');
+                        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                        alertDiv.role = 'alert';
+                        alertDiv.innerHTML = `
+                            ${message}
+                            &lt;button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"&gt;&lt;/button&gt;
+                        `;
+                        messageContainer.appendChild(alertDiv);
+                        
+                        // Auto-cerrar después de 5 segundos para mensajes de éxito
+                        if (type === 'success') {
+                            setTimeout(() => {
+                                alertDiv.remove();
+                            }, 5000);
+                        }
+                    }
+                });
+            </script>
+
+            <style>
+                .card {
+                    border: none;
+                    border-radius: 15px;
+                    overflow: hidden;
+                    background-color: #ffffff !important;
+                }
+                
+                .card-header {
+                    padding: 2rem 1rem;
+                }
+                
+                .card-body {
+                    background-color: #ffffff !important;
+                    color: #212529 !important;
+                }
+                
+                .form-label {
+                    color: #212529 !important;
+                    margin-bottom: 0.5rem;
+                    font-weight: 600;
+                }
+                
+                .form-control {
+                    background-color: #ffffff !important;
+                    color: #212529 !important;
+                    border: 1px solid #ced4da;
+                }
+                
+                .form-control:focus {
+                    border-color: var(--bloste-primary, #FC7D1C);
+                    box-shadow: 0 0 0 0.2rem rgba(252, 125, 28, 0.25);
+                    background-color: #ffffff !important;
+                    color: #212529 !important;
+                }
+                
+                .form-control::placeholder {
+                    color: #6c757d !important;
+                }
+                
+                .btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 15px rgba(252, 125, 28, 0.3);
+                    transition: all 0.3s ease;
+                }
+                
+                #message-container .alert {
+                    color: #212529 !important;
+                }
+            </style>
+        </t>
+    </template>
+
+</odoo>

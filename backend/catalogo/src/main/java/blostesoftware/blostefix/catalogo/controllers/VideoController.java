@@ -1,0 +1,91 @@
+package blostesoftware.blostefix.catalogo.controllers;
+
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import blostesoftware.blostefix.catalogo.dto.VideoPostDTO;
+import blostesoftware.blostefix.catalogo.dto.VideoPublicDTO;
+
+import blostesoftware.blostefix.catalogo.service.VideoServiceIMPL;
+
+@RestController
+@RequestMapping("/api")
+public class VideoController {
+
+    @Autowired
+    VideoServiceIMPL videoService;
+
+    @GetMapping("/catalogo")
+    public ResponseEntity<Page<VideoPublicDTO>> getAllVideos(
+            @RequestParam(required = false) Long categoriaId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<VideoPublicDTO> videos = videoService.getVideos(categoriaId,page, size);
+        return ResponseEntity.ok(videos);
+    }
+
+    @GetMapping("/catalogo/search")
+    public ResponseEntity<Page<VideoPublicDTO>> searchVideos(
+            @RequestParam String titulo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<VideoPublicDTO> videos = videoService.searchVideosByTitulo(titulo, page, size);
+        return ResponseEntity.ok(videos);
+    }
+
+    @GetMapping("/catalogo/{id}")
+    public ResponseEntity<VideoPublicDTO> getVideoById(@PathVariable Long id) {
+        VideoPublicDTO video = videoService.getVideoById(id);
+        if (video != null) {
+            return ResponseEntity.ok(video);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/catalogo")
+    public ResponseEntity<Void> saveVideo(@RequestBody VideoPostDTO videoDTO) {
+        videoService.saveVideo(videoDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/catalogo/{id}")
+    public ResponseEntity<VideoPostDTO> updateVideo(
+            @PathVariable Long id,
+            @RequestBody VideoPostDTO videoDTO) {
+        try {
+            VideoPostDTO videoActualizado = videoService.updateVideo(id, videoDTO);
+            return ResponseEntity.ok(videoActualizado);
+        } catch (jakarta.persistence.EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/catalogo/{id}")
+    public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
+        if (videoService.deleteVideo(id)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleError(MethodArgumentTypeMismatchException e) {
+        String message = String.format("El format de l'argument no és correcte: %s", e.getName());
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+}

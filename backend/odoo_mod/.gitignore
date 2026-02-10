@@ -1,0 +1,26 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Odoo
+*.log
+*.pot
+*.pid
+filestore/
+sessions/
+
+# Environment
+.env
+
+# Keys (keep only .example files)
+keys/*.pem
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

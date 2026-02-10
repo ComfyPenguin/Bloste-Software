@@ -1,0 +1,40 @@
+@import './base.css';
+
+/* Vue Toastification custom styles */
+.Vue-Toastification__container {
+  --vt-color-success: var(--color-success);
+  --vt-color-error: var(--color-danger);
+  --vt-color-info: var(--color-info);
+  --vt-color-warning: var(--color-warning);
+  --vt-text-color: var(--color-background);
+  --vt-toast-background: var(--color-text);
+  --vt-toast-min-height: 50px;
+  --vt-toast-max-width: 400px;
+  --vt-toast-font-size: 1rem;
+  --vt-toast-border-radius: 8px;
+  --vt-toast-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --vt-toast-padding: 10px 15px;
+  --vt-toast-margin: 10px;
+  --vt-toast-icon-size: 20px;
+  --vt-toast-text-align: left;
+  --vt-font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+}
+
+/* Dark theme specific adjustments for toast background and text color */
+html.dark .Vue-Toastification__container {
+  --vt-text-color: var(--color-heading);
+  --vt-toast-background: var(--color-background-soft);
+  --vt-toast-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,119 @@
+/* New raw color variables for Dark Theme */
+:root {
+  --bg-dark: hsl(336 0% 1%);
+  --bg: hsl(330 0% 4%);
+  --bg-light: hsl(0 0% 9%);
+  --text: hsl(0 0% 95%);
+  --text-muted: hsl(300 0% 69%);
+  --highlight: hsl(330 0% 39%);
+  --border: hsl(0 0% 28%);
+  --border-muted: hsl(300 0% 18%);
+
+  --primary: hsl(28 90% 62%);
+
+  /* --secondary: hsl(275 40% 70%); */
+
+  --danger: hsl(9 26% 64%);
+  --warning: hsl(52 19% 57%);
+  --success: hsl(146 17% 59%);
+  --info: hsl(217 28% 65%);
+
+  --svg-filter: invert(1) brightness(10);
+
+  /* Semantic color variables for this project (mapped to Dark Theme) */
+  --color-background: var(--bg);
+  --color-background-soft: var(--bg-light);
+  --color-background-mute: var(--bg-dark);
+
+  --color-border: var(--border);
+  --color-border-hover: var(--border-muted);
+
+  --color-heading: var(--text);
+  --color-text: var(--text-muted);
+
+  --color-primary: var(--primary);
+
+  /* --color-secondary: var(--secondary); */
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-info: var(--info);
+
+  --section-gap: 160px;
+}
+
+/* Light theme when 'dark' class is not present on html */
+html:not(.dark) {
+  /* New raw color variables for Light Theme */
+  --bg-dark: hsl(0 0% 90%);
+  --bg: hsl(0 0% 95%);
+  --bg-light: hsl(300 50% 100%);
+  --text: hsl(330 0% 4%);
+  --text-muted: hsl(0 0% 28%);
+  --highlight: hsl(300 50% 100%);
+  --border: hsl(300 0% 50%);
+  --border-muted: hsl(340 0% 62%);
+
+  --primary: hsl(30, 100%, 63%);
+
+  /* --secondary: hsl(275 40% 55%); */
+
+  --danger: hsl(9 21% 41%);
+  --warning: hsl(52 23% 34%);
+  --success: hsl(147 19% 36%);
+  --info: hsl(217 22% 41%);
+
+  --svg-filter: none;
+
+  /* Semantic color variables for this project (mapped to Light Theme) */
+  --color-background: var(--bg);
+  --color-background-soft: var(--bg-light);
+  --color-background-mute: var(--bg-dark);
+
+  --color-border: var(--border);
+  --color-border-hover: var(--border-muted);
+
+  --color-heading: var(--text);
+  --color-text: var(--text-muted);
+
+  --color-primary: var(--primary);
+
+  /* --color-secondary: var(--secondary); */
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-info: var(--info);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+

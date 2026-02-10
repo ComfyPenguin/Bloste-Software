@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="bloste_website_menu" 
+              name="Bloste Website" 
+              sequence="10" 
+              web_icon="bloste_web,static/description/icon.png"/>
+
+    <menuitem id="bloste_pages_menu" 
+              name="Páginas" 
+              parent="bloste_website_menu" 
+              sequence="1" 
+              action="website.action_website_pages_list"/>
+
+    <menuitem id="bloste_subscriptions_menu" 
+              name="Suscripciones" 
+              parent="bloste_website_menu" 
+              sequence="2" 
+              action="bloste_core.action_bloste_subscription"/>
+</odoo>

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data noupdate="0">
+        <!-- Sitio Web Principal -->
+        <record id="bloste_website" model="website">
+            <field name="name">Bloste</field>
+            <field name="domain" eval="False"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- TEMPLATES - Definir primero todas las vistas -->
+        <!-- ============================================ -->
+
+        <template id="home_page_view" name="Página de Inicio">
+            <t t-call="website.layout">
+                <!-- Hero Section -->
+                <div class="text-center py-5" style="background: linear-gradient(135deg, #FC7D1C 0%, #9A48D0 100%);">
+                    <div class="container">
+                        <h1 class="display-4 text-white fw-bold mb-4">Bienvenido a BlosteFlix</h1>
+                        <p class="lead text-white mb-4 fw-semibold">Disfruta de películas y series en streaming</p>
+                        <a href="/suscripciones" class="btn btn-light btn-lg px-4 me-2">Ver Planes</a>
+                        <a href="/in" class="btn btn-outline-light btn-lg px-4">Registrarse</a>
+                    </div>
+                </div>
+
+                <!-- Seccio de caracteristiques -->
+                <div class="container my-5">
+                    <div class="row text-center g-4">
+                        <div class="col-md-4">
+                            <div class="p-4">
+                                <h2 class="mb-3">💻</h2>
+                                <h5 class="fw-bold">Multiplataforma</h5>
+                                <p class="fw-medium" style="color: #2d2d2d;">Disponible en todos tus dispositivos</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4">
+                                <h2 class="mb-3">✓</h2>
+                                <h5 class="fw-bold">Sin Compromisos</h5>
+                                <p class="fw-medium" style="color: #2d2d2d;">Cancela cuando quieras</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4">
+                                <h2 class="mb-3">★</h2>
+                                <h5 class="fw-bold">Alta Calidad</h5>
+                                <p class="fw-medium" style="color: #2d2d2d;">Streaming en HD y 4K</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="suscripciones_page_view" name="Página Suscripciones">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h1>Planes de Suscripción</h1>
+                            <p class="fs-5" style="color: #4a4a4a;">Elige el plan que mejor se adapta a ti</p>
+                        </div>
+                    </div>
+
+                    <div class="row" t-if="subscriptions">
+                        <t t-foreach="subscriptions" t-as="sub">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <t t-esc="sub.name"/>
+                                        </h5>
+                                        
+                                        <h3 class="text-primary my-3">
+                                            $<t t-esc="'%.2f' % sub.price"/>
+                                            <span class="fs-6">/mes</span>
+                                        </h3>
+                                        
+                                        <ul class="list-unstyled mb-4">
+                                            <li class="mb-2">
+                                                <i class="fa fa-calendar text-info"></i>
+                                                <t t-esc="sub.duration"/> días
+                                            </li>
+                                        </ul>
+                                        
+                                        <button class="btn btn-primary w-100 subscription-button" t-att-data-plan="sub.name">
+                                            Suscribirse
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <div class="row" t-else="">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <p>No hay planes disponibles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script type="text/javascript" src="/bloste_web/static/src/js/subscription_redirect.js"/>
+            </t>
+        </template>
+
+        <template id="contactus_page_view" name="Página Contacto">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <h1>Contáctanos</h1>
+                    <p class="lead">Envíanos tu mensaje</p>
+                    <form method="post" action="/contactus/submit">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="name" class="form-control" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mensaje</label>
+                            <textarea name="message" class="form-control" rows="5" required="required"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </form>
+                </div>
+            </t>
+        </template>
+
+        <template id="contactus_thankyou_page_view" name="Gracias por Contactar">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5 text-center">
+                    <h1>¡Gracias por contactarnos!</h1>
+                    <p class="lead">Hemos recibido tu mensaje y te responderemos pronto.</p>
+                    <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
+                </div>
+            </t>
+        </template>
+
+        <template id="info_usuario_page_view" name="Info Usuario">
+            <t t-call="website.layout">
+                <link rel="stylesheet" href="/bloste_web/static/src/css/bloste_colors.css"/>
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="card shadow-lg">
+                                <div class="card-header text-white" style="background: linear-gradient(135deg, var(--bloste-primary, #FC7D1C) 0%, var(--bloste-secondary, #9A48D0) 100%);">
+                                    <h2 class="mb-0 text-center fw-bold">Métodos de Pago</h2>
+                                    <p class="mb-0 text-center fw-semibold">Inicia sesión para contratar tu plan</p>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div id="message-container">
+                                        <t t-if="error">
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <t t-out="error"/>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <form id="payment-form" method="post" action="/info-usuario/submit">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold" style="color: #2d2d2d;">Plan Seleccionado</label>
+                                            <input type="text" name="subscription_plan" id="subscription_plan" class="form-control form-control-lg fw-bold" readonly="readonly" style="background-color: #f8f9fa; color: #1a1a1a;" t-att-value="plan"/>
+                                        </div>
+                                        
+                                        <hr class="my-4"/>
+                                        
+                                        <h5 class="mb-3">Datos de Acceso</h5>
+                                        
+                                        <div class="mb-3">
+                                            <label for="login_email" class="form-label fw-bold">Email</label>
+                                            <input type="email" id="login_email" name="email" class="form-control form-control-lg" placeholder="correo@ejemplo.com" required="required"/>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label for="login_password" class="form-label fw-bold">Contraseña</label>
+                                            <input type="password" id="login_password" name="password" class="form-control form-control-lg" placeholder="Tu contraseña" required="required"/>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-lg w-100 text-white" style="background: linear-gradient(135deg, var(--bloste-primary, #FC7D1C) 0%, var(--bloste-secondary, #9A48D0) 100%); border: none;" id="submit-btn">
+                                            <span id="btn-text">Contratar</span>
+                                            <span id="btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                        </button>
+                                        
+                                        <div class="text-center mt-3">
+                                            <p class="mb-0" style="color: #4a4a4a;">¿No tienes cuenta? <a href="/in" class="text-decoration-none fw-semibold" style="color: var(--bloste-primary);">Regístrate aquí</a></p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <script type="text/javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        console.log('[Bloste] Página de contratar cargada');
+                        var form = document.getElementById('payment-form');
+                        if (form) {
+                            console.log('[Bloste] Formulario encontrado');
+                            form.addEventListener('submit', function(e) {
+                                console.log('[Bloste] Formulario enviándose...');
+                                console.log('[Bloste] Email:', document.getElementById('login_email').value);
+                                console.log('[Bloste] Plan:', document.getElementById('subscription_plan').value);
+                                // NO llamar e.preventDefault() - dejar que el formulario se envíe normalmente
+                            });
+                        } else {
+                            console.error('[Bloste] ERROR: Formulario no encontrado!');
+                        }
+                    });
+                </script>
+                
+                <style>
+                    .card {
+                        border: none;
+                        border-radius: 15px;
+                        overflow: hidden;
+                    }
+                    
+                    .card-header {
+                        padding: 2rem 1rem;
+                    }
+                    
+                    .form-control:focus {
+                        border-color: var(--bloste-primary, #FC7D1C);
+                        box-shadow: 0 0 0 0.2rem rgba(252, 125, 28, 0.25);
+                    }
+                    
+                    .btn:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 5px 15px rgba(252, 125, 28, 0.3);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .form-label {
+                        color: #333;
+                        margin-bottom: 0.5rem;
+                    }
+                </style>
+            </t>
+        </template>
+
+        <template id="subscription_success_view" name="Suscripción Exitosa">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5 text-center">
+                    <h1>¡Suscripción Exitosa!</h1>
+                    <p class="lead">Gracias por suscribirte a Bloste</p>
+                    <a href="/" class="btn btn-primary mt-3">Volver al Inicio</a>
+                </div>
+            </t>
+        </template>
+
+        <template id="login_registro_page_view" name="Login/Registro">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h2>Bienvenido a Bloste</h2>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-4" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-bs-toggle="tab" href="#login">Iniciar Sesión</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#register">Registrarse</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="login">
+                                            <form method="post" action="/web/login">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" class="form-control" name="login" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contraseña</label>
+                                                    <input type="password" class="form-control" name="password" required="required"/>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                                            </form>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="register">
+                                            <form method="post" action="/web/signup">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nombre Completo</label>
+                                                    <input type="text" class="form-control" name="name" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" class="form-control" name="login" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Contraseña</label>
+                                                    <input type="password" class="form-control" name="password" required="required"/>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Confirmar Contraseña</label>
+                                                    <input type="password" class="form-control" name="confirm_password" required="required"/>
+                                                </div>
+                                                <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- ============================================ -->
+        <!-- RECORDS - Después de definir los templates -->
+        <!-- ============================================ -->
+
+        <!-- Home Page -->
+        <record id="website_page_home" model="website.page">
+            <field name="name">Inicio</field>
+            <field name="url">/</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="home_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Suscripciones Page -->
+        <record id="website_page_suscripciones" model="website.page">
+            <field name="name">Suscripciones</field>
+            <field name="url">/suscripciones</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="suscripciones_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Contact Us Page -->
+        <record id="website_page_contactus" model="website.page">
+            <field name="name">Contact Us</field>
+            <field name="url">/contactus</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="contactus_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Thank You Page -->
+        <record id="website_page_contactus_thankyou" model="website.page">
+            <field name="name">Thanks (Contact us)</field>
+            <field name="url">/contactus-thank-you</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="contactus_thankyou_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Info Usuario Page -->
+        <record id="website_page_info_usuario" model="website.page">
+            <field name="name">Info usuario</field>
+            <field name="url">/info-usuario</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="info_usuario_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Subscription Success Page -->
+        <record id="website_page_subscription_success" model="website.page">
+            <field name="name">Éxito Suscripción</field>
+            <field name="url">/subscription-success</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="subscription_success_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- Login/Registro Page -->
+        <record id="website_page_login_registro" model="website.page">
+            <field name="name">Inicio sesión o registro</field>
+            <field name="url">/inicio-sesio-o-registro</field>
+            <field name="type">qweb</field>
+            <field name="view_id" ref="login_registro_page_view"/>
+            <field name="website_id" ref="bloste_website"/>
+            <field name="is_published">True</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- MENÚS DEL SITIO WEB - Navegación superior -->
+        <!-- ============================================ -->
+        
+        <!-- Menú: Inicio -->
+        <record id="website_menu_home" model="website.menu">
+            <field name="name">Inicio</field>
+            <field name="url">/</field>
+            <field name="page_id" ref="website_page_home"/>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">10</field>
+            <field name="website_id" ref="bloste_website"/>
+        </record>
+
+        <!-- Menú: Planes -->
+        <record id="website_menu_suscripciones" model="website.menu">
+            <field name="name">Planes</field>
+            <field name="url">/suscripciones</field>
+            <field name="page_id" ref="website_page_suscripciones"/>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">20</field>
+            <field name="website_id" ref="bloste_website"/>
+        </record>
+
+        <!-- Menú: Registrarse -->
+        <record id="website_menu_registro" model="website.menu">
+            <field name="name">Registrarse</field>
+            <field name="url">/in</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">30</field>
+            <field name="website_id" ref="bloste_website"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,20 @@
+{
+    'name': 'Bloste-Software',
+    'version': '1.0',
+    'summary': 'Bloste Software Core Module',
+    'description': """Modulo para la gestion de suscripciones y usuarios, y creación y validación de tokens""",
+    'author': 'Bloste Team',
+    'license': 'LGPL-3',
+    'depends': ['base', 'sale', 'product'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/subscriptors.xml',
+        'views/user_subscription.xml',
+        'views/menu_view.xml',
+        'views/res_users.xml',
+        'views/product_view.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:14
+    container_name: odoo16_db
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+
+  odoo:
+    build: .
+    container_name: odoo16_app
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    environment:
+      - ENV_HOST=${ENV_HOST}
+      - ENV_USER=${ENV_USER}
+      - ENV_PASSWORD=${ENV_PASSWORD}
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - .:/mnt/extra-addons
+      - ./odoo_config:/etc/odoo
+      - ./keys:/etc/odoo/keys
+      - ../..:/workspace
+    command: >
+      odoo --config=/etc/odoo/odoo.conf
+      --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+      --db-filter=.*
+      --without-demo=all
+
+volumes:
+  db_data:
+  odoo_data:
