@@ -16,10 +16,10 @@ import blostesoftware.blostefix.catalogo.models.Categoria;
 import blostesoftware.blostefix.catalogo.repositories.CategoriaRepository;
 import blostesoftware.blostefix.exceptions.CategoriaAlreadyExistsException;
 
-@Service
+@Service // Indica que esta clase es un componente de servicio de Spring (lógica de negocio).
 public class CategoriaServiceIMPL implements CategoriaService {
 
-    @Autowired
+    @Autowired // Inyección de dependencias del repositorio de categorías.
     CategoriaRepository categoriaRepository;
 
     /* @Override // EN DESUSO, USAR PAGEABLE
@@ -34,14 +34,16 @@ public class CategoriaServiceIMPL implements CategoriaService {
 
     @Override
     public Page<CategoriaPublicDTO> getAllCategoriasPageable(int page, int size) {
+        // Crea un objeto PageRequest para solicitar una página específica, con un tamaño determinado, ordenada por ID de forma descendente.
         PageRequest pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Categoria> categoriasPage = categoriaRepository.findAll(pageable);
+        // Convierte la página de entidades Categoria a una página de DTOs (CategoriaPublicDTO) usando Streams.
         return new PageImpl<>(categoriasPage.getContent().stream().map(CategoriaPublicDTO::convertToDTO).toList(), pageable, categoriasPage.getTotalElements());
     }
 
     @Override
     public CategoriaPublicDTO getCategoriaById(Long id) {
-
+        // Optional se usa para manejar posibles valores nulos de forma segura (evita NullPointerException).
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         if (categoriaOpt.isPresent()) {
             return CategoriaPublicDTO.convertToDTO(categoriaOpt.get());
@@ -51,13 +53,15 @@ public class CategoriaServiceIMPL implements CategoriaService {
 
     @Override
     public CategoriaPublicDTO saveCategoria(CategoriaPostDTO dto) {
-
+        // Lógica de negocio: Comprueba si ya existe una categoría con el mismo nombre (ignorando mayúsculas/minúsculas).
         if (categoriaRepository.existsByNombreIgnoreCase(dto.getNombre())) {
+            // Lanza una excepción personalizada que será capturada por el @RestControllerAdvice en el controlador.
             throw new CategoriaAlreadyExistsException(
                 "La\scategoria\sya\sexiste"
             );
         }
 
+        // Mapea el DTO a Entidad, la guarda en la BD y devuelve la entidad guardada mapeada a DTO.
         Categoria categoria = CategoriaPostDTO.convertToEntity(dto);
         Categoria saved = categoriaRepository.save(categoria);
 
@@ -66,10 +70,13 @@ public class CategoriaServiceIMPL implements CategoriaService {
 
     @Override
     public CategoriaPrivateDTO updateCategoria(CategoriaPrivateDTO categoriaDTO) {
+        // Busca la categoría existente por ID.
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(categoriaDTO.getId());
         if (categoriaOpt.isPresent()) {
             Categoria categoria = categoriaOpt.get();
+            // Actualiza los campos necesarios.
             categoria.setNombre(categoriaDTO.getNombre());
+            // Guarda los cambios en la base de datos.
             categoriaRepository.save(categoria);
             return CategoriaPrivateDTO.convertToDTO(categoria);
         }

@@ -26,6 +26,8 @@ public class VideoPublicDTO implements Serializable {
     private LocalDateTime fechaActualizacion;
     private Set<Categoria> categorias;
 
+    // Función de mapeo (Mapper): Convierte una entidad de base de datos (Video) a un objeto de transferencia de datos (DTO).
+    // Esto es útil para ocultar información sensible o adaptar la estructura de datos antes de enviarla al cliente.
     public static VideoPublicDTO converToDTO(Video v){
         VideoPublicDTO videoDTO = new VideoPublicDTO();
         videoDTO.setId(v.getId());

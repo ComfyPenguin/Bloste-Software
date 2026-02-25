@@ -22,16 +22,17 @@ import blostesoftware.blostefix.catalogo.repositories.CategoriaRepository;
 import blostesoftware.blostefix.catalogo.repositories.VideoRepository;
 import jakarta.persistence.EntityNotFoundException;
 
-@Service
+@Service // Indica que esta clase es un servicio de Spring, donde reside la lógica de negocio.
 public class VideoServiceIMPL implements VideoService {
 
-    @Autowired
+    @Autowired // Inyecta el repositorio para acceder a la base de datos de videos.
     private VideoRepository videoRepository;
-    @Autowired
+    @Autowired // Inyecta el repositorio para acceder a la base de datos de categorías.
     private CategoriaRepository categoriaRepository;
 
     @Override
     public Page<VideoPublicDTO> getVideos(Long categoriaId, int page, int size){
+        // PageRequest crea un objeto Pageable para manejar la paginación y ordenación (descendente por ID).
         Pageable pageable = PageRequest.of(page,size,Sort.by("id").descending());
 
         Page<Video> result;
@@ -50,6 +51,8 @@ public class VideoServiceIMPL implements VideoService {
                 result = videoRepository.findByVisibleTrue(pageable);
             }
         }
+        // Mapeo de la entidad Video a VideoPublicDTO usando streams.
+        // Esto es crucial para no exponer la entidad de base de datos directamente al cliente (patrón DTO).
         return new PageImpl<>(result.getContent().stream().map(VideoPublicDTO::converToDTO).toList(),pageable,result.getTotalElements());
     }
     
@@ -68,6 +71,8 @@ public class VideoServiceIMPL implements VideoService {
         return new PageImpl<>(result.getContent().stream().map(VideoPublicDTO::converToDTO).toList(), pageable, result.getTotalElements());
     }
     
+    // Método auxiliar para comprobar si el usuario actual tiene el rol de administrador.
+    // Utiliza el contexto de seguridad de Spring Security.
     private boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -99,11 +104,15 @@ public class VideoServiceIMPL implements VideoService {
 
     @Override
     public void saveVideo(VideoPostDTO dto) {
+        // Convierte el DTO recibido del cliente a una entidad Video para guardarla en la BD.
         Video video = VideoPostDTO.convertToEntity(dto);
+        
+        // Mapeo complejo: Convierte un Set de Strings (nombres de categorías) a un Set de entidades Categoria.
         Set<Categoria> categorias = dto.getCategorias().stream()
         .map(nombre -> {
             String normalizado = nombre.trim().toLowerCase();
 
+            // Busca la categoría en la BD. Si no existe, la crea y la guarda (orElseGet).
             return categoriaRepository
                 .findByNombre(normalizado)
                 .orElseGet(() -> {

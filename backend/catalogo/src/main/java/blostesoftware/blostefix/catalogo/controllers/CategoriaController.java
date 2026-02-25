@@ -23,12 +23,14 @@ import blostesoftware.blostefix.catalogo.dto.CategoriaPublicDTO;
 import blostesoftware.blostefix.catalogo.service.CategoriaServiceIMPL;
 import blostesoftware.blostefix.exceptions.CategoriaAlreadyExistsException;
 
-@RestController
-@RequestMapping("/api")
+@RestController // Controlador REST: Combina @Controller y @ResponseBody.
+@RequestMapping("/api") // Ruta base para los endpoints de categorías.
 public class CategoriaController {
     @Autowired
     CategoriaServiceIMPL categoriaService;
+    
     // Get con paginacion
+    // Ejemplo de endpoint REST para obtener recursos (Categorías).
     @GetMapping("/categorias")
     public ResponseEntity<Page<CategoriaPublicDTO>> getAllCategoriasPageable(
             @RequestParam(defaultValue = "0") int page,
@@ -36,22 +38,28 @@ public class CategoriaController {
         Page<CategoriaPublicDTO> categorias = categoriaService.getAllCategoriasPageable(page, size);
         return ResponseEntity.ok(categorias);
     }
+    
     //Get por id
+    // @PathVariable vincula el {id} de la URL al parámetro del método.
     @GetMapping("/categorias/{id}")
     public ResponseEntity<CategoriaPublicDTO> getCategoriaById(@PathVariable Long id) {
         CategoriaPublicDTO categoria = categoriaService.getCategoriaById(id);
         if (categoria != null) {
             return ResponseEntity.ok(categoria);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build(); // 404 si no se encuentra.
     }
+    
     // Post de una nueva categoria
+    // @RequestBody deserializa el JSON entrante a un objeto Java (CategoriaPostDTO).
     @PostMapping("/categorias")
     public ResponseEntity<Void> createCategoria(@RequestBody CategoriaPostDTO categoriaDTO) {
         categoriaService.saveCategoria(categoriaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build(); // 201 Created.
     }
+    
     // Put, modificar
+    // Actualiza un recurso existente.
     @PutMapping("/categorias/{id}")
     public ResponseEntity<CategoriaPrivateDTO> updateCategoria(
             @PathVariable Long id,
@@ -63,27 +71,31 @@ public class CategoriaController {
         }
         return ResponseEntity.notFound().build();
     }
+    
     // Borrar por id
     @DeleteMapping("/categorias/{id}")
     public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) {
         CategoriaPrivateDTO categoriaEliminada = categoriaService.deleteCategoria(id);
         if (categoriaEliminada != null) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build(); // 204 No Content.
         }
         return ResponseEntity.notFound().build();
     }
 
+    // @RestControllerAdvice permite manejar excepciones globalmente para todos los controladores.
     @RestControllerAdvice
     public class GlobalExceptionHandler {
 
+        // Captura la excepción personalizada CategoriaAlreadyExistsException.
         @ExceptionHandler(CategoriaAlreadyExistsException.class)
         public ResponseEntity<String> handleCategoriaDuplicada(
                 CategoriaAlreadyExistsException ex) {
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT) // 409
+                    .status(HttpStatus.CONFLICT) // 409 Conflict.
                     .body(ex.getMessage());
         }
 
+        // Captura excepciones de integridad de datos (ej. violación de restricción UNIQUE en BD).
         @ExceptionHandler(DataIntegrityViolationException.class)
         public ResponseEntity<String> handleConstraint(
                 DataIntegrityViolationException ex) {
