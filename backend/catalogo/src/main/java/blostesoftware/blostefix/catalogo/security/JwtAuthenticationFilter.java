@@ -2,12 +2,10 @@ package blostesoftware.blostefix.catalogo.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,21 +14,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.Collections;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("${jwt.public-key}")
-    private String publicKeyPath;
-    
-    private PublicKey publicKey;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -44,15 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("DEBUG JWT Filter: Token extracted");
 
             try {
-                if (publicKey == null) {
-                    publicKey = loadPublicKey();
-                }
-
-                Claims claims = Jwts.parser()
-                        .verifyWith(publicKey)
-                        .build()
-                        .parseSignedClaims(token)
-                        .getPayload();
+                Claims claims = jwtTokenProvider.validateAndGetClaims(token);
 
                 String userId = claims.getSubject();
                 String role = claims.get("role", String.class);
@@ -85,43 +70,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private PublicKey loadPublicKey() throws Exception {
-        String publicKeyContent = new String(Files.readAllBytes(Paths.get(publicKeyPath)))
-                .replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
-
-        byte[] decodedKey = Base64.getDecoder().decode(publicKeyContent);
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(decodedKey);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePublic(spec);
-    }
-
-    private boolean isProtectedEndpoint(String method, String path) {
-        // Protect POST, PUT, DELETE methods on /api/* endpoints
-        return (method.equals("POST") || method.equals("PUT") || method.equals("DELETE"))
-                && path.startsWith("/api/");
-    }
-
-    private String extractToken(String authHeader) {
-        if (authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
-        }
-        return null;
-    }
-
-    private void sendUnauthorizedError(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-        response.getWriter().write("{\"error\": \"" + message + "\"}");
-    }
-
-    private void sendForbiddenError(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setContentType("application/json");
-        response.getWriter().write("{\"error\": \"" + message + "\"}");
     }
 
     @Override

@@ -3,6 +3,8 @@ import type { Catalogo } from '@/types/categories.type'
 import env from '@/configs/env.config'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import imageNotFound from '@/assets/image_not_found.svg'
+import visibility from '@/assets/visibility.svg'
+import visibilityOff from '@/assets/visibility-off.svg'
 import { Formatter } from '@/utils/formatter'
 import { useAuth } from '@/composables/useAuth'
 
@@ -62,6 +64,7 @@ const relativeUploadDate = computed(() => Formatter.timeAgo(props.item.fechaSubi
       <h3 class="card-title">{{ props.item.titulo }}</h3>
       <p class="card-author">{{ props.item.autor }}</p>
       <p class="card-upload-date">{{ relativeUploadDate }}</p>
+      <p class="card-visible"><img :src="props.item.visible ? visibility : visibilityOff" alt="visibility icon" class="visibility-icon"></p>
     </div>
   </div>
 </template>
@@ -94,6 +97,18 @@ const relativeUploadDate = computed(() => Formatter.timeAgo(props.item.fechaSubi
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.card-visible{
+  display: flex;
+  align-items: end;
+  margin-top: 0.5rem;
+}
+
+.visibility-icon {
+  width: 20px;
+  height: 20px;
+  filter: var(--svg-filter);
 }
 
 .duration-badge {
@@ -142,6 +157,7 @@ const relativeUploadDate = computed(() => Formatter.timeAgo(props.item.fechaSubi
 }
 
 .card-upload-date {
+  display: flex;
   font-size: 0.8rem;
   color: var(--color-text-muted);
 }
